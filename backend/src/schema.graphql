@@ -1,0 +1,152 @@
+type Query {
+  user(email: String!, password: String!): [UserReturn!]!
+  assignment(ID: ID!): [Assignment!]!
+  problem(ID: ID!): [Problem!]!
+  Grade(ID: ID!): [Grade!]!
+}
+
+type Mutation {
+  createUser(data: CreateUserInput!): ReturnMessage!
+  deleteUser(email: String!): ReturnMessage!
+  updateUserInformation(data: UpdateUserInformation!): ReturnMessage!
+  addUserToCourse(data: UpdateUserCourse!): ReturnMessage!
+  deleteUserFromCourse(data: UpdateUserCourse!): ReturnMessage!
+
+  createCourse(data: CreateCourseInput!): ReturnMessage!
+  deleteCourse(ID: ID!): ReturnMessage!
+
+  createAssignment(data: CreateAssignmentInput!): Assignment!
+  deleteAssignment(ID: ID!): [Assignment]
+
+  createProblem(data: CreateProblemInput!): Problem!
+  deleteProblem(ID: ID!): [Problem]
+
+  createGrade(data: CreateGradeInput!): Grade!
+  deleteGrade(ID: ID!): [Grade]
+}
+
+type Subscription {
+  user(query: String!): UserSubscriptionPayload!
+}
+
+type User {
+  name: String!
+  email: String!
+  studentCourse: [ID]!
+  teacherCourse: [ID]!
+  password: String!
+}
+
+type UserReturn {
+  name: String!
+  email: String!
+  studentCourse: [Course]!
+  teacherCourse: [Course]!
+  password: String!
+}
+
+input CreateUserInput {
+  name: String!
+  email: String!
+  studentCourse: [ID]!
+  teacherCourse: [ID]!
+  password: String!
+}
+
+input UpdateUserInformation {
+  name: String!
+  email: String!
+  password: String!
+}
+
+input UpdateUserCourse {
+  email: String!
+  ID: ID!
+  TA: Boolean!
+}
+
+type Course {
+  name: String!
+  teacher: String!
+  discribe: String!
+  classTime: String!
+  classroom: String!
+  TA: [ID!]!
+  student: [ID]!
+  assignment: [ID]!
+}
+
+input CreateCourseInput {
+  name: String!
+  teacher: String!
+  discribe: String!
+  classTime: String!
+  classroom: String!
+  TA: [ID]!
+  student: [ID]!
+  assignment: [ID]!
+}
+
+type Problem {
+  name: String!
+  type: String!
+  point: Int!
+  statement: String!
+  option: [String]!
+  answer: [String!]!
+}
+
+input CreateProblemInput {
+  name: String!
+  type: String!
+  point: Int!
+  statement: String!
+  option: [String]!
+  answer: [String!]!
+}
+
+type Assignment {
+  name: String!
+  beginTime: String!
+  endTime: String!
+  problem: [ID]!
+}
+
+input CreateAssignmentInput {
+  name: String!
+  beginTime: String!
+  endTime: String!
+  problem: [ID]!
+}
+
+type Grade {
+  name: String!
+  user: ID!
+  course: ID!
+  grade: Int
+  answer: [String!]!
+}
+
+input CreateGradeInput {
+  name: String!
+  user: ID!
+  course: ID!
+  grade: Int
+  answer: [String!]!
+}
+
+type ReturnMessage {
+  type: String!
+  message: String!
+}
+
+enum MutationType {
+  CREATED
+  DELETED
+  UPDATED
+}
+
+type UserSubscriptionPayload {
+  mutation: MutationType!
+  data: User!
+}
