@@ -11,7 +11,7 @@ const CourseSchema = new Schema({
     type: String,
     required: [true, "Teacher field is required."],
   },
-  discribe: {
+  describe: {
     type: String,
     required: [true, "Discribe field is required."],
   },

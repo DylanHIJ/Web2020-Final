@@ -3,7 +3,7 @@ const Query = {
     const email = args.email;
     const password = args.password;
     let user = await User.find({
-      $or: [{ email: email }, { password: password }],
+      $and: [{ email: email }, { password: password }],
     }).exec();
 
     if (user.length > 0) {

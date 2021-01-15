@@ -8,12 +8,13 @@ type Query {
 type Mutation {
   createUser(data: CreateUserInput!): ReturnMessage!
   deleteUser(email: String!): ReturnMessage!
-  updateUserInformation(data: UpdateUserInformation!): ReturnMessage!
+  updateUserInfo(data: UpdateUserInfo!): ReturnMessage!
   addUserToCourse(data: UpdateUserCourse!): ReturnMessage!
   deleteUserFromCourse(data: UpdateUserCourse!): ReturnMessage!
 
   createCourse(data: CreateCourseInput!): ReturnMessage!
   deleteCourse(ID: ID!): ReturnMessage!
+  updateCourseInfo(data: UpdateCourseInfo!): ReturnMessage!
 
   createAssignment(data: CreateAssignmentInput!): Assignment!
   deleteAssignment(ID: ID!): [Assignment]
@@ -53,7 +54,7 @@ input CreateUserInput {
   password: String!
 }
 
-input UpdateUserInformation {
+input UpdateUserInfo {
   name: String!
   email: String!
   password: String!
@@ -68,18 +69,27 @@ input UpdateUserCourse {
 type Course {
   name: String!
   teacher: String!
-  discribe: String!
+  describe: String!
   classTime: String!
   classroom: String!
-  TA: [ID!]!
+  TA: [ID]!
   student: [ID]!
   assignment: [ID]!
+}
+
+input UpdateCourseInfo {
+  ID: ID!
+  name: String!
+  teacher: String!
+  describe: String!
+  classTime: String!
+  classroom: String!
 }
 
 input CreateCourseInput {
   name: String!
   teacher: String!
-  discribe: String!
+  describe: String!
   classTime: String!
   classroom: String!
   TA: [ID]!
