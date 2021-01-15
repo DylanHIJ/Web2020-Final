@@ -116,6 +116,7 @@ input CreateProblemInput {
 }
 
 type Assignment {
+  courseID: ID!
   name: String!
   beginTime: String!
   endTime: String!
@@ -123,6 +124,7 @@ type Assignment {
 }
 
 input CreateAssignmentInput {
+  courseID: ID!
   name: String!
   beginTime: String!
   endTime: String!

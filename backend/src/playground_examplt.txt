@@ -1,0 +1,156 @@
+mutation CreateUser_1 {
+	createUser(data: {
+		name: "kehongying"
+		email: "b06902074@ntu.edu.tw"
+    studentCourse: []
+    teacherCourse: []
+    password: "12345678"
+  }) {
+    type
+    message
+  }
+}
+
+mutation CreateUser_2 {
+	createUser(data: {
+		name: "chiachia"
+		email: "b06902024@ntu.edu.tw"
+    studentCourse: []
+    teacherCourse: []
+    password: "12345678"
+  }) {
+    type
+    message
+  }
+}
+
+mutation DeleteUser_1 {
+	deleteUser(email: "b06902074@ntu.edu.tw") {
+    type
+    message
+  }
+}
+
+mutation UpdateUser_1 {
+	updateUserInfo(data: {
+    email: "b06902074@ntu.edu.tw"
+    name: "chiachia"
+    password: ""
+  }) {
+    type
+    message
+  }
+}
+
+mutation AddToCourse_1 {
+	addUserToCourse(data: {
+    email: "b06902024@ntu.edu.tw"
+    ID: "600167912348dc265f9ccd07"
+    TA: false
+  }) {
+    type
+    message
+  }
+}
+
+mutation DeleteToCourse_1 {
+	deleteUserFromCourse(data: {
+    email: "b06902074@ntu.edu.tw"
+    ID: "600167912348dc265f9ccd07"
+    TA: false
+  }) {
+    type
+    message
+  }
+}
+
+query QueryUser_1 {
+  user(email: "b06902074@ntu.edu.tw", password: "12345678"){
+    name,
+    email,
+    studentCourse {      
+      name
+  		teacher
+  		describe
+  		classTime
+  		classroom
+  		TA
+  		student
+  		assignment
+    },
+    teacherCourse {
+      name
+  		teacher
+  		describe
+  		classTime
+  		classroom
+  		TA
+  		student
+  		assignment
+    }, 
+  }
+}
+
+query QueryUser_2 {
+  user(email: "b06902024@ntu.edu.tw", password: "12345678"){
+    name,
+    email,
+    studentCourse {      
+      name
+  		teacher
+  		describe
+  		classTime
+  		classroom
+  		TA
+  		student
+  		assignment
+    },
+    teacherCourse {
+      name
+  		teacher
+  		describe
+  		classTime
+  		classroom
+  		TA
+  		student
+  		assignment
+    }, 
+  }
+}
+
+mutation CreateCourse_1 {
+	createCourse(data: {
+    name: "web 1"
+    teacher: "Ric"
+    describe: "React.js Course"
+    classTime: "Tue 9:10~12:10"
+    classroom: "EE 112"
+		TA: ["b06902074@ntu.edu.tw"]
+    student: []
+    assignment: []
+  }) {
+    type
+    message
+  }
+}
+
+mutation UpdateCourse_1 {
+  updateCourseInfo(data:{
+    ID: "600167912348dc265f9ccd07"
+    name: "SP"
+    teacher: "PJ"
+    describe: "system programing"
+    classTime: "Web 9:10~12:10"
+    classroom: "CSIE 103"
+  }) {
+    type
+    message
+  }
+}
+
+mutation DeleteCourse_1 {
+  deleteCourse(ID: "600167912348dc265f9ccd07"){
+    type
+    message
+  }
+}
