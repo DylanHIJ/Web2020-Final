@@ -18,6 +18,9 @@ const AssignmentSchema = new Schema({
   problems: {
     type: Array,
     required: [true, "problem field is required."]
+  },
+  grade: {
+    type: Number,
   }
 });
 

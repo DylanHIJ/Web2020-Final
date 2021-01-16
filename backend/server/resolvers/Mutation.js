@@ -1,5 +1,4 @@
 const crypto = require("crypto");
-const objectId = require("mongoose").Types.ObjectId;
 
 const addCourseToUserDB = async (User, email, ID, TA) => {
   let message = { type: undefined, message: undefined };
@@ -77,16 +76,21 @@ const addUserToCourseDB = async (Course, email, ID, TA) => {
   let message = { type: undefined, message: undefined };
   if (await Course.exists({ _id: ID })) {
     const courseInfo = await Course.findOne({ _id: ID }).exec();
-    await Course.updateOne(
-      { _id: ID },
-      TA
-        ? { TAs: [...courseInfo.TAs, email] }
-        : { students: [...courseInfo.students, email] }
-    );
-    message.type = "Success";
-    message.message = `Add ${email} to Course ${ID} (${
-      TA ? "Teacher" : "Student"
-    })`;
+    if (courseInfo.TAs.includes(email) || courseInfo.students.includes(email)) {
+      message.type = "Error";
+      message.message = "Student Existed";
+    } else {
+      await Course.updateOne(
+        { _id: ID },
+        TA
+          ? { TAs: [...courseInfo.TAs, email] }
+          : { students: [...courseInfo.students, email] }
+      );
+      message.type = "Success";
+      message.message = `Add ${email} to Course ${ID} (${
+        TA ? "Teacher" : "Student"
+      })`;
+    }
   } else {
     message.type = "Error";
     message.message = "Course Not Found";
@@ -121,6 +125,39 @@ const deleteUserInCourseDB = async (Course, email, ID, TA) => {
   }
 
   return message;
+};
+
+const deleteAssignmentDB = async (Course, Assignment, Problem, Grade, ID) => {
+  let message = { type: undefined, message: undefined };
+  if (await Assignment.exists({ _id: ID })) {
+    const assignment = await Assignment.findOne({ _id: ID }).exec();
+    const course = await Course.findOne({ _id: assignment.courseID });
+    await Course.updateOne(
+      { _id: ID },
+      {
+        assignments: course.assignments.filter(
+          (assignmentID) => assignmentID !== ID
+        ),
+      }
+    );
+
+    course.students.forEach(async (email) => {
+      await Grade.deleteOne({
+        $and: [{ email: email }, { assignmentID: ID }],
+      });
+    });
+
+    assignment.problems.forEach(async (problemID) => {
+      await Problem.deleteOne({ _id: problemID });
+    });
+
+    await Assignment.deleteOne({ _id: ID });
+    message.type = "Success";
+    message.message = `Delete Assignment ${ID}`;
+  } else {
+    message.type = "Error";
+    message.message = "Assignment Not Found";
+  }
 };
 
 const Mutation = {
@@ -161,7 +198,7 @@ const Mutation = {
     return message;
   },
   async updateUserInfo(parent, args, { User }, info) {
-    const { email, name, password } = args.data;
+    const { email, name, currentPassword, newPassword } = args.data;
     let message = { type: undefined, message: undefined };
     if (await User.exists({ email: email })) {
       if (name) {
@@ -169,10 +206,19 @@ const Mutation = {
         message.type = "Success";
         message.message = `Update name to ${name}`;
       }
-      if (password) {
-        await User.updateOne({ email: email }, { password: password });
-        message.type = "Success";
-        message.message = `Update password to ${password}`;
+      if (currentPassword && newPassword) {
+        if (
+          await User.exists({
+            $and: [{ email: email }, { password: currentPassword }],
+          })
+        ) {
+          await User.updateOne({ email: email }, { password: newPassword });
+          message.type = "Success";
+          message.message = `Update Password`;
+        } else {
+          message.type = "Error";
+          message.message = "Wrong Password";
+        }
       }
     } else {
       message.type = "Error";
@@ -250,18 +296,33 @@ const Mutation = {
 
     return message;
   },
-  async deleteCourse(parent, args, { User, Course }, info) {
+  async deleteCourse(
+    parent,
+    args,
+    { User, Course, Assignment, Problem, Grade },
+    info
+  ) {
     const ID = args.ID;
-    const courseInfo = await Course.findOne({ _id: ID }).exec();
+    const course = await Course.findOne({ _id: ID }).exec();
     let message = { type: undefined, message: undefined };
 
     if (await Course.exists({ _id: ID })) {
-      courseInfo.TAs.forEach(async (TAID) => {
+      course.TAs.forEach(async (TAID) => {
         await deleteCourseInUserDB(User, TAID, ID, true);
       });
-      courseInfo.students.forEach(async (studentID) => {
+      course.students.forEach(async (studentID) => {
         await deleteCourseInUserDB(User, studentID, ID, false);
       });
+      course.assignments.forEach(async (assignmentID) => {
+        await deleteAssignmentDB(
+          Course,
+          Assignment,
+          Problem,
+          Grade,
+          assignmentID
+        );
+      });
+
       await Course.deleteOne({ _id: ID });
       message.type = "Success";
       message.message = `Delete Course ${ID}`;
@@ -277,7 +338,6 @@ const Mutation = {
     let message = { type: undefined, message: undefined };
 
     if (await Course.exists({ _id: ID })) {
-      console.log(ID);
       await Course.updateOne({ _id: ID }, args.data);
       message.type = "Success";
       message.message = `Update Course Info`;
@@ -290,21 +350,233 @@ const Mutation = {
   },
 
   // Assignment Mutation
-  async createAssignment(parent, args, { Assignment, Course }, info) {
-    const assignment = { ...args.data };
+  async createAssignment(parent, args, { Assignment, Grade, Course }, info) {
+    const assignment = { ...args.data, problems: [] };
     let message = { type: undefined, message: undefined };
     if (await Course.exists({ _id: assignment.courseID })) {
       const ret = await Assignment.create(assignment);
-      const courseInfo = await Course.findOne({
+      const course = await Course.findOne({
         _id: assignment.courseID,
       }).exec();
       await Course.updateOne(
         { _id: assignment.courseID },
-        { assignment: [...courseInfo.assignment, ret._id] }
+        { assignment: [...course.assignment, ret._id.toString()] }
       );
+
+      course.student.forEach(async (email) => {
+        const grade = {
+          email: email,
+          assignmentID: ret._id.toString(),
+          grades: [],
+          answers: [],
+          graded: false,
+        };
+        await Grade.create(grade);
+      });
+
+      message.type = "Success";
+      message.message = `Create Assignment ${ret._id}`;
     } else {
       message.type = "Error";
       message.message = "Course Not Found";
+    }
+
+    return message;
+  },
+  async deleteAssignment(
+    parent,
+    args,
+    { Assignment, Course, Grade, Problem },
+    info
+  ) {
+    const ID = args.ID;
+    const message = await deleteAssignmentDB(
+      Course,
+      Assignment,
+      Problem,
+      Grade,
+      ID
+    );
+
+    return message;
+  },
+  async updateAssignmentInfo(parent, args, { Assignment }, Info) {
+    const { ID } = args.ID;
+    let message = { type: undefined, message: undefined };
+    if (await Assignment.exists({ _id: ID })) {
+      await Assignment.updateOne({ _id: ID }, args.data);
+      message.type = "Success";
+      message.message = `Update Problem Info`;
+    } else {
+      message.type = "Error";
+      message.message = "Assignment Not Found";
+    }
+
+    return message;
+  },
+
+  // Problem Mutation
+  async createProblem(
+    parent,
+    args,
+    { Problem, Assignment, Grade, Course },
+    Info
+  ) {
+    const problem = args.data;
+    let message = { type: undefined, message: undefined };
+    if (await Assignment.exists({ _id: problem.assignmentID })) {
+      const ret = await Problem.create(problem);
+      const assignment = await Assignment.findOned({
+        _id: problem.assignmentID,
+      });
+      await Assignment.updateOne(
+        { _id: problem.assignmentID },
+        { problems: [...assignment.problems, ret._id.toString()] }
+      );
+
+      const course = await Course.findOne({ _id: assignment.courseID }).exec();
+      course.students.forEach(async (email) => {
+        const grade = await Grade.findOne({
+          $and: [{ email: email }, { assignmentID: problem.assignmentID }],
+        }).exec();
+        await Grade.updateOne(
+          { $and: [{ email: email }, { assignmentID: problem.assignmentID }] },
+          { grades: [...grade.grades, 0], answers: [...grade.answers, []] }
+        );
+      });
+
+      message.type = "Success";
+      message.message = `Create Problem ${ret._id}`;
+    } else {
+      message.type = "Error";
+      message.message = "Assignment Not Found";
+    }
+
+    return message;
+  },
+  async deleteProblem(
+    parent,
+    args,
+    { Problem, Assignment, Grade, Course },
+    info
+  ) {
+    const ID = args.ID;
+    let message = { type: undefined, message: undefined };
+    if (await Problem.exists({ _id: ID })) {
+      const problem = await Problem.findOne({ _id: ID }).exec();
+      const assignment = await Assignment.findOne({
+        _id: problem.assignmentID,
+      });
+
+      const idx = assignment.problems.indexOf(ID);
+      await Assignment.updateOne(
+        { _id: ID },
+        {
+          problems: assignment.problems.filter((problemID) => problemID !== ID),
+        }
+      );
+
+      const course = await Course.findOne({ _id: assignment.courseID });
+      course.students.forEach(async (email) => {
+        const grade = await Grade.findOne({
+          $and: [{ email: email }, { assignmentID: problem.assignmentID }],
+        }).exec();
+        await Grade.updateOne(
+          { $and: [{ email: email }, { assignmentID: problem.assignmentID }] },
+          {
+            grades: grade.grades.filter((_, i) => i !== idx),
+            answers: grade.answers.filter((_, i) => i !== idx),
+          }
+        );
+      });
+
+      await Problem.deleteOne({ _id: ID });
+      message.type = "Success";
+      message.message = `Delete Problem ${ID}`;
+    } else {
+      message.type = "Error";
+      message.message = "Problem Not Found";
+    }
+
+    return message;
+  },
+  async updateProblemInfo(parent, args, { Problem }, Info) {
+    const { ID } = args.ID;
+    let message = { type: undefined, message: undefined };
+    if (await Problem.exists({ _id: ID })) {
+      await Problem.updateOne({ _id: ID }, args.data);
+      message.type = "Success";
+      message.message = `Update Problem Info`;
+    } else {
+      message.type = "Error";
+      message.message = "Problem Not Found";
+    }
+
+    return message;
+  },
+
+  // Grade Mutation
+  async updateAnswer(parent, args, { Grade }, Info) {
+    const { email, assignmentID, answers } = args.data;
+    let message = { type: undefined, message: undefined };
+    if (
+      await Grade.exists({
+        $and: [{ email: email }, { assignmentID: assignmentID }],
+      })
+    ) {
+      await Grade.updateOne(
+        {
+          $and: [{ email: email }, { assignmentID: assignmentID }],
+        },
+        { answers: answers }
+      );
+      message.type = "Success";
+      message.message = `${email} Update Assignment ${assignmentID}`;
+    } else {
+      message.type = "Error";
+      message.message = "Crash";
+    }
+    return message;
+  },
+  async updateGrade(parent, args, { Assignment, Grade }) {
+    const { email, assignmentID, problemID, givenGrade } = args.data;
+    let message = { type: undefined, message: undefined };
+
+    if (
+      await Grade.exists({
+        $and: [{ email: email }, { assignmentID: assignmentID }],
+      })
+    ) {
+      if (await Assignment.exists({ _id: assignmentID })) {
+        const assignment = Assignment.findOne({ _id: assignmentID }).exec();
+        const idx = assignment.problems.indexOf(problemID);
+        if (idx !== -1) {
+          const grade = await Grade.findOne({
+            $and: [{ email: email }, { assignmentID: assignmentID }],
+          }).exec();
+          await Grade.updateOne(
+            {
+              $and: [{ email: email }, { assignmentID: assignmentID }],
+            },
+            {
+              grades: grade.grades.map((originGrade, i) =>
+                i === idx ? givenGrade : originGrade
+              ),
+            }
+          );
+          message.type = "Success";
+          message.message = "Update Grade";
+        } else {
+          message.type = "Error";
+          message.message = "Problem Not Found";
+        }
+      } else {
+        message.type = "Error";
+        message.message = "Assignment Not Found";
+      }
+    } else {
+      message.type = "Error";
+      message.message = "Crash";
     }
 
     return message;

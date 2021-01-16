@@ -1,29 +1,31 @@
 type Query {
   user(email: String, password: String, token: String): User
-  assignment(ID: ID!): Assignment
+  assignment(email: String, ID: ID!): Assignment
   problem(ID: ID!): Problem
-  Grade(ID: ID!): Grade
+  studentAnswer(query: gradeAnswerInput!): String!
 }
 
 type Mutation {
   createUser(data: CreateUserInput!): ReturnMessage!
   deleteUser(email: String!): ReturnMessage!
-  updateUserInfo(data: UpdateUserInfo!): ReturnMessage!
-  addUserToCourse(data: UpdateUserCourse!): ReturnMessage!
-  deleteUserFromCourse(data: UpdateUserCourse!): ReturnMessage!
+  updateUserInfo(data: UpdateUserInfoInput!): ReturnMessage!
+  addUserToCourse(data: UpdateUserCourseInput!): ReturnMessage!
+  deleteUserFromCourse(data: UpdateUserCourseInput!): ReturnMessage!
 
   createCourse(data: CreateCourseInput!): ReturnMessage!
   deleteCourse(ID: ID!): ReturnMessage!
-  updateCourseInfo(data: UpdateCourseInfo!): ReturnMessage!
+  updateCourseInfo(data: UpdateCourseInfoInput!): ReturnMessage!
 
-  createAssignment(data: CreateAssignmentInput!): Assignment!
-  deleteAssignment(ID: ID!): [Assignment]
+  createAssignment(data: CreateAssignmentInput!): ReturnMessage!
+  deleteAssignment(ID: ID!): ReturnMessage!
+  updateAssignmentInfo(data: updateAssignmentInfoInput!): ReturnMessage!
 
-  createProblem(data: CreateProblemInput!): Problem!
-  deleteProblem(ID: ID!): [Problem]
+  createProblem(data: CreateProblemInput!): ReturnMessage!
+  deleteProblem(ID: ID!): ReturnMessage!
+  updateProblemInfo(data: UpdateProblemInfoInput!): ReturnMessage!
 
-  createGrade(data: CreateGradeInput!): Grade!
-  deleteGrade(ID: ID!): [Grade]
+  updateAnswer(data: updateAnswerInput!): ReturnMessage!
+  updateGrade(data: updateGradeInput!): ReturnMessage!
 }
 
 type Subscription {
@@ -45,13 +47,14 @@ input CreateUserInput {
   password: String!
 }
 
-input UpdateUserInfo {
+input UpdateUserInfoInput {
   name: String
   email: String!
-  password: String
+  currentPassword: String
+  newPassword: String
 }
 
-input UpdateUserCourse {
+input UpdateUserCourseInput {
   email: String!
   ID: ID!
   TA: Boolean!
@@ -68,7 +71,7 @@ type Course {
   assignments: [ID]!
 }
 
-input UpdateCourseInfo {
+input UpdateCourseInfoInput {
   ID: ID!
   name: String!
   teacher: String!
@@ -86,30 +89,13 @@ input CreateCourseInput {
   TAs: ID!
 }
 
-type Problem {
-  name: String!
-  type: String!
-  point: Int!
-  statement: String!
-  options: [String]!
-  answers: [String!]!
-}
-
-input CreateProblemInput {
-  name: String!
-  type: String!
-  point: Int!
-  statement: String!
-  options: [String]!
-  answers: [String!]!
-}
-
 type Assignment {
   courseID: ID!
   name: String!
   beginTime: String!
   endTime: String!
   problems: [ID]!
+  grade: Float
 }
 
 input CreateAssignmentInput {
@@ -117,23 +103,66 @@ input CreateAssignmentInput {
   name: String!
   beginTime: String!
   endTime: String!
-  problems: [ID]!
+}
+
+input updateAssignmentInfoInput {
+  ID: ID!
+  name: String!
+  beginTime: String!
+  endTime: String!
+}
+
+type Problem {
+  assignmentID: ID!
+  type: String!
+  point: Float!
+  statement: String!
+  options: [String]!
+  answers: [String!]!
+}
+
+input CreateProblemInput {
+  type: String!
+  point: Float!
+  statement: String!
+  options: [String]
+  answers: [String]
+}
+
+input UpdateProblemInfoInput {
+  ID: ID!
+  type: String!
+  point: Float!
+  statement: String!
+  options: [String]
+  answers: [String]
 }
 
 type Grade {
-  name: String!
-  user: ID!
-  course: ID!
-  grade: Int
-  answers: [String!]!
+  email: String!
+  assignmentID: ID!
+  grades: [Float]!
+  answers: [[String]]!
+  graded: Boolean!
 }
 
-input CreateGradeInput {
-  name: String!
-  user: ID!
-  course: ID!
-  grade: Int
-  answers: [String!]!
+input updateAnswerInput {
+  email: String!
+  assignmentID: ID!
+  answers: [[String]]!
+}
+
+input gradeAnswerInput {
+  email: String!
+  assignmentID: ID!
+  problemID: ID!
+}
+
+input updateGradeInput {
+  email: String!
+  assignmentID: ID!
+  problemID: ID!
+  givenGrade: Float!
 }
 
 type ReturnMessage {
