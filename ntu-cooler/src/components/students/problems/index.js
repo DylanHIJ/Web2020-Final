@@ -8,16 +8,16 @@ const Problem = (props) => {
   console.log(problem);
   if (problem.type === "TF") {
     console.log("tf");
-    return <TrueFalse problem={problem}></TrueFalse>;
+    return <TrueFalse {...props}></TrueFalse>;
   } else if (problem.type === "MULTIPLE_CHOICE") {
     console.log("mc");
-    return <MultipleChoice problem={problem}></MultipleChoice>;
+    return <MultipleChoice {...props}></MultipleChoice>;
   } else if (problem.type === "CHECKBOX") {
     console.log("cb");
-    return <CheckboxProblem problem={problem}></CheckboxProblem>;
+    return <CheckboxProblem {...props}></CheckboxProblem>;
   } else if (problem.type === "SHORT_QA") {
     console.log("sq");
-    return <ShortQA problem={problem}></ShortQA>;
+    return <ShortQA {...props}></ShortQA>;
   }
 };
 
