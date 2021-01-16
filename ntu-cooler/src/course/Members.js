@@ -126,7 +126,7 @@ const useStyles2 = makeStyles({
   },
   title: {
     marginTop: "6%",
-    marginBottom: "1%",
+    marginBottom: "3%",
   },
 });
 

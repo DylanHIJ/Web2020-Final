@@ -6,6 +6,7 @@ import Assignments from "./Assignments";
 import Exams from "./Exams";
 import Grades from "./Grades";
 import Members from "./Members";
+import Settings from "./Settings";
 import Assignment from "../components/students/Assignment";
 import { Switch, Route, Redirect, useRouteMatch } from "react-router-dom";
 import { CssBaseline } from "@material-ui/core";
@@ -16,6 +17,7 @@ import {
   Info,
   InsertChartRounded,
 } from "@material-ui/icons";
+import SettingsIcon from "@material-ui/icons/Settings";
 import NavBar from "../components/NavBar";
 import LeftDrawer from "../components/LeftDrawer";
 
@@ -82,6 +84,7 @@ export default function Course() {
             ? [
                 ...drawerList,
                 { name: "Members", icon: <AccountCircle />, link: "/members" },
+                { name: "Settings", icon: <SettingsIcon />, link: "/settings" },
               ]
             : drawerList
         }
@@ -109,7 +112,14 @@ export default function Course() {
           <Route exact path={`${match.path}/exams`} component={Exams} />
           <Route exact path={`${match.path}/grades`} component={Grades} />
           {isTA ? (
-            <Route exact path={`${match.path}/members`} component={Members} />
+            <>
+              <Route exact path={`${match.path}/members`} component={Members} />
+              <Route
+                exact
+                path={`${match.path}/settings`}
+                component={Settings}
+              />
+            </>
           ) : (
             <></>
           )}

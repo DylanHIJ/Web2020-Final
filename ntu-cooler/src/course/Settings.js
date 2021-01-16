@@ -19,48 +19,57 @@ export default function AccountEdit() {
   return (
     <>
       <Typography variant="h4" component="h2" className={classes.title}>
-        Profile
+        Course Settings
       </Typography>
       <form className={classes.root} noValidate autoComplete="off">
         <TextField
-          id="name"
-          label="Name"
+          id="course-name"
+          label="Course Name"
           style={{ margin: 16, width: "50%" }}
-          placeholder="Name"
+          placeholder="Course Name"
           margin="normal"
           InputLabelProps={{
             shrink: true,
           }}
         />
         <TextField
-          id="current-password"
-          label="Current Password"
-          type="password"
+          id="instructor"
+          label="Instructor"
           style={{ margin: 16, width: "50%" }}
-          placeholder="Current password"
+          placeholder="Instructor"
           margin="normal"
           InputLabelProps={{
             shrink: true,
           }}
         />
         <TextField
-          id="new-password"
-          label="Enter New Password"
-          type="password"
+          id="class-time"
+          label="Class Time"
           style={{ margin: 16, width: "50%" }}
-          placeholder="New password"
+          placeholder="Class Time"
           margin="normal"
           InputLabelProps={{
             shrink: true,
           }}
         />
         <TextField
-          id="new-password"
-          label="Enter New Password Again"
-          type="password"
+          id="classroom"
+          label="Classroom"
           style={{ margin: 16, width: "50%" }}
-          placeholder="New password"
+          placeholder="Classroom"
           margin="normal"
+          InputLabelProps={{
+            shrink: true,
+          }}
+        />
+        <TextField
+          id="description"
+          label="Description"
+          style={{ margin: 16, width: "50%" }}
+          placeholder="Description"
+          margin="normal"
+          multiline
+          rows="3"
           InputLabelProps={{
             shrink: true,
           }}
