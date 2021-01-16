@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import {
   FormControl,
   FormControlLabel,
-  FormLabel,
   FormHelperText,
   FormGroup,
   Checkbox,
+  Typography,
   makeStyles,
 } from "@material-ui/core";
 
@@ -49,7 +49,9 @@ const CheckboxProblem = (props) => {
   return (
     <form onSubmit={handleSubmit}>
       <FormControl component="fieldset" className={classes.formControl}>
-        <FormLabel component="legend">{problem.statement}</FormLabel>
+        <Typography variant="h5" component="h4">
+          {problem.statement}
+        </Typography>
         <FormHelperText>Select all that apply.</FormHelperText>
         <FormGroup
           aria-label="quiz"

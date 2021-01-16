@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import {
   FormControl,
   FormControlLabel,
-  FormLabel,
+  Typography,
   FormHelperText,
   Radio,
   RadioGroup,
@@ -42,7 +42,10 @@ const MultipleChoice = (props) => {
   return (
     <form onSubmit={handleSubmit}>
       <FormControl component="fieldset" className={classes.formControl}>
-        <FormLabel component="legend">{problem.statement}</FormLabel>
+        <Typography variant="h5" component="h4">
+          {problem.statement}
+        </Typography>
+        <FormHelperText>Multiple Choice</FormHelperText>
         <RadioGroup
           aria-label="quiz"
           name="quiz"
@@ -51,7 +54,6 @@ const MultipleChoice = (props) => {
         >
           {choices}
         </RadioGroup>
-        <FormHelperText>helper text tbd</FormHelperText>
       </FormControl>
     </form>
   );

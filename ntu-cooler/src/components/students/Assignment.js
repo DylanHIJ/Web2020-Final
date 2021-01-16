@@ -57,13 +57,13 @@ const Assignment = (assignement_id) => {
         {assignment.name}
       </Typography>
 
-      {/* Progress Bar (TODO) */}
+      {/* Progress Bar */}
       <ProblemProgress
         currentProblemIndex={currentProblemIndex}
         totalNumProblems={assignment.problems.length}
       />
 
-      {/* Problem content (TODO) */}
+      {/* Problem content */}
       <div className={classes.problem}>
         <Problem
           problem={assignment.problems[currentProblemIndex]}

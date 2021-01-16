@@ -3,6 +3,7 @@ import {
   FormControl,
   FormLabel,
   FormHelperText,
+  Typography,
   TextField,
   makeStyles,
 } from "@material-ui/core";
@@ -30,7 +31,9 @@ const ShortQA = (props) => {
   return (
     <form onSubmit={handleSubmit}>
       <FormControl component="fieldset" className={classes.formControl}>
-        <FormLabel component="legend">{problem.statement}</FormLabel>
+        <Typography variant="h5" component="h4">
+          {problem.statement}
+        </Typography>
         <TextField
           id="answer_field"
           label="Input Here"

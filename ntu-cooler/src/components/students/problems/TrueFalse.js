@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import {
   FormControl,
   FormControlLabel,
-  FormLabel,
   FormHelperText,
   Radio,
   RadioGroup,
+  Typography,
   makeStyles,
 } from "@material-ui/core";
 
@@ -33,7 +33,10 @@ const TrueFalse = (props) => {
   return (
     <form onSubmit={handleSubmit}>
       <FormControl component="fieldset" className={classes.formControl}>
-        <FormLabel component="legend">{problem.statement}</FormLabel>
+        <Typography variant="h5" component="h4">
+          {problem.statement}
+        </Typography>
+        <FormHelperText>True/False</FormHelperText>
         <RadioGroup
           aria-label="quiz"
           name="quiz"
@@ -43,7 +46,6 @@ const TrueFalse = (props) => {
           <FormControlLabel value="True" control={<Radio />} label="True" />
           <FormControlLabel value="False" control={<Radio />} label="False" />
         </RadioGroup>
-        <FormHelperText>helper text tbd</FormHelperText>
       </FormControl>
     </form>
   );
