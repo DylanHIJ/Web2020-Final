@@ -5,12 +5,12 @@ const Highlighter = (props) => {
   const { text, keywords } = props;
   const ref = useRef(null);
 
-  useEffect(() => {
-    const instance = Mark(ref.current);
-    keywords.forEach((ele) => {
-      instance.mark(ele.word);
-    });
-  });
+  // useEffect(() => {
+  //   const instance = Mark(ref.current);
+  //   keywords.forEach((ele) => {
+  //     instance.mark(ele.word);
+  //   });
+  // });
 
   return (
     <div ref={ref}>

@@ -1,7 +1,30 @@
+const demoKeywords = [
+  {
+    word: "dylan",
+    color: "#123456",
+  },
+  {
+    word: "hamster",
+    color: "#561234",
+  },
+  {
+    word: "laxingyang",
+    color: "#345612",
+  },
+];
+
+const demoProblems = [
+  {
+    problemID: "problem_1",
+    statement: "Hello world (?",
+    keywords: demoKeywords,
+  },
+];
+
 const demoStudentResponses = [
   {
     studentID: "student_1",
-    text: "Hello world",
+    text: "Yeah (?",
   },
   {
     studentID: "student_2",
@@ -17,26 +40,15 @@ const demoStudentResponses = [
   },
 ];
 
-const keywords = [
-  {
-    word: "dylan",
-    color: "#123456",
-  },
-  {
-    word: "hamster",
-    color: "#561234",
-  },
-  {
-    word: "laxingyang",
-    color: "#345612",
-  },
-];
+const getAssignment = (aid) => ({
+  name: "Test Assignment",
+});
 
-const getStudentList = (aid, pid) =>
+const getProblems = (aid) => demoProblems;
+
+const getStudentList = (aid) =>
   demoStudentResponses.map((ele) => ele.studentID);
 const getStudentResponse = (aid, pid, sid) =>
   demoStudentResponses.find((ele) => ele.studentID === sid);
 
-const getKeywords = (aid, pid) => keywords;
-
-export { getStudentList, getStudentResponse, getKeywords };
+export { getAssignment, getProblems, getStudentList, getStudentResponse };

@@ -1,23 +1,69 @@
 import React, { useState } from "react";
+import { Typography, makeStyles } from "@material-ui/core";
 import CorrectionModule from "./corrections";
-import { getStudentList } from "./utils";
+import { getAssignment, getProblems, getStudentList } from "./utils";
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    display: "flex",
+  },
+  title: {
+    marginTop: "6%",
+    marginBottom: "3%",
+  },
+  quarter: {
+    float: "left",
+    width: "20%",
+  },
+  half: {
+    float: "left",
+    width: "60%",
+  },
+  row: {},
+}));
 
 const Correction = (props) => {
-  const { assignmentID, problemID } = props;
-  const studentList = getStudentList(assignmentID, problemID);
-  const keywords = getKeywords(assignmentID, problemID);
+  const { assignmentID } = props;
 
-  const { studentIndex, setStudentIndex } = useState(0);
+  const classes = useStyles();
+
+  const assignment = getAssignment(assignmentID);
+  const problems = getProblems(assignmentID);
+  const studentList = getStudentList(assignmentID);
+
+  console.log(problems);
+
+  const [problemID, setProblemID] = useState("Hi");
+  const [problem, setProblem] = useState({ statement: "Hello" });
+
+  console.log(problemID, problem);
+
+  const [studentIndex, setStudentIndex] = useState(0);
 
   return (
     <div>
       {/* Assignment Name */}
-      <h1>Yeah</h1>
+      <Typography variant="h4" component="h2" className={classes.title}>
+        {assignment.name} (Correction Mode)
+      </Typography>
+
+      <div>
+        <div className={classes.quarter}>PROBLEM_SELECTOR</div>
+        <div className={classes.half}>
+          <Typography variant="h5" component="h2">
+            Q: {problem.statement}
+          </Typography>
+        </div>
+        <div className={classes.quarter}>STUDENT_SELECTOR</div>
+
+        <div style={{ display: "table", clear: "both" }}></div>
+      </div>
 
       <CorrectionModule
+        assignmentID={assignmentID}
+        problemID={problemID}
         studentID={studentList[studentIndex]}
-        keywords={keywords}
-        {...props}
+        keywords={problem.keywords}
       ></CorrectionModule>
     </div>
   );
