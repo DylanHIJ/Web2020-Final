@@ -23,15 +23,15 @@ const CourseSchema = new Schema({
     type: String,
     required: [true, "Class Room field is required."],
   },
-  TA: {
+  TAs: {
     type: Array,
     required: [true, "TA(ID) field is required."],
   },
-  student: {
+  students: {
     type: Array,
     required: [true, "Student(ID) field is required."],
   },
-  assignment: {
+  assignments: {
     type: Array,
     required: [true, "Assignment(ID) field is required."],
   },

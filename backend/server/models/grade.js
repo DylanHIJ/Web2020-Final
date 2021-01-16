@@ -15,7 +15,7 @@ const GradeSchema = new Schema({
     type: Number,
     required: [true, "Grade field is required."],
   },
-  answer: {
+  answers: {
     type: Array,
     required: [true, "Answer field is required."],
   },

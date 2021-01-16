@@ -1,8 +1,8 @@
 type Query {
-  user(email: String!, password: String!): [UserReturn!]!
-  assignment(ID: ID!): [Assignment!]!
-  problem(ID: ID!): [Problem!]!
-  Grade(ID: ID!): [Grade!]!
+  user(email: String, password: String, token: String): User
+  assignment(ID: ID!): Assignment
+  problem(ID: ID!): Problem
+  Grade(ID: ID!): Grade
 }
 
 type Mutation {
@@ -33,31 +33,22 @@ type Subscription {
 type User {
   name: String!
   email: String!
-  studentCourse: [ID]!
-  teacherCourse: [ID]!
+  studentCourses: [Course]!
+  teacherCourses: [Course]!
   password: String!
-}
-
-type UserReturn {
-  name: String!
-  email: String!
-  studentCourse: [Course]!
-  teacherCourse: [Course]!
-  password: String!
+  token: String!
 }
 
 input CreateUserInput {
   name: String!
   email: String!
-  studentCourse: [ID]!
-  teacherCourse: [ID]!
   password: String!
 }
 
 input UpdateUserInfo {
-  name: String!
+  name: String
   email: String!
-  password: String!
+  password: String
 }
 
 input UpdateUserCourse {
@@ -72,9 +63,9 @@ type Course {
   describe: String!
   classTime: String!
   classroom: String!
-  TA: [ID]!
-  student: [ID]!
-  assignment: [ID]!
+  TAs: [ID]!
+  students: [ID]!
+  assignments: [ID]!
 }
 
 input UpdateCourseInfo {
@@ -92,9 +83,7 @@ input CreateCourseInput {
   describe: String!
   classTime: String!
   classroom: String!
-  TA: [ID]!
-  student: [ID]!
-  assignment: [ID]!
+  TAs: ID!
 }
 
 type Problem {
@@ -102,8 +91,8 @@ type Problem {
   type: String!
   point: Int!
   statement: String!
-  option: [String]!
-  answer: [String!]!
+  options: [String]!
+  answers: [String!]!
 }
 
 input CreateProblemInput {
@@ -111,8 +100,8 @@ input CreateProblemInput {
   type: String!
   point: Int!
   statement: String!
-  option: [String]!
-  answer: [String!]!
+  options: [String]!
+  answers: [String!]!
 }
 
 type Assignment {
@@ -120,7 +109,7 @@ type Assignment {
   name: String!
   beginTime: String!
   endTime: String!
-  problem: [ID]!
+  problems: [ID]!
 }
 
 input CreateAssignmentInput {
@@ -128,7 +117,7 @@ input CreateAssignmentInput {
   name: String!
   beginTime: String!
   endTime: String!
-  problem: [ID]!
+  problems: [ID]!
 }
 
 type Grade {
@@ -136,7 +125,7 @@ type Grade {
   user: ID!
   course: ID!
   grade: Int
-  answer: [String!]!
+  answers: [String!]!
 }
 
 input CreateGradeInput {
@@ -144,7 +133,7 @@ input CreateGradeInput {
   user: ID!
   course: ID!
   grade: Int
-  answer: [String!]!
+  answers: [String!]!
 }
 
 type ReturnMessage {

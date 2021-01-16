@@ -19,11 +19,11 @@ const ProblemSchema = new Schema({
     type: String,
     required: [true, "Statement field is required."],
   },
-  option: {
+  options: {
     type: Array,
     required: [true, "Option field is required."],
   },
-  answer: {
+  answers: {
     type: Array,
     required: [true, "Answer field is required."],
   },

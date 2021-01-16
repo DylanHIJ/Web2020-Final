@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 // Creating a schema, sort of like working with an ORM
 const AssignmentSchema = new Schema({
   name: {
-    type: Array,
+    type: String,
     required: [true, "Name field is required."],
   },
   beginTime: {
@@ -15,7 +15,7 @@ const AssignmentSchema = new Schema({
     type: Date,
     required: [true, "End Time field is required."],
   },
-  problem: {
+  problems: {
     type: Array,
     required: [true, "problem field is required."]
   }

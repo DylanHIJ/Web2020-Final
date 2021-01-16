@@ -11,17 +11,21 @@ const UserSchema = new Schema({
     type: String,
     required: [true, "Email field is required."],
   },
-  studentCourse: {
+  studentCourses: {
     type: Array,
     required: [true, "Student Course field is required."],
   },
-  teacherCourse: {
+  teacherCourses: {
     type: Array,
     required: [true, "Teacher Course field is required."],
   },
   password: {
     type: String,
     required: [true, "Password field is required"],
+  },
+  token: {
+    type: String,
+    required: [true, "Token field is required"],
   },
 });
 

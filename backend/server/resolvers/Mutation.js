@@ -1,19 +1,22 @@
+const crypto = require("crypto");
+const objectId = require("mongoose").Types.ObjectId;
+
 const addCourseToUserDB = async (User, email, ID, TA) => {
   let message = { type: undefined, message: undefined };
   if (await User.exists({ email: email })) {
     const userInfo = await User.findOne({ email: email }).exec();
     if (
-      userInfo.teacherCourse.includes(ID) ||
-      userInfo.studentCourse.includes(ID)
+      userInfo.teacherCourses.includes(ID) ||
+      userInfo.studentCourses.includes(ID)
     ) {
       message.type = "Error";
       message.message = "Course Existed";
     } else {
-      await User.updateMany(
+      await User.updateOne(
         { email: email },
         TA
-          ? { teacherCourse: [...userInfo.teacherCourse, ID] }
-          : { studentCourse: [...userInfo.studentCourse, ID] }
+          ? { teacherCourses: [...userInfo.teacherCourses, ID] }
+          : { studentCourses: [...userInfo.studentCourses, ID] }
       );
       message.type = "Success";
       message.message = `Add Course ${ID} (${
@@ -28,23 +31,35 @@ const addCourseToUserDB = async (User, email, ID, TA) => {
   return message;
 };
 
-const deleteCourseFromUserDB = async (User, email, ID, TA) => {
+const deleteCourseInUserDB = async (User, email, ID, TA) => {
   let message = { type: undefined, message: undefined };
   if (await User.exists({ email: email })) {
     const userInfo = await User.findOne({ email: email }).exec();
-    await User.updateMany(
+    await User.updateOne(
       { email: email },
       TA
         ? {
-            teacherCourse: userInfo.teacherCourse.filter(
+            teacherCourses: userInfo.teacherCourses.filter(
               (courseID) => courseID !== ID
             ),
           }
         : {
-            studentCourse: userInfo.studentCourse.filter(
+            studentCourses: userInfo.studentCourses.filter(
               (courseID) => courseID !== ID
             ),
           }
+    );
+    console.log(
+      `Mutation\n`,
+      userInfo,
+      TA ? userInfo.teacherCourses : userInfo.studentCourses,
+      TA
+        ? userInfo.teacherCourses.filter((courseID) => courseID !== ID)
+        : userInfo.studentCourses.filter((courseID) => courseID !== ID),
+      (TA
+        ? userInfo.teacherCourses.filter((courseID) => courseID !== ID)
+        : userInfo.studentCourses.filter((courseID) => courseID !== ID))[0] ===
+        (TA ? userInfo.teacherCourses : userInfo.studentCourses)[0]
     );
     message.type = "Success";
     message.message = `Delete Course ${ID} (${
@@ -62,11 +77,11 @@ const addUserToCourseDB = async (Course, email, ID, TA) => {
   let message = { type: undefined, message: undefined };
   if (await Course.exists({ _id: ID })) {
     const courseInfo = await Course.findOne({ _id: ID }).exec();
-    await Course.updateMany(
+    await Course.updateOne(
       { _id: ID },
       TA
-        ? { TA: [...courseInfo.TA, email] }
-        : { student: [...courseInfo.student, email] }
+        ? { TAs: [...courseInfo.TAs, email] }
+        : { students: [...courseInfo.students, email] }
     );
     message.type = "Success";
     message.message = `Add ${email} to Course ${ID} (${
@@ -80,18 +95,18 @@ const addUserToCourseDB = async (Course, email, ID, TA) => {
   return message;
 };
 
-const deleteUserFromCourseDB = async (Course, email, ID, TA) => {
+const deleteUserInCourseDB = async (Course, email, ID, TA) => {
   let message = { type: undefined, message: undefined };
   if (await Course.exists({ _id: ID })) {
     const courseInfo = await Course.findOne({ _id: ID }).exec();
-    await Course.updateMany(
+    await Course.updateOne(
       { _id: ID },
       TA
         ? {
-            TA: courseInfo.TA.filter((userEmail) => userEmail !== email),
+            TAs: courseInfo.TAs.filter((userEmail) => userEmail !== email),
           }
         : {
-            student: courseInfo.student.filter(
+            students: courseInfo.students.filter(
               (userEmail) => userEmail !== email
             ),
           }
@@ -113,15 +128,18 @@ const Mutation = {
   async createUser(parent, args, { User, pubsub }, info) {
     const user = {
       ...args.data,
+      teacherCourses: [],
+      studentCourses: [],
     };
+    user.token = crypto.randomBytes(20).toString("base64");
     let message = { type: undefined, message: undefined };
 
-    const member = await User.find({ email: user.email }).exec();
-    if (member.length > 0) {
+    const member = await User.findOne({ email: user.email }).exec();
+    if (member !== null) {
       message.type = "Error";
       message.message = "Email Has Been Used";
     } else {
-      await User.insertMany([user]);
+      await User.create(user);
       message.type = "Success";
       message.message = `Create User ${user.email}`;
     }
@@ -132,7 +150,7 @@ const Mutation = {
     const email = args.email;
     let message = { type: undefined, message: undefined };
     if (await User.exists({ email: email })) {
-      await User.deleteMany({ email: email });
+      await User.deleteOne({ email: email });
       message.type = "Success";
       message.message = `Delete ${email}`;
     } else {
@@ -146,13 +164,13 @@ const Mutation = {
     const { email, name, password } = args.data;
     let message = { type: undefined, message: undefined };
     if (await User.exists({ email: email })) {
-      if (name !== "") {
-        await User.updateMany({ email: email }, { name: name });
+      if (name) {
+        await User.updateOne({ email: email }, { name: name });
         message.type = "Success";
         message.message = `Update name to ${name}`;
       }
-      if (password !== "") {
-        await User.updateMany({ email: email }, { password: password });
+      if (password) {
+        await User.updateOne({ email: email }, { password: password });
         message.type = "Success";
         message.message = `Update password to ${password}`;
       }
@@ -186,14 +204,14 @@ const Mutation = {
   async deleteUserFromCourse(parent, args, { User, Course }, info) {
     const { email, ID, TA } = args.data;
     const message = { type: undefined, message: undefined };
-    const messageDeleteFromCourse = await deleteUserFromCourseDB(
+    const messageDeleteFromCourse = await deleteUserInCourseDB(
       Course,
       email,
       ID,
       TA
     );
     if (messageDeleteFromCourse.type === "Success") {
-      const messageDeleteFromUser = await deleteCourseFromUserDB(
+      const messageDeleteFromUser = await deleteCourseInUserDB(
         User,
         email,
         ID,
@@ -216,14 +234,15 @@ const Mutation = {
 
   // Course Mutation
   async createCourse(parent, args, { User, Course }, info) {
-    const course = { ...args.data };
+    const course = { ...args.data, students: [], assignments: [] };
     let message = { type: undefined, message: undefined };
 
-    if (User.exists({ email: course.TA[0] })) {
-      const ret = await Course.insertMany([course]);
-      await addCourseToUserDB(User, course.TA[0], ret[0]._id, true);
+    if (User.exists({ email: course.TAs })) {
+      course.TAs = [course.TAs];
+      const ret = await Course.create(course);
+      await addCourseToUserDB(User, course.TAs[0], ret._id.toString(), true);
       message.type = "Success";
-      message.message = `Create Course ${ret[0]._id}`;
+      message.message = `Create Course ${ret._id}`;
     } else {
       message.type = "Error";
       message.message = "User Not Found";
@@ -237,13 +256,13 @@ const Mutation = {
     let message = { type: undefined, message: undefined };
 
     if (await Course.exists({ _id: ID })) {
-      courseInfo.TA.forEach(async (TAID) => {
-        await deleteCourseFromUserDB(User, TAID, ID, true);
+      courseInfo.TAs.forEach(async (TAID) => {
+        await deleteCourseInUserDB(User, TAID, ID, true);
       });
-      courseInfo.student.forEach(async (studentID) => {
-        await deleteCourseFromUserDB(User, studentID, ID, false);
+      courseInfo.students.forEach(async (studentID) => {
+        await deleteCourseInUserDB(User, studentID, ID, false);
       });
-      await Course.deleteMany({ _id: ID });
+      await Course.deleteOne({ _id: ID });
       message.type = "Success";
       message.message = `Delete Course ${ID}`;
     } else {
@@ -259,7 +278,7 @@ const Mutation = {
 
     if (await Course.exists({ _id: ID })) {
       console.log(ID);
-      await Course.updateMany({ _id: ID }, args.data);
+      await Course.updateOne({ _id: ID }, args.data);
       message.type = "Success";
       message.message = `Update Course Info`;
     } else {
@@ -271,6 +290,25 @@ const Mutation = {
   },
 
   // Assignment Mutation
+  async createAssignment(parent, args, { Assignment, Course }, info) {
+    const assignment = { ...args.data };
+    let message = { type: undefined, message: undefined };
+    if (await Course.exists({ _id: assignment.courseID })) {
+      const ret = await Assignment.create(assignment);
+      const courseInfo = await Course.findOne({
+        _id: assignment.courseID,
+      }).exec();
+      await Course.updateOne(
+        { _id: assignment.courseID },
+        { assignment: [...courseInfo.assignment, ret._id] }
+      );
+    } else {
+      message.type = "Error";
+      message.message = "Course Not Found";
+    }
+
+    return message;
+  },
 };
 
 export { Mutation as default };
