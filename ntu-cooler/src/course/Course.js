@@ -7,6 +7,7 @@ import Exams from "./Exams";
 import Grades from "./Grades";
 import Members from "./Members";
 import Settings from "./Settings";
+import Correct from "../components/teachers/Correct";
 import Assignment from "../components/students/Assignment";
 import { Switch, Route, Redirect, useRouteMatch } from "react-router-dom";
 import { CssBaseline } from "@material-ui/core";
@@ -109,7 +110,7 @@ export default function Course() {
             path={`${match.path}/assignments/:aid?`}
             component={Assignment}
           />
-          <Route exact path={`${match.path}/exams`} component={Exams} />
+          <Route exact path={`${match.path}/exams`} component={Correct} />
           <Route exact path={`${match.path}/grades`} component={Grades} />
           {isTA ? (
             <>
