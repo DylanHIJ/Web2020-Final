@@ -19,21 +19,22 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const CheckboxProblem = (props) => {
-  const { problem } = props;
+  const { problem, updateFunc } = props;
   const classes = useStyles();
 
   const [value, setValue] = useState([]);
 
   const handleSubmit = () => {};
   const handleRadioChange = (event) => {
-    if (event.target.checked) {
-      setValue((oldValue) => oldValue.concat([event.target.value]));
-    } else {
-      setValue((oldValue) =>
-        oldValue.filter((ele) => ele !== event.target.value)
-      );
-    }
-    setValue(event.target.value);
+    setValue(
+      (prev) =>
+        event.target.checked
+          ? prev.concat([event.target.value])
+          : prev.filter((ele) => ele !== event.target.value),
+      () => {
+        updateFunc(problem.pid, value);
+      }
+    );
   };
 
   const choices = problem.options.map((element) => (
@@ -49,6 +50,7 @@ const CheckboxProblem = (props) => {
     <form onSubmit={handleSubmit}>
       <FormControl component="fieldset" className={classes.formControl}>
         <FormLabel component="legend">{problem.statement}</FormLabel>
+        <FormHelperText>Select all that apply.</FormHelperText>
         <FormGroup
           aria-label="quiz"
           name="quiz"
@@ -57,7 +59,6 @@ const CheckboxProblem = (props) => {
         >
           {choices}
         </FormGroup>
-        <FormHelperText>helper text tbd</FormHelperText>
       </FormControl>
     </form>
   );

@@ -10,7 +10,7 @@ function ProblemProgress(props) {
       <Box width="100%" mr={1}>
         <LinearProgress
           variant="determinate"
-          value={props.currentProblemIndex / props.totalNumProblems}
+          value={(props.currentProblemIndex / props.totalNumProblems) * 100}
         />
       </Box>
       <Box minWidth={35}>

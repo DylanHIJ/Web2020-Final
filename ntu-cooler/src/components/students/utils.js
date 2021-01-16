@@ -13,8 +13,7 @@ const demoProblems = [
   {
     pid: "demo-3",
     type: "CHECKBOX",
-    statement:
-      "Which of the following person use iPhone? Select all that meets.",
+    statement: "Which of the following person use iPhone?",
     options: ["La-Xing Yang", "Wu-Jun Pei", "I-Ju Hsieh", "Ping-Chia Huang"],
   },
   {

@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
-  Button,
   FormControl,
   FormControlLabel,
   FormLabel,
@@ -20,13 +19,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const TrueFalse = (props) => {
-  const { problem } = props;
+  const { problem, updateFunc } = props;
   const classes = useStyles();
 
   const [value, setValue] = useState(null);
 
   const handleSubmit = () => {};
-  const handleRadioChange = (event) => {
+  const handleChange = (event) => {
+    updateFunc(problem.pid, event.target.value);
     setValue(event.target.value);
   };
 
@@ -38,7 +38,7 @@ const TrueFalse = (props) => {
           aria-label="quiz"
           name="quiz"
           value={value}
-          onChange={handleRadioChange}
+          onChange={handleChange}
         >
           <FormControlLabel value="True" control={<Radio />} label="True" />
           <FormControlLabel value="False" control={<Radio />} label="False" />

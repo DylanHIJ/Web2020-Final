@@ -19,14 +19,15 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const MultipleChoice = (props) => {
-  const { problem } = props;
+  const { problem, updateFunc } = props;
   const classes = useStyles();
 
   const [value, setValue] = useState(null);
 
   const handleSubmit = () => {};
-  const handleRadioChange = (event) => {
+  const handleChange = (event) => {
     setValue(event.target.value);
+    updateFunc(problem.pid, event.target.value);
   };
 
   const choices = problem.options.map((element) => (
@@ -46,7 +47,7 @@ const MultipleChoice = (props) => {
           aria-label="quiz"
           name="quiz"
           value={value}
-          onChange={handleRadioChange}
+          onChange={handleChange}
         >
           {choices}
         </RadioGroup>
