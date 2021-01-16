@@ -55,7 +55,7 @@ export default function NavBar(props) {
 
   const handleClick = async () => {
     await Cookies.remove("token");
-    window.location.reload();
+    window.location.pathname = "";
   };
 
   const handleDrawerOpen = () => {
@@ -112,9 +112,9 @@ export default function NavBar(props) {
           </NavLink>
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
-            <NavLink to="/" className={classes.navlink} onClick={handleClick}>
-              <Button variant="contained">Logout</Button>
-            </NavLink>
+            <Button variant="contained" onClick={handleClick}>
+              Logout
+            </Button>
             <NavLink to="/account" className={classes.navlink}>
               <IconButton
                 edge="end"
