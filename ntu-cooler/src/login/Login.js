@@ -1,3 +1,4 @@
+import Cookies from "js-cookie";
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import {
@@ -61,12 +62,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Login(props) {
-  const { setIsLogin } = props;
+export default function Login() {
   const classes = useStyles();
 
-  const verify = () => {
-    setIsLogin(true);
+  const verifyUser = () => {
+    Cookies.set("token", "t35t_t0k3n");
   };
 
   return (
@@ -114,7 +114,7 @@ export default function Login(props) {
               variant="contained"
               color="primary"
               className={classes.submit}
-              onClick={verify}
+              onClick={verifyUser}
             >
               Sign In
             </Button>

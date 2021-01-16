@@ -1,3 +1,4 @@
+import Cookies from "js-cookie";
 import React, { useState } from "react";
 import "./App.css";
 import Login from "./login/Login";
@@ -7,9 +8,7 @@ import Account from "./account/Account";
 import { Switch, Route, Redirect } from "react-router-dom";
 
 export default function App() {
-  const [isLogin, setIsLogin] = useState(false);
-
-  return isLogin ? (
+  return Cookies.get("token") ? (
     <Switch>
       <Route exact path="/" component={Home} />
       <Route exact path="/courses" component={Home} />
@@ -18,6 +17,6 @@ export default function App() {
       <Redirect from="/home" to="/" />
     </Switch>
   ) : (
-    <Login setIsLogin={setIsLogin} />
+    <Login />
   );
 }

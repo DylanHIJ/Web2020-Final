@@ -1,7 +1,9 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Container, Grid, Typography } from "@material-ui/core";
+import { Container, Fab, Grid, Typography } from "@material-ui/core";
+import { Add } from "@material-ui/icons";
 import CourseCard from "./components/CourseCard";
+// import NewCourseDialog from "./components/NewCourseDialog";
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -38,6 +40,7 @@ export default function MainPage() {
       id: "CSIE3267",
     },
   ];
+
   return (
     <Container maxWidth="lg">
       <Typography variant="h4" component="h2" className={classes.title}>
@@ -50,6 +53,18 @@ export default function MainPage() {
           </Grid>
         ))}
       </Grid>
+      <Fab
+        color="primary"
+        aria-label="add"
+        style={{ position: "fixed", right: "5%", bottom: "5%" }}
+      >
+        <Add />
+      </Fab>
+      {/* <NewCourseDialog
+        selectedValue={selectedValue}
+        open={open}
+        onClose={handleClose}
+      /> */}
     </Container>
   );
 }

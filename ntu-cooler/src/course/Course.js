@@ -5,9 +5,11 @@ import CourseInfo from "./CourseInfo";
 import Assignments from "./Assignments";
 import Exams from "./Exams";
 import Grades from "./Grades";
+import Members from "./Members";
 import { Switch, Route, Redirect, useRouteMatch } from "react-router-dom";
 import { CssBaseline } from "@material-ui/core";
 import {
+  AccountCircle,
   AssignmentRounded,
   EmojiObjectsRounded,
   Info,
@@ -40,7 +42,8 @@ const useStyles = makeStyles((theme) => ({
 
 const drawerWidth = 240;
 
-export default function App() {
+export default function Course() {
+  const [isTA, setIsTA] = useState(true);
   const classes = useStyles();
   const match = useRouteMatch();
   const [open, setOpen] = useState(true);
@@ -73,7 +76,14 @@ export default function App() {
       <CssBaseline />
       <NavBar open={open} setOpen={setOpen} />
       <LeftDrawer
-        drawerList={drawerList}
+        drawerList={
+          isTA
+            ? [
+                ...drawerList,
+                { name: "Members", icon: <AccountCircle />, link: "/members" },
+              ]
+            : drawerList
+        }
         open={open}
         setOpen={setOpen}
         match={match}
@@ -93,6 +103,11 @@ export default function App() {
           />
           <Route exact path={`${match.path}/exams`} component={Exams} />
           <Route exact path={`${match.path}/grades`} component={Grades} />
+          {isTA ? (
+            <Route exact path={`${match.path}/members`} component={Members} />
+          ) : (
+            <></>
+          )}
           <Redirect from={`${match.path}/info`} to={`${match}/`} />
         </Switch>
       </main>

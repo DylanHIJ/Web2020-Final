@@ -31,7 +31,6 @@ export default function AccountEdit() {
           InputLabelProps={{
             shrink: true,
           }}
-          className={classes.textfield}
         />
         <TextField
           id="current-password"

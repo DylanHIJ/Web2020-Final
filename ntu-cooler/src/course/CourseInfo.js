@@ -30,7 +30,7 @@ export default function CourseInfo() {
   return (
     <>
       <Typography variant="h4" component="h2" className={classes.title}>
-        Course Name
+        Web Programming
       </Typography>
       <hr />
       <List className={classes.root}>
