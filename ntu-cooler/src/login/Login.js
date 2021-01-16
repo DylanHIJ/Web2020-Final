@@ -62,11 +62,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Login() {
+export default function Login(props) {
+  // const { setIsLogin } = props;
   const classes = useStyles();
 
-  const verifyUser = () => {
-    Cookies.set("token", "t35t_t0k3n");
+  const verifyUser = async () => {
+    await Cookies.set("token", "t35t_t0k3n");
+    window.location.reload();
   };
 
   return (
@@ -109,7 +111,6 @@ export default function Login() {
               label="Remember me"
             />
             <Button
-              type="submit"
               fullWidth
               variant="contained"
               color="primary"

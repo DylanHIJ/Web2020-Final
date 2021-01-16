@@ -1,9 +1,11 @@
+import Cookies from "js-cookie";
 import React, { useState } from "react";
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
 import { NavLink } from "react-router-dom";
 import {
   AppBar,
+  Button,
   Toolbar,
   Menu,
   MenuItem,
@@ -50,6 +52,11 @@ export default function NavBar(props) {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
   const isMenuOpen = Boolean(anchorEl);
+
+  const handleClick = async () => {
+    await Cookies.remove("token");
+    window.location.reload();
+  };
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -105,6 +112,9 @@ export default function NavBar(props) {
           </NavLink>
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
+            <NavLink to="/" className={classes.navlink} onClick={handleClick}>
+              <Button variant="contained">Logout</Button>
+            </NavLink>
             <NavLink to="/account" className={classes.navlink}>
               <IconButton
                 edge="end"
