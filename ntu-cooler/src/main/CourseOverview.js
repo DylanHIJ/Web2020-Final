@@ -61,7 +61,6 @@ export default function MainPage() {
         <Add />
       </Fab>
       {/* <NewCourseDialog
-        selectedValue={selectedValue}
         open={open}
         onClose={handleClose}
       /> */}

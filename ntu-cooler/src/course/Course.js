@@ -6,6 +6,7 @@ import Assignments from "./Assignments";
 import Exams from "./Exams";
 import Grades from "./Grades";
 import Members from "./Members";
+import Assignment from "../components/students/Assignment";
 import { Switch, Route, Redirect, useRouteMatch } from "react-router-dom";
 import { CssBaseline } from "@material-ui/core";
 import {
@@ -100,6 +101,10 @@ export default function Course() {
             exact
             path={`${match.path}/assignments`}
             component={Assignments}
+          />
+          <Route
+            path={`${match.path}/assignments/:aid?`}
+            component={Assignment}
           />
           <Route exact path={`${match.path}/exams`} component={Exams} />
           <Route exact path={`${match.path}/grades`} component={Grades} />

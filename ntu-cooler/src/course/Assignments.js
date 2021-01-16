@@ -1,5 +1,6 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import { NavLink, useRouteMatch } from "react-router-dom";
 import {
   Accordion,
   AccordionSummary,
@@ -28,19 +29,27 @@ const useStyles = makeStyles((theme) => ({
   list: {
     width: "100%",
   },
+  navlink: {
+    color: "inherit",
+    textDecoration: "none",
+  },
 }));
 
 const assignments = {
   upcoming: [
-    { name: "Homework 0xA" },
-    { name: "Homework 0xB" },
-    { name: "Homework 0xC" },
+    { id: "1", name: "Homework 0xA" },
+    { id: "2", name: "Homework 0xB" },
+    { id: "3", name: "Homework 0xC" },
   ],
-  due: [{ name: "Homework 0x8" }, { name: "Homework 0x9" }],
+  due: [
+    { id: "4", name: "Homework 0x8" },
+    { id: "5", name: "Homework 0x9" },
+  ],
 };
 
 export default function Assignments() {
   const classes = useStyles();
+  const match = useRouteMatch();
   return (
     <Container maxWidth="lg">
       <Typography variant="h4" component="h2" className={classes.title}>
@@ -63,12 +72,17 @@ export default function Assignments() {
             className={classes.list}
           >
             {assignments["upcoming"].map((assignment) => (
-              <ListItem button>
-                <ListItemIcon>
-                  <NotesRounded />
-                </ListItemIcon>
-                <ListItemText primary={assignment.name} />
-              </ListItem>
+              <NavLink
+                to={`${match.url}/${assignment.id}`}
+                className={classes.navlink}
+              >
+                <ListItem button>
+                  <ListItemIcon>
+                    <NotesRounded />
+                  </ListItemIcon>
+                  <ListItemText primary={assignment.name} />
+                </ListItem>
+              </NavLink>
             ))}
           </List>
         </AccordionDetails>
