@@ -30,14 +30,14 @@ const StyledTableRow = withStyles((theme) => ({
   },
 }))(TableRow);
 
-function createData(name, dueDate, score, total) {
-  return { name, dueDate, score, total };
+function createData(name, dueDate, perc, score, total) {
+  return { name, dueDate, perc, score, total };
 }
 
 const rows = [
-  createData("Homework #7", "2020/09/26 23:59", 86, 100),
-  createData("Homework #8", "2020/10/03 23:59", 77, 100),
-  createData("Homework #9", "2020/10/10 23:59", 93, 100),
+  createData("Homework #7", "2020/09/26 23:59", 0.1, 86, 100),
+  createData("Homework #8", "2020/10/03 23:59", 0.1, 77, 100),
+  createData("Homework #9", "2020/10/10 23:59", 0.1, 93, 100),
 ];
 
 const useStyles = makeStyles({
@@ -55,7 +55,7 @@ export default function Grades() {
   return (
     <Container maxWidth="lg">
       <Typography variant="h4" component="h2" className={classes.title}>
-        Scores
+        Grades
       </Typography>
       <TableContainer component={Paper}>
         <Table className={classes.table} aria-label="customized table">
@@ -63,6 +63,7 @@ export default function Grades() {
             <TableRow>
               <StyledTableCell>Name</StyledTableCell>
               <StyledTableCell align="right">Due Date</StyledTableCell>
+              <StyledTableCell align="right">Percentage</StyledTableCell>
               <StyledTableCell align="right">Score</StyledTableCell>
               <StyledTableCell align="right">Total</StyledTableCell>
             </TableRow>
@@ -74,6 +75,9 @@ export default function Grades() {
                   {row.name}
                 </StyledTableCell>
                 <StyledTableCell align="right">{row.dueDate}</StyledTableCell>
+                <StyledTableCell align="right">
+                  {row.perc * 100}%
+                </StyledTableCell>
                 <StyledTableCell align="right">{row.score}</StyledTableCell>
                 <StyledTableCell align="right">{row.total}</StyledTableCell>
               </StyledTableRow>
