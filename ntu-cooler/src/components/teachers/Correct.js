@@ -1,17 +1,24 @@
 import React, { useState } from "react";
+import CorrectionModule from "./corrections";
 import { getStudentList } from "./utils";
 
 const Correction = (props) => {
-  const { assignment_id, problem_id } = props;
-  const studentList = getStudentList(assignment_id, problem_id);
+  const { assignmentID, problemID } = props;
+  const studentList = getStudentList(assignmentID, problemID);
+  const keywords = getKeywords(assignmentID, problemID);
 
-  const [currentProblemIndex, setCurrentProblemIndex] = useState(0);
-  const [answers, setAnswers] = useState([]);
+  const { studentIndex, setStudentIndex } = useState(0);
 
   return (
     <div>
       {/* Assignment Name */}
       <h1>Yeah</h1>
+
+      <CorrectionModule
+        studentID={studentList[studentIndex]}
+        keywords={keywords}
+        {...props}
+      ></CorrectionModule>
     </div>
   );
 };
