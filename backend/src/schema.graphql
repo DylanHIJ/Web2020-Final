@@ -3,36 +3,36 @@ type Query {
   course(ID: ID!): Course
   assignment(ID: ID!): Assignment
   problem(ID: ID!): Problem
-  studentAnswer(query: gradeAnswerInput!): String!
-  getGrade(email: String!, ID: ID!): Float!
+  shortQAProblem(ID: ID!): [Problem]!
+  studentAnswer(query: gradeAnswerInput!): String
+  getGrade(email: String!, ID: ID!): Float
 }
 
 type Mutation {
   createUser(data: CreateUserInput!): ReturnMessage!
   deleteUser(email: String!): ReturnMessage!
-  updateUserInfo(data: UpdateUserInfoInput!): ReturnMessage!
+  updateUserInfo(email: String!, data: UpdateUserInfoInput!): ReturnMessage!
   addUserToCourse(data: UpdateUserCourseInput!): ReturnMessage!
   deleteUserFromCourse(data: UpdateUserCourseInput!): ReturnMessage!
 
   createCourse(data: CreateCourseInput!): ReturnMessage!
   deleteCourse(ID: ID!): ReturnMessage!
-  updateCourseInfo(data: UpdateCourseInfoInput!): ReturnMessage!
+  updateCourseInfo(ID: ID!, data: UpdateCourseInfoInput!): ReturnMessage!
 
   createAssignment(data: CreateAssignmentInput!): ReturnMessage!
   deleteAssignment(ID: ID!): ReturnMessage!
-  updateAssignmentInfo(data: updateAssignmentInfoInput!): ReturnMessage!
+  updateAssignmentInfo(
+    ID: ID!
+    data: updateAssignmentInfoInput!
+  ): ReturnMessage!
 
   createProblem(data: CreateProblemInput!): ReturnMessage!
   deleteProblem(ID: ID!): ReturnMessage!
-  updateProblemInfo(data: UpdateProblemInfoInput!): ReturnMessage!
+  updateProblemInfo(ID: ID!, data: UpdateProblemInfoInput!): ReturnMessage!
 
   updateAnswer(data: updateAnswerInput!): ReturnMessage!
   updateGrade(data: updateGradeInput!): ReturnMessage!
   showGrade(ID: ID): ReturnMessage!
-}
-
-type Subscription {
-  user(query: String!): UserSubscriptionPayload!
 }
 
 type User {
@@ -52,7 +52,6 @@ input CreateUserInput {
 
 input UpdateUserInfoInput {
   name: String
-  email: String!
   currentPassword: String
   newPassword: String
 }
@@ -88,7 +87,6 @@ type Course {
 }
 
 input UpdateCourseInfoInput {
-  ID: ID!
   name: String!
   teacher: String!
   describe: String!
@@ -122,36 +120,40 @@ input CreateAssignmentInput {
 }
 
 input updateAssignmentInfoInput {
-  ID: ID!
   name: String!
   beginTime: String!
   endTime: String!
 }
 
 type Problem {
+  _id: ID!
   assignmentID: ID!
   type: String!
   point: Float!
   statement: String!
   options: [String]!
-  answers: [String!]!
+  answers: [String]!
+  keywords: [String]!
+  index: Int!
 }
 
 input CreateProblemInput {
+  assignmentID: ID!
   type: String!
   point: Float!
   statement: String!
-  options: [String]
-  answers: [String]
+  options: [String]!
+  answers: [String]!
+  keywords: [String]!
 }
 
 input UpdateProblemInfoInput {
-  ID: ID!
   type: String!
   point: Float!
   statement: String!
-  options: [String]
-  answers: [String]
+  options: [String]!
+  answers: [String]!
+  keywords: [String]!
 }
 
 type Grade {
@@ -184,15 +186,4 @@ input updateGradeInput {
 type ReturnMessage {
   type: String!
   message: String!
-}
-
-enum MutationType {
-  CREATED
-  DELETED
-  UPDATED
-}
-
-type UserSubscriptionPayload {
-  mutation: MutationType!
-  data: User!
 }

@@ -1,7 +1,6 @@
 import { GraphQLServer, PubSub } from "graphql-yoga";
 import Query from "./resolvers/Query";
 import Mutation from "./resolvers/Mutation";
-import Subscription from "./resolvers/Subscription";
 
 require("dotenv-defaults").config();
 const mongoose = require("mongoose");
@@ -38,7 +37,6 @@ const server = new GraphQLServer({
   resolvers: {
     Query,
     Mutation,
-    Subscription,
   },
   context: {
     User,

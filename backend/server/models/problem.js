@@ -3,13 +3,13 @@ const Schema = mongoose.Schema;
 
 // Creating a schema, sort of like working with an ORM
 const ProblemSchema = new Schema({
-  name: {
-    type: String,
-    required: [true, "Name field is required."],
-  },
   point: {
     type: Number,
     required: [true, "Point field is required."],
+  },
+  assignmentID: {
+    type: String,
+    required: [true, "Assignment ID field is required."],
   },
   type: {
     type: String,
@@ -27,7 +27,10 @@ const ProblemSchema = new Schema({
     type: Array,
     required: [true, "Answer field is required."],
   },
-  
+  keywords: {
+    type: Array,
+    required: [true, "Answer field is required."],
+  },
 });
 
 // Creating a table within database with the defined schema
