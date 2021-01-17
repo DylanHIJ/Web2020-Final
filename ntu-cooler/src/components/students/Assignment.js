@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
   },
   container: {
-    width: "100%",
+    width: "90%",
   },
   leftButton: {
     float: "left",

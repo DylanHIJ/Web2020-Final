@@ -6,6 +6,7 @@ import {
   Typography,
   TextField,
   makeStyles,
+  TextareaAutosize,
 } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
@@ -30,7 +31,7 @@ const ShortQA = (props) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <FormControl component="fieldset" className={classes.formControl}>
+      <FormControl component="fieldset" style={{ width: "90%" }}>
         <Typography variant="h5" component="h4">
           {problem.statement}
         </Typography>
@@ -38,7 +39,6 @@ const ShortQA = (props) => {
           id="answer_field"
           label="Input Here"
           multiline
-          fullWidth
           value={value}
           onChange={handleChange}
           variant="filled"
