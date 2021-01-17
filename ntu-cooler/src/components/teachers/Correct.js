@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Typography, makeStyles } from "@material-ui/core";
+import { Container, Grid, Typography, makeStyles } from "@material-ui/core";
 import CorrectionModule from "./corrections";
 import { getAssignment, getProblems, getStudentList } from "./utils";
 
@@ -39,23 +39,25 @@ const Correction = (props) => {
   const [studentIndex, setStudentIndex] = useState(0);
 
   return (
-    <div>
+    <Container maxWidth="lg">
       {/* Assignment Name */}
       <Typography variant="h4" component="h2" className={classes.title}>
         {assignment.name} (Correction Mode)
       </Typography>
 
-      <div>
-        <div className={classes.quarter}>PROBLEM_SELECTOR</div>
-        <div className={classes.half}>
+      <Grid container>
+        <Grid item xs="3">
+          PROBLEM_SELECTOR
+        </Grid>
+        <Grid item xs="6">
           <Typography variant="h5" component="h2">
             Q: {problem.statement}
           </Typography>
-        </div>
-        <div className={classes.quarter}>STUDENT_SELECTOR</div>
-
-        <div style={{ display: "table", clear: "both" }}></div>
-      </div>
+        </Grid>
+        <Grid item xs="3">
+          STUDENT_SELECTOR
+        </Grid>
+      </Grid>
 
       <CorrectionModule
         assignmentID={assignmentID}
@@ -63,7 +65,7 @@ const Correction = (props) => {
         studentID={studentList[studentIndex]}
         keywords={problem.keywords}
       ></CorrectionModule>
-    </div>
+    </Container>
   );
 };
 
