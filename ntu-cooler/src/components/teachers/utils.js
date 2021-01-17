@@ -1,42 +1,58 @@
-const demoStudentResponses = [
-  {
-    studentID: "student_1",
-    response: "Hello world",
-  },
-  {
-    studentID: "student_2",
-    response: "Hamster is struggling on the bed.",
-  },
-  {
-    studentID: "student_3",
-    response: "LaxingYang saiko",
-  },
-  {
-    studentID: "student_4",
-    response: "dylan - hamster - laxingyang",
-  },
-];
-
-const keywords = [
+const demoKeywords = [
   {
     word: "dylan",
-    color: "#123456",
+    color: "#ABCDEF",
   },
   {
     word: "hamster",
-    color: "#561234",
+    color: "#CDEFAB",
   },
   {
     word: "laxingyang",
-    color: "#345612",
+    color: "#EFABCD",
   },
 ];
 
-const getStudentList = (aid, pid) =>
-  demoStudentResponses.map((ele) => ele.studentID);
-const getStudentResponse = (studentID) =>
-  demoStudentResponses.filter((ele) => ele.studentID === studentID);
+const demoProblems = [
+  {
+    index: 2,
+    problemID: "problem_1",
+    statement: "Describe how much you dislike JavaScript.",
+    keywords: demoKeywords,
+  },
+];
 
-const getKeywords = (aid, pid) => keywords;
+const demoStudentResponses = [
+  {
+    studentID: "student_4",
+    name: "DDDD",
+    text: "dylan - hamster - laxingyang",
+  },
+  {
+    studentID: "student_2",
+    name: "BBBB",
+    text: "Hamster is struggling on the bed.",
+  },
+  {
+    studentID: "student_3",
+    name: "CCCC",
+    text: "LaxingYang saiko",
+  },
+  {
+    studentID: "student_1",
+    name: "AAAA",
+    text: "Yeah (?",
+  },
+];
 
-export { getStudentList, getStudentResponse, getKeywords };
+const getAssignment = (aid) => ({
+  name: "Test Assignment",
+});
+
+const getProblems = (aid) => demoProblems;
+
+const getStudentList = (aid) => demoStudentResponses;
+const getStudentResponse = (aid, pid, sid) =>
+  demoStudentResponses.find((ele) => ele.studentID === sid);
+
+export { getAssignment, getProblems, getStudentList, getStudentResponse };

@@ -1,18 +1,45 @@
-import React, { useState } from "react";
-import { getStudentList } from "./utils";
+import React from "react";
+import { Container, Typography, makeStyles } from "@material-ui/core";
+import Grader from "./corrections";
+import { getAssignment, getProblems, getStudentList } from "./utils";
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    display: "flex",
+  },
+  title: {
+    marginTop: "6%",
+    marginBottom: "3%",
+  },
+  center: {
+    float: "center",
+  },
+}));
 
 const Correction = (props) => {
-  const { assignment_id, problem_id } = props;
-  const studentList = getStudentList(assignment_id, problem_id);
+  const { assignmentID } = props;
 
-  const [currentProblemIndex, setCurrentProblemIndex] = useState(0);
-  const [answers, setAnswers] = useState([]);
+  const classes = useStyles();
+
+  const assignment = getAssignment(assignmentID);
+  const students = getStudentList(assignmentID).sort((a, b) =>
+    a.studentID <= b.studentID ? -1 : 1
+  );
+  const problems = getProblems(assignmentID).sort((a, b) => a.index - b.index);
 
   return (
-    <div>
+    <Container maxWidth="lg">
       {/* Assignment Name */}
-      <h1>Yeah</h1>
-    </div>
+      <Typography variant="h4" component="h2" className={classes.title}>
+        {assignment.name} (Correction Mode)
+      </Typography>
+
+      <Grader
+        assignmentID={assignmentID}
+        problems={problems}
+        students={students}
+      />
+    </Container>
   );
 };
 
