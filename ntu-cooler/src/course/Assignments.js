@@ -1,6 +1,7 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { NavLink, useRouteMatch } from "react-router-dom";
+import { NavLink, useRouteMatch, useParams } from "react-router-dom";
+import { useQuery } from "@apollo/client";
 import {
   Accordion,
   AccordionSummary,
@@ -13,6 +14,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import { ExpandMore, NotesRounded } from "@material-ui/icons";
+import { GET_COURSE_ASSIGNMENTS } from "../graphql";
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -35,21 +37,27 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const assignments = {
-  upcoming: [
-    { id: "1", name: "Homework 0xA" },
-    { id: "2", name: "Homework 0xB" },
-    { id: "3", name: "Homework 0xC" },
-  ],
-  due: [
-    { id: "4", name: "Homework 0x8" },
-    { id: "5", name: "Homework 0x9" },
-  ],
-};
+// const assignments = {
+//   upcoming: [
+//     { id: "1", name: "Homework 0xA" },
+//     { id: "2", name: "Homework 0xB" },
+//     { id: "3", name: "Homework 0xC" },
+//   ],
+//   due: [
+//     { id: "4", name: "Homework 0x8" },
+//     { id: "5", name: "Homework 0x9" },
+//   ],
+// };
 
 export default function Assignments() {
   const classes = useStyles();
   const match = useRouteMatch();
+  const { cid } = useParams();
+  const { loading, data } = useQuery(GET_COURSE_ASSIGNMENTS, {
+    variables: { cid: cid },
+  });
+  if (loading) return "Loading";
+
   return (
     <Container maxWidth="lg">
       <Typography variant="h4" component="h2" className={classes.title}>
@@ -71,19 +79,29 @@ export default function Assignments() {
             aria-label="main mailbox folders"
             className={classes.list}
           >
-            {assignments["upcoming"].map((assignment) => (
-              <NavLink
-                to={`${match.url}/${assignment.id}`}
-                className={classes.navlink}
-              >
-                <ListItem button>
-                  <ListItemIcon>
-                    <NotesRounded />
-                  </ListItemIcon>
-                  <ListItemText primary={assignment.name} />
-                </ListItem>
-              </NavLink>
-            ))}
+            {data.course.assignments
+              .filter(
+                (assignment) =>
+                  new Date(parseInt(assignment.endTime, 10)) >= new Date()
+              )
+              .map((assignment) => (
+                <NavLink
+                  to={`${match.url}/${assignment._id}`}
+                  className={classes.navlink}
+                >
+                  <ListItem button>
+                    <ListItemIcon>
+                      <NotesRounded />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={assignment.name}
+                      secondary={`Deadline: ${new Date(
+                        parseInt(assignment.endTime, 10)
+                      )}`}
+                    />
+                  </ListItem>
+                </NavLink>
+              ))}
           </List>
         </AccordionDetails>
       </Accordion>
@@ -103,14 +121,24 @@ export default function Assignments() {
             aria-label="main mailbox folders"
             className={classes.list}
           >
-            {assignments["due"].map((assignment) => (
-              <ListItem button>
-                <ListItemIcon>
-                  <NotesRounded />
-                </ListItemIcon>
-                <ListItemText primary={assignment.name} />
-              </ListItem>
-            ))}
+            {data.course.assignments
+              .filter(
+                (assignment) =>
+                  new Date(parseInt(assignment.endTime, 10)) < new Date()
+              )
+              .map((assignment) => (
+                <ListItem button>
+                  <ListItemIcon>
+                    <NotesRounded />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={assignment.name}
+                    secondary={`Deadline: ${new Date(
+                      parseInt(assignment.endTime, 10)
+                    )}`}
+                  />
+                </ListItem>
+              ))}
           </List>
         </AccordionDetails>
       </Accordion>

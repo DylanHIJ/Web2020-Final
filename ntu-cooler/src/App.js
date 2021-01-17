@@ -13,7 +13,7 @@ export default function App() {
       <Route exact path="/" component={Home} />
       <Route exact path="/courses" component={Home} />
       <Route exact path="/account" component={Account} />
-      <Route path="/courses/:id?" component={Course} />
+      <Route path="/courses/:cid?" component={Course} />
       <Redirect from="/home" to="/" />
     </Switch>
   ) : (

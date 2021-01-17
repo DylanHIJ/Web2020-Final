@@ -1,4 +1,6 @@
 import React from "react";
+import { useQuery } from "@apollo/client";
+import { useParams } from "react-router-dom";
 import {
   Avatar,
   Divider,
@@ -10,6 +12,7 @@ import {
 } from "@material-ui/core";
 import { PermIdentity, AccessTime, Room } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
+import { GET_COURSE_INFO } from "../graphql";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -27,10 +30,16 @@ const useStyles = makeStyles((theme) => ({
 
 export default function CourseInfo() {
   const classes = useStyles();
+  const { cid } = useParams();
+  const { loading, data } = useQuery(GET_COURSE_INFO, {
+    variables: { cid: cid },
+  });
+  if (loading) return "Loading";
+
   return (
     <>
       <Typography variant="h4" component="h2" className={classes.title}>
-        Web Programming
+        {data.course.name}
       </Typography>
       <hr />
       <List className={classes.root}>
@@ -40,7 +49,7 @@ export default function CourseInfo() {
               <PermIdentity />
             </Avatar>
           </ListItemAvatar>
-          <ListItemText primary="Instructor" secondary="Laxingyang" />
+          <ListItemText primary="Instructor" secondary={data.course.teacher} />
         </ListItem>
         <Divider variant="inset" component="li" />
         <ListItem>
@@ -49,7 +58,10 @@ export default function CourseInfo() {
               <AccessTime />
             </Avatar>
           </ListItemAvatar>
-          <ListItemText primary="Class Time" secondary="Wed. 678" />
+          <ListItemText
+            primary="Class Time"
+            secondary={data.course.classTime}
+          />
         </ListItem>
         <Divider variant="inset" component="li" />
         <ListItem>
@@ -58,7 +70,7 @@ export default function CourseInfo() {
               <Room />
             </Avatar>
           </ListItemAvatar>
-          <ListItemText primary="Classroom" secondary="R103" />
+          <ListItemText primary="Classroom" secondary={data.course.classroom} />
         </ListItem>
       </List>
     </>

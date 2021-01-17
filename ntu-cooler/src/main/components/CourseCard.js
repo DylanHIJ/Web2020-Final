@@ -1,10 +1,12 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import Card from "@material-ui/core/Card";
-import CardHeader from "@material-ui/core/CardHeader";
-import CardMedia from "@material-ui/core/CardMedia";
-import CardActions from "@material-ui/core/CardActions";
-import IconButton from "@material-ui/core/IconButton";
+import {
+  Card,
+  CardHeader,
+  CardMedia,
+  CardActions,
+  IconButton,
+} from "@material-ui/core";
 import { red } from "@material-ui/core/colors";
 import { LibraryBooks, Favorite } from "@material-ui/icons";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
@@ -52,15 +54,15 @@ export default function CourseCard(props) {
 
   return (
     <Card className={classes.root}>
-      <NavLink to={`/courses/${course.name}`}>
+      <NavLink to={`/courses/${course._id}`}>
         <CardMedia
           className={classes.media}
           image="/defaultCourseImg.jpeg"
-          title="Paella dish"
+          title={`${course.name}`}
         />
       </NavLink>
 
-      <NavLink to={`/courses/${course.name}`} className={classes.navlink}>
+      <NavLink to={`/courses/${course._id}`} className={classes.navlink}>
         <CardHeader
           className={classes.header}
           action={
