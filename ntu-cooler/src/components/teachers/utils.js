@@ -19,6 +19,7 @@ const demoProblems = [
     problemID: "problem_1",
     statement: "Describe how much you dislike JavaScript.",
     keywords: demoKeywords,
+    maxScore: 10,
   },
 ];
 
