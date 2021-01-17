@@ -119,6 +119,7 @@ const ControlPanel = (props) => {
                 onKeyDown={(event) => {
                   if (
                     event.code === "Enter" &&
+                    !event.shiftKey &&
                     inputValid &&
                     studentIndex !== students.length - 1
                   ) {
