@@ -23,9 +23,6 @@ const AssignmentSchema = new Schema({
     type: Array,
     required: [true, "problem field is required."],
   },
-  grade: {
-    type: Number,
-  },
 });
 
 // Creating a table within database with the defined schema

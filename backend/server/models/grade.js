@@ -8,7 +8,7 @@ const GradeSchema = new Schema({
     required: [true, "Email field is required."],
   },
   assignmentID: {
-    type: Number,
+    type: String,
     required: [true, "Assignment ID field is required."],
   },
   grades: {
@@ -26,7 +26,7 @@ const GradeSchema = new Schema({
 });
 
 // Creating a table within database with the defined schema
-const Grade = mongoose.model("grage", GradeSchema);
+const Grade = mongoose.model("grade", GradeSchema);
 
 // Exporting table for querying and mutating
 module.exports = Grade;

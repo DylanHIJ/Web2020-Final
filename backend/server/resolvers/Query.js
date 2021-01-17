@@ -1,5 +1,3 @@
-import Assignment from "../models/assignment";
-
 const Query = {
   async user(parent, args, { User, Course }, info) {
     const email = args.email;
@@ -41,19 +39,9 @@ const Query = {
 
     return course;
   },
-  async assignment(parent, args, { Assignment, Grade }, Info) {
-    const email = args.email;
+  async assignment(parent, args, { Assignment }, Info) {
     const ID = args.ID;
     const assignment = await Assignment.findOne({ _id: ID }).exec();
-    if (assignment !== null) {
-      const grade = await Grade.findOne({
-        $and: [{ email: email }, { assignmentID: ID }],
-      });
-
-      if (grade.graded) {
-        assignment.grade = grade.grades.reduce((a, b) => a + b);
-      }
-    }
 
     return assignment;
   },
@@ -78,6 +66,19 @@ const Query = {
     }
 
     return answer;
+  },
+  async getGrade(parent, args, { Grade }, info) {
+    const email = args.email;
+    const ID = args.ID;
+    const grade = await Grade.findOne({
+      $and: [{ email: email }, { assignmentID: ID }],
+    }).exec();
+
+    let point = null;
+    if (grade !== null && grade.graded) {
+      point = grade.grades.reduce((a, b) => a + b);
+    }
+    return point;
   },
 };
 
