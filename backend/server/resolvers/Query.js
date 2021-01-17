@@ -14,18 +14,26 @@ const Query = {
       }).exec();
       console.log("Query: login with email");
     }
-    console.log("Query: \n", user);
 
     if (user !== null) {
-      user.studentCourses = user.studentCourses.map(
-        async (courseID) => await Course.findOne({ _id: courseID }).exec()
-      );
-      user.teacherCourses = user.teacherCourses.map(
-        async (courseID) => await Course.findOne({ _id: courseID }).exec()
-      );
+      user.studentCourses = user.studentCourses.map(async (courseID) => {
+        const course = await Course.findOne({ _id: courseID }).exec();
+        return { ...course._doc, ID: courseID };
+      });
+      user.teacherCourses = user.teacherCourses.map(async (courseID) => {
+        const course = await Course.findOne({ _id: courseID }).exec();
+        console.log("Query: \n", { ...course._doc, ID: courseID });
+        return { ...course._doc, ID: courseID };
+      });
     }
+    console.log("Query: \n", user);
 
     return user;
+  },
+  async course(parent, args, { Course }, Info) {
+    const ID = args.ID;
+    const courseInfo = await Course.findOne({ _id: ID }).exec();
+    return { ...courseInfo._doc, ID: ID };
   },
   async assignment(parent, args, { Assignment, Grade }, Info) {
     const email = args.email;

@@ -1,9 +1,7 @@
 mutation CreateUser_1 {
-	createUser(data: {
-		name: "kehongying"
-		email: "b06902074@ntu.edu.tw"
-    studentCourse: []
-    teacherCourse: []
+  createUser(data: {
+    name: "kehongying"
+    email: "b06902074@ntu.edu.tw"
     password: "12345678"
   }) {
     type
@@ -12,11 +10,9 @@ mutation CreateUser_1 {
 }
 
 mutation CreateUser_2 {
-	createUser(data: {
-		name: "chiachia"
-		email: "b06902024@ntu.edu.tw"
-    studentCourse: []
-    teacherCourse: []
+  createUser(data: {
+    name: "chiachia"
+    email: "b06902024@ntu.edu.tw"
     password: "12345678"
   }) {
     type
@@ -25,17 +21,16 @@ mutation CreateUser_2 {
 }
 
 mutation DeleteUser_1 {
-	deleteUser(email: "b06902074@ntu.edu.tw") {
+  deleteUser(email: "b06902074@ntu.edu.tw") {
     type
     message
   }
 }
 
 mutation UpdateUser_1 {
-	updateUserInfo(data: {
+  updateUserInfo(data: {
     email: "b06902074@ntu.edu.tw"
     name: "chiachia"
-    password: ""
   }) {
     type
     message
@@ -43,9 +38,9 @@ mutation UpdateUser_1 {
 }
 
 mutation AddToCourse_1 {
-	addUserToCourse(data: {
+  addUserToCourse(data: {
     email: "b06902024@ntu.edu.tw"
-    ID: "600167912348dc265f9ccd07"
+    ID: "6002a0d14a077d5a297da425"
     TA: false
   }) {
     type
@@ -54,9 +49,20 @@ mutation AddToCourse_1 {
 }
 
 mutation DeleteToCourse_1 {
-	deleteUserFromCourse(data: {
+  deleteUserFromCourse(data: {
     email: "b06902074@ntu.edu.tw"
-    ID: "600167912348dc265f9ccd07"
+    ID: "6002a0d14a077d5a297da425"
+    TA: true
+  }) {
+    type
+    message
+  }
+}
+
+mutation DeleteToCourse_2 {
+  deleteUserFromCourse(data: {
+    email: "b06902024@ntu.edu.tw"
+    ID: "6002a0d14a077d5a297da425"
     TA: false
   }) {
     type
@@ -68,25 +74,25 @@ query QueryUser_1 {
   user(email: "b06902074@ntu.edu.tw", password: "12345678"){
     name,
     email,
-    studentCourse {      
+    studentCourses {      
       name
-  		teacher
-  		describe
-  		classTime
-  		classroom
-  		TA
-  		student
-  		assignment
+      teacher
+      describe
+      classTime
+      classroom
+      TAs
+      students
+      assignments
     },
-    teacherCourse {
+    teacherCourses {
       name
-  		teacher
-  		describe
-  		classTime
-  		classroom
-  		TA
-  		student
-  		assignment
+      teacher
+      describe
+      classTime
+      classroom
+      TAs
+      students
+      assignments
     }, 
   }
 }
@@ -95,39 +101,37 @@ query QueryUser_2 {
   user(email: "b06902024@ntu.edu.tw", password: "12345678"){
     name,
     email,
-    studentCourse {      
+    studentCourses {      
       name
-  		teacher
-  		describe
-  		classTime
-  		classroom
-  		TA
-  		student
-  		assignment
+      teacher
+      describe
+      classTime
+      classroom
+      TAs
+      students
+      assignments
     },
-    teacherCourse {
+    teacherCourses {
       name
-  		teacher
-  		describe
-  		classTime
-  		classroom
-  		TA
-  		student
-  		assignment
+      teacher
+      describe
+      classTime
+      classroom
+      TAs
+      students
+      assignments
     }, 
   }
 }
 
 mutation CreateCourse_1 {
-	createCourse(data: {
+  createCourse(data: {
     name: "web 1"
     teacher: "Ric"
     describe: "React.js Course"
     classTime: "Tue 9:10~12:10"
     classroom: "EE 112"
-		TA: ["b06902074@ntu.edu.tw"]
-    student: []
-    assignment: []
+    TAs: "b06902074@ntu.edu.tw"
   }) {
     type
     message
@@ -136,7 +140,7 @@ mutation CreateCourse_1 {
 
 mutation UpdateCourse_1 {
   updateCourseInfo(data:{
-    ID: "600167912348dc265f9ccd07"
+    ID: "6002a0d14a077d5a297da425"
     name: "SP"
     teacher: "PJ"
     describe: "system programing"
@@ -149,7 +153,7 @@ mutation UpdateCourse_1 {
 }
 
 mutation DeleteCourse_1 {
-  deleteCourse(ID: "600167912348dc265f9ccd07"){
+  deleteCourse(ID: "6002a0d14a077d5a297da425"){
     type
     message
   }
