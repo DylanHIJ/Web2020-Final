@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Container, Grid, Typography, makeStyles } from "@material-ui/core";
 import CorrectionModule from "./corrections";
 import { getAssignment, getProblems, getStudentList } from "./utils";
+import Selector from "./selector";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -11,15 +12,9 @@ const useStyles = makeStyles((theme) => ({
     marginTop: "6%",
     marginBottom: "3%",
   },
-  quarter: {
-    float: "left",
-    width: "20%",
+  center: {
+    float: "center",
   },
-  half: {
-    float: "left",
-    width: "60%",
-  },
-  row: {},
 }));
 
 const Correction = (props) => {
@@ -28,15 +23,12 @@ const Correction = (props) => {
   const classes = useStyles();
 
   const assignment = getAssignment(assignmentID);
+  const students = getStudentList(assignmentID);
   const problems = getProblems(assignmentID);
-  const studentList = getStudentList(assignmentID);
 
-  console.log(problems);
-
-  const [problemIndex, setProblemIndex] = useState(0);
+  const [studentID, setStudentID] = useState(students[0].studentID);
+  const [problemID, setProblemID] = useState(problems[0].problemID);
   const [problem, setProblem] = useState(problems[0]);
-
-  const [studentIndex, setStudentIndex] = useState(0);
 
   return (
     <Container maxWidth="lg">
@@ -47,7 +39,16 @@ const Correction = (props) => {
 
       <Grid container>
         <Grid item xs="3">
-          PROBLEM_SELECTOR
+          <Selector
+            name="Problems"
+            value={problemID}
+            setValue={setProblemID}
+            options={problems.map((ele) => ({
+              ID: ele.problemID,
+              description: `Prob. ${ele.index}`,
+            }))}
+            className={classes.center}
+          />
         </Grid>
         <Grid item xs="6">
           <Typography variant="h5" component="h2">
@@ -55,15 +56,23 @@ const Correction = (props) => {
           </Typography>
         </Grid>
         <Grid item xs="3">
-          STUDENT_SELECTOR
+          <Selector
+            name="Students"
+            value={studentID}
+            setValue={setStudentID}
+            options={students.map((ele) => ({
+              ID: ele.studentID,
+              description: `${ele.name} (${ele.problemID})`,
+            }))}
+          />
         </Grid>
       </Grid>
 
       <CorrectionModule
         assignmentID={assignmentID}
-        problemID={problem.problemID}
-        studentID={studentList[studentIndex]}
-        keywords={problem.keywords}
+        problemID={problemID}
+        studentID={studentID}
+        keywords={problems.find((ele) => ele.problemID === problemID).keywords}
       ></CorrectionModule>
     </Container>
   );

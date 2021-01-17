@@ -60,6 +60,16 @@ const findMatchedChunks = ({ text, keywords }) => {
 export const findAllChunks = ({ text, keywords }) => {
   const searchedChunks = findMatchedChunks({ text, keywords });
 
+  if (searchedChunks.length === 0) {
+    return [
+      {
+        start: 0,
+        end: text.length,
+        highlight: false,
+      },
+    ];
+  }
+
   const ret = [];
   if (searchedChunks[0].start !== 0) {
     ret.push({

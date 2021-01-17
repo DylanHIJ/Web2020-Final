@@ -1,4 +1,5 @@
 import React from "react";
+import { Card, CardContent, Typography, Grid } from "@material-ui/core";
 import { findAllChunks } from "./highlight_utils";
 
 const Marker = ({ text, color }) => (
@@ -20,7 +21,20 @@ const Highlighter = (props) => {
     return highlight ? <Marker text={piece} color={color} /> : piece;
   });
 
-  return <div>{displayText}</div>;
+  return (
+    <Grid container>
+      <Grid item xs="8">
+        <Card variant="outlined" style={{ marginTop: "20px" }}>
+          <CardContent>
+            <Typography>{displayText}</Typography>
+          </CardContent>
+        </Card>
+      </Grid>
+      <Grid item xs="4">
+        OTHER COMPONENTS HERE
+      </Grid>
+    </Grid>
+  );
 };
 
 export default Highlighter;
