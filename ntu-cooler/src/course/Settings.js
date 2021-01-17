@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Button, TextField, Typography } from "@material-ui/core";
 import { useParams } from "react-router-dom";
@@ -25,10 +25,19 @@ export default function AccountEdit() {
   const { loading, data } = useQuery(GET_COURSE_INFO, {
     variables: { cid: cid },
   });
+
+  useEffect(() => {
+    if (!loading) {
+      setClassroom(data.course.classroom);
+      setClassTime(data.course.classTime);
+      setDescription(data.course.describe);
+    }
+  }, [loading, data]);
+
   const [updateCourseInfo] = useMutation(UPDATE_COURSE_INFO);
 
-  const handleButtonClick = () => {
-    updateCourseInfo({
+  const handleButtonClick = async () => {
+    await updateCourseInfo({
       variables: {
         cid: cid,
         name: data.course.name,
@@ -78,7 +87,7 @@ export default function AccountEdit() {
           style={{ margin: 16, width: "50%" }}
           placeholder="Class Time"
           margin="normal"
-          value={data.course.classTime}
+          value={classTime}
           InputLabelProps={{
             shrink: true,
           }}
@@ -90,7 +99,7 @@ export default function AccountEdit() {
           style={{ margin: 16, width: "50%" }}
           placeholder="Classroom"
           margin="normal"
-          value={data.course.classroom}
+          value={classroom}
           InputLabelProps={{
             shrink: true,
           }}
@@ -104,7 +113,7 @@ export default function AccountEdit() {
           margin="normal"
           multiline
           rows="3"
-          value={data.course.describe}
+          value={description}
           InputLabelProps={{
             shrink: true,
           }}

@@ -15,9 +15,12 @@ export const UPDATE_COURSE_INFO = gql`
         name: $name
         teacher: $teacher
         describe: $describe
-        classTime: $clasTime
+        classTime: $classTime
         classroom: $classroom
       }
-    )
+    ) {
+      type
+      message
+    }
   }
 `;

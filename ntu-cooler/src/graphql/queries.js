@@ -55,7 +55,6 @@ export const GET_COURSE_ASSIGNMENTS = gql`
         beginTime
         endTime
         problems
-        grade
       }
     }
   }
