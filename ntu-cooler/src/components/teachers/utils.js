@@ -1,30 +1,30 @@
 const demoKeywords = [
   {
     word: "dylan",
-    color: "#123456",
+    color: "#ABCDEF",
   },
   {
     word: "hamster",
-    color: "#561234",
+    color: "#CDEFAB",
   },
   {
     word: "laxingyang",
-    color: "#345612",
+    color: "#EFABCD",
   },
 ];
 
 const demoProblems = [
   {
     problemID: "problem_1",
-    statement: "Hello world (?",
+    statement: "Describe how much you dislike JavaScript.",
     keywords: demoKeywords,
   },
 ];
 
 const demoStudentResponses = [
   {
-    studentID: "student_1",
-    text: "Yeah (?",
+    studentID: "student_4",
+    text: "dylan - hamster - laxingyang",
   },
   {
     studentID: "student_2",
@@ -35,8 +35,8 @@ const demoStudentResponses = [
     text: "LaxingYang saiko",
   },
   {
-    studentID: "student_4",
-    text: "dylan - hamster - laxingyang",
+    studentID: "student_1",
+    text: "Yeah (?",
   },
 ];
 

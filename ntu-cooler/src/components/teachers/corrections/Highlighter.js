@@ -1,22 +1,26 @@
-import React, { useRef, useEffect } from "react";
-import Mark from "mark.js";
+import React from "react";
+import { findAllChunks } from "./highlight_utils";
+
+const Marker = ({ text, color }) => (
+  <mark style={{ backgroundColor: color }}>{text}</mark>
+);
 
 const Highlighter = (props) => {
   const { text, keywords } = props;
-  const ref = useRef(null);
 
-  // useEffect(() => {
-  //   const instance = Mark(ref.current);
-  //   keywords.forEach((ele) => {
-  //     instance.mark(ele.word);
-  //   });
-  // });
+  const chunks = findAllChunks({
+    text,
+    keywords,
+  });
+  console.log(chunks);
 
-  return (
-    <div ref={ref}>
-      <p>{text}</p>
-    </div>
-  );
+  const displayText = chunks.map((chunk) => {
+    const { start, end, highlight, color } = chunk;
+    const piece = text.substr(start, end - start);
+    return highlight ? <Marker text={piece} color={color} /> : piece;
+  });
+
+  return <div>{displayText}</div>;
 };
 
 export default Highlighter;

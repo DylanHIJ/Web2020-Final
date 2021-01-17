@@ -33,10 +33,8 @@ const Correction = (props) => {
 
   console.log(problems);
 
-  const [problemID, setProblemID] = useState("Hi");
-  const [problem, setProblem] = useState({ statement: "Hello" });
-
-  console.log(problemID, problem);
+  const [problemIndex, setProblemIndex] = useState(0);
+  const [problem, setProblem] = useState(problems[0]);
 
   const [studentIndex, setStudentIndex] = useState(0);
 
@@ -61,7 +59,7 @@ const Correction = (props) => {
 
       <CorrectionModule
         assignmentID={assignmentID}
-        problemID={problemID}
+        problemID={problem.problemID}
         studentID={studentList[studentIndex]}
         keywords={problem.keywords}
       ></CorrectionModule>

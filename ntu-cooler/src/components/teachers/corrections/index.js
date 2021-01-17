@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Highlighter from "./Highlighter";
 
 import { getStudentResponse } from "../utils";
@@ -14,7 +14,7 @@ const CorrectionModule = (props) => {
     studentID
   );
 
-  console.log(studentResponse);
+  console.log(studentResponse, keywords);
 
   return (
     <div>
