@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Button, TextField, Typography } from "@material-ui/core";
+import { Button, TextField, Typography, Snackbar } from "@material-ui/core";
+import MuiAlert from "@material-ui/lab/Alert";
 import { useParams } from "react-router-dom";
 import { useQuery, useMutation } from "@apollo/client";
 import { GET_COURSE_INFO, UPDATE_COURSE_INFO } from "../graphql";
+
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -19,6 +24,7 @@ const useStyles = makeStyles((theme) => ({
 export default function AccountEdit() {
   const classes = useStyles();
   const { cid } = useParams();
+  const [open, setOpen] = React.useState(false);
   const [classroom, setClassroom] = useState("");
   const [classTime, setClassTime] = useState("");
   const [description, setDescription] = useState("");
@@ -47,8 +53,15 @@ export default function AccountEdit() {
         classroom: classroom,
       },
     });
+    setOpen(true);
   };
 
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
   if (loading) return "Loading";
 
   return (
@@ -128,6 +141,11 @@ export default function AccountEdit() {
       >
         Save
       </Button>
+      <Snackbar open={open} autoHideDuration={5000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="success">
+          Changes have been saved!
+        </Alert>
+      </Snackbar>
     </>
   );
 }

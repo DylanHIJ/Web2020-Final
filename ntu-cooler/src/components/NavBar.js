@@ -112,7 +112,7 @@ export default function NavBar(props) {
           </NavLink>
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
-            <Button variant="contained" onClick={handleClick}>
+            <Button variant="outlined" onClick={handleClick} color="inherit">
               Logout
             </Button>
             <NavLink to="/account" className={classes.navlink}>

@@ -10,7 +10,7 @@ import {
 import { red } from "@material-ui/core/colors";
 import { LibraryBooks, Favorite } from "@material-ui/icons";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
-import { NavLink } from "react-router-dom";
+import { NavLink, Link } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -49,12 +49,19 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function CourseCard(props) {
-  const { course } = props;
+  const { course, isTA } = props;
   const classes = useStyles();
 
   return (
     <Card className={classes.root}>
-      <NavLink to={`/courses/${course._id}`}>
+      <NavLink
+        to={{
+          pathname: `/courses/${course._id}`,
+          state: {
+            isTA: isTA,
+          },
+        }}
+      >
         <CardMedia
           className={classes.media}
           image="/defaultCourseImg.jpeg"
@@ -62,7 +69,15 @@ export default function CourseCard(props) {
         />
       </NavLink>
 
-      <NavLink to={`/courses/${course._id}`} className={classes.navlink}>
+      <NavLink
+        to={{
+          pathname: `/courses/${course._id}`,
+          state: {
+            isTA: isTA,
+          },
+        }}
+        className={classes.navlink}
+      >
         <CardHeader
           className={classes.header}
           action={

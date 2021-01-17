@@ -46,32 +46,36 @@ const useStyles = makeStyles((theme) => ({
 
 const drawerWidth = 240;
 
-export default function Course() {
-  const [isTA, setIsTA] = useState(true);
+export default function Course(props) {
+  let isTA = false;
+  if (props.location.state.isTA) isTA = props.location.state.isTA;
   const classes = useStyles();
   const match = useRouteMatch();
   const [open, setOpen] = useState(true);
-
   const drawerList = [
     {
       name: "Information",
       icon: <Info />,
       link: "",
+      state: { isTA: isTA },
     },
     {
       name: "Assignments",
       icon: <AssignmentRounded />,
       link: "/assignments",
+      state: { isTA: isTA },
     },
     {
       name: "Exams",
       icon: <EmojiObjectsRounded />,
       link: "/exams",
+      state: { isTA: isTA },
     },
     {
       name: "Grades",
       icon: <InsertChartRounded />,
       link: "/grades",
+      state: { isTA: isTA },
     },
   ];
 
@@ -84,8 +88,18 @@ export default function Course() {
           isTA
             ? [
                 ...drawerList,
-                { name: "Members", icon: <AccountCircle />, link: "/members" },
-                { name: "Settings", icon: <SettingsIcon />, link: "/settings" },
+                {
+                  name: "Members",
+                  icon: <AccountCircle />,
+                  link: "/members",
+                  state: { isTA: isTA },
+                },
+                {
+                  name: "Settings",
+                  icon: <SettingsIcon />,
+                  link: "/settings",
+                  state: { isTA: isTA },
+                },
               ]
             : drawerList
         }

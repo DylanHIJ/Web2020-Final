@@ -65,7 +65,10 @@ export default function LeftDrawer(props) {
         {drawerList.map((listItem, index) => (
           <NavLink
             key={listItem.name}
-            to={`${match.url}${listItem.link}`}
+            to={{
+              pathname: `${match.url}${listItem.link}`,
+              state: listItem.state,
+            }}
             className={classes.navlink}
           >
             <ListItem button key={listItem.name}>
