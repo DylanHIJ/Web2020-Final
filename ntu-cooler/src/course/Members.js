@@ -1,5 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
+import MuiAlert from "@material-ui/lab/Alert";
+import { useMutation } from "@apollo/client";
+import { useParams } from "react-router-dom";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import {
   Button,
@@ -15,6 +18,7 @@ import {
   TableRow,
   TextField,
   Typography,
+  Snackbar,
 } from "@material-ui/core";
 import {
   FirstPage,
@@ -22,6 +26,7 @@ import {
   KeyboardArrowRight,
   LastPage,
 } from "@material-ui/icons";
+import { ADD_USER_TO_COURSE } from "../graphql";
 
 const useStyles1 = makeStyles((theme) => ({
   root: {
@@ -29,6 +34,10 @@ const useStyles1 = makeStyles((theme) => ({
     marginLeft: theme.spacing(2.5),
   },
 }));
+
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 function TablePaginationActions(props) {
   const classes = useStyles1();
@@ -132,11 +141,22 @@ const useStyles2 = makeStyles({
 
 export default function Members() {
   const classes = useStyles2();
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [page, setPage] = useState(0);
+  const [open, setOpen] = React.useState(false);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [email, setEmail] = useState("");
+  const { cid } = useParams();
+  const [addUserToCourse] = useMutation(ADD_USER_TO_COURSE);
 
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -147,12 +167,26 @@ export default function Members() {
     setPage(0);
   };
 
+  const handleClickStudent = async () => {
+    await addUserToCourse({
+      variables: { email: email, ID: cid, TA: false },
+    });
+    setOpen(true);
+  };
+
+  const handleClickTA = async () => {
+    await addUserToCourse({
+      variables: { email: email, ID: cid, TA: true },
+    });
+    setOpen(true);
+  };
+
   return (
     <Container maxWidth="lg">
       <Typography variant="h4" component="h2" className={classes.title}>
         Members
       </Typography>
-      <TableContainer component={Paper}>
+      {/* <TableContainer component={Paper}>
         <Table className={classes.table} aria-label="custom pagination table">
           <TableBody>
             {(rowsPerPage > 0
@@ -197,7 +231,7 @@ export default function Members() {
             </TableRow>
           </TableFooter>
         </Table>
-      </TableContainer>
+      </TableContainer> */}
       <form className={classes.root} noValidate autoComplete="off">
         <TextField
           id="email"
@@ -208,11 +242,30 @@ export default function Members() {
           InputLabelProps={{
             shrink: true,
           }}
+          onChange={(e) => setEmail(e.target.value)}
         />
       </form>
-      <Button variant="contained" color="primary" style={{ margin: 8 }}>
-        Add New Member
+      <Button
+        variant="contained"
+        color="primary"
+        style={{ margin: 8 }}
+        onClick={handleClickStudent}
+      >
+        Add New Student
       </Button>
+      <Button
+        variant="contained"
+        color="primary"
+        style={{ margin: 8 }}
+        onClick={handleClickTA}
+      >
+        Add New TA
+      </Button>
+      <Snackbar open={open} autoHideDuration={5000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="success">
+          User {email} has been added to course!
+        </Alert>
+      </Snackbar>
     </Container>
   );
 }

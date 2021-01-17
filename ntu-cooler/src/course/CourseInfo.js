@@ -10,7 +10,12 @@ import {
   ListItemText,
   Typography,
 } from "@material-ui/core";
-import { PermIdentity, AccessTime, Room } from "@material-ui/icons";
+import {
+  PermIdentity,
+  AccessTime,
+  Room,
+  Description,
+} from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 import { GET_COURSE_INFO } from "../graphql";
 
@@ -33,6 +38,7 @@ export default function CourseInfo() {
   const { cid } = useParams();
   const { loading, data } = useQuery(GET_COURSE_INFO, {
     variables: { cid: cid },
+    fetchPolicy: "no-cache",
   });
   if (loading) return "Loading";
 
@@ -71,6 +77,18 @@ export default function CourseInfo() {
             </Avatar>
           </ListItemAvatar>
           <ListItemText primary="Classroom" secondary={data.course.classroom} />
+        </ListItem>
+        <Divider variant="inset" component="li" />
+        <ListItem>
+          <ListItemAvatar>
+            <Avatar>
+              <Description />
+            </Avatar>
+          </ListItemAvatar>
+          <ListItemText
+            primary="Description"
+            secondary={data.course.describe}
+          />
         </ListItem>
       </List>
     </>

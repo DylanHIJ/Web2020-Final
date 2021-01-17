@@ -24,3 +24,33 @@ export const UPDATE_COURSE_INFO = gql`
     }
   }
 `;
+
+export const ADD_USER_TO_COURSE = gql`
+  mutation addUserToCourse($email: String!, $ID: ID!, $TA: Boolean!) {
+    addUserToCourse(data: { email: $email, ID: $ID, TA: $TA }) {
+      type
+      message
+    }
+  }
+`;
+
+export const UPDATE_USER_INFO = gql`
+  mutation updateUserInfo(
+    $email: String!
+    $name: String
+    $currentPassword: String
+    $newPassword: String
+  ) {
+    updateUserInfo(
+      email: $email
+      data: {
+        name: $name
+        currentPassword: $currentPassword
+        newPassword: $newPassword
+      }
+    ) {
+      type
+      message
+    }
+  }
+`;

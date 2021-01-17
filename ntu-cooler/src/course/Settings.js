@@ -30,6 +30,7 @@ export default function AccountEdit() {
   const [description, setDescription] = useState("");
   const { loading, data } = useQuery(GET_COURSE_INFO, {
     variables: { cid: cid },
+    fetchPolicy: "no-cache",
   });
 
   useEffect(() => {

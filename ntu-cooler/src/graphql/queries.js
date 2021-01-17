@@ -16,6 +16,15 @@ export const CHECK_TOKEN = gql`
   }
 `;
 
+export const GET_USER_INFO = gql`
+  query getUserInfo($token: String!) {
+    user(token: $token) {
+      name
+      email
+    }
+  }
+`;
+
 export const GET_USER_COURSES = gql`
   query getCourses($token: String!) {
     user(token: $token) {

@@ -1,8 +1,13 @@
 export {
   LOGIN,
   GET_USER_COURSES,
+  GET_USER_INFO,
   GET_COURSE_INFO,
   GET_COURSE_ASSIGNMENTS,
 } from "./queries";
 
-export { UPDATE_COURSE_INFO } from "./mutations.js";
+export {
+  UPDATE_COURSE_INFO,
+  ADD_USER_TO_COURSE,
+  UPDATE_USER_INFO,
+} from "./mutations.js";
