@@ -1,6 +1,6 @@
 import React from "react";
 import { Container, Typography, makeStyles } from "@material-ui/core";
-import Grader from "./corrections";
+import Grader from "./grader";
 import { getAssignment, getProblems, getStudentList } from "./utils";
 
 const useStyles = makeStyles((theme) => ({
@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Correction = (props) => {
+const Grading = (props) => {
   const { assignmentID } = props;
 
   const classes = useStyles();
@@ -43,4 +43,4 @@ const Correction = (props) => {
   );
 };
 
-export default Correction;
+export default Grading;
