@@ -1,13 +1,11 @@
 import Cookies from "js-cookie";
-import React from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   Avatar,
   Button,
   CssBaseline,
   TextField,
-  FormControlLabel,
-  Checkbox,
   Link,
   Paper,
   Box,
@@ -15,6 +13,8 @@ import {
   Typography,
 } from "@material-ui/core/";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
+import { useQuery } from "@apollo/client";
+import { LOGIN } from "../graphql";
 
 function Copyright() {
   return (
@@ -60,15 +60,36 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
+  errorMessage: {
+    color: "red",
+  },
 }));
 
 export default function Login(props) {
-  // const { setIsLogin } = props;
   const classes = useStyles();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [emptyEmail, setEmptyEmail] = useState(false);
+  const [emptyPassword, setEmptyPassword] = useState(false);
+  const [wrong, setWrong] = useState(false);
+
+  const { data } = useQuery(LOGIN, {
+    variables: { email: email, password: password },
+  });
 
   const verifyUser = async () => {
-    await Cookies.set("token", "t35t_t0k3n");
-    window.location.reload();
+    setEmptyEmail(!email);
+    setEmptyPassword(!password);
+    if (email && password && data.user !== null) {
+      await Cookies.set("token", data.user.token);
+      window.location.reload();
+    } else {
+      setWrong(true);
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && e.target.value) verifyUser();
   };
 
   return (
@@ -94,6 +115,9 @@ export default function Login(props) {
               name="email"
               autoComplete="email"
               autoFocus
+              error={emptyEmail}
+              helperText={emptyEmail ? "Email cannot be empty." : ""}
+              onChange={(e) => setEmail(e.target.value)}
             />
             <TextField
               variant="outlined"
@@ -105,11 +129,16 @@ export default function Login(props) {
               type="password"
               id="password"
               autoComplete="current-password"
+              error={emptyPassword}
+              helperText={emptyPassword ? "Password cannot be empty." : ""}
+              onChange={(e) => setPassword(e.target.value)}
+              onKeyDown={(e) => handleKeyDown(e)}
             />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
+            {wrong ? (
+              <p className={classes.errorMessage}>Wrong email or password.</p>
+            ) : (
+              <></>
+            )}
             <Button
               fullWidth
               variant="contained"

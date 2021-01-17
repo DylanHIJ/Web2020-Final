@@ -52,7 +52,7 @@ export default function CourseCard(props) {
 
   return (
     <Card className={classes.root}>
-      <NavLink to={`/courses/${course.id}`}>
+      <NavLink to={`/courses/${course.name}`}>
         <CardMedia
           className={classes.media}
           image="/defaultCourseImg.jpeg"
@@ -60,7 +60,7 @@ export default function CourseCard(props) {
         />
       </NavLink>
 
-      <NavLink to={`/courses/${course.id}`} className={classes.navlink}>
+      <NavLink to={`/courses/${course.name}`} className={classes.navlink}>
         <CardHeader
           className={classes.header}
           action={
@@ -69,7 +69,7 @@ export default function CourseCard(props) {
             </IconButton>
           }
           title={course.name}
-          subheader={course.id}
+          subheader={course.teacher}
         ></CardHeader>
       </NavLink>
 
