@@ -1,3 +1,5 @@
+import Assignment from "../models/assignment";
+
 const Query = {
   async user(parent, args, { User, Course }, info) {
     const email = args.email;
@@ -16,24 +18,28 @@ const Query = {
     }
 
     if (user !== null) {
-      user.studentCourses = user.studentCourses.map(async (courseID) => {
-        const course = await Course.findOne({ _id: courseID }).exec();
-        return { ...course._doc, ID: courseID };
-      });
-      user.teacherCourses = user.teacherCourses.map(async (courseID) => {
-        const course = await Course.findOne({ _id: courseID }).exec();
-        console.log("Query: \n", { ...course._doc, ID: courseID });
-        return { ...course._doc, ID: courseID };
-      });
+      user.studentCourses = user.studentCourses.map(
+        async (courseID) => await Course.findOne({ _id: courseID }).exec()
+      );
+      user.teacherCourses = user.teacherCourses.map(
+        async (courseID) => await Course.findOne({ _id: courseID }).exec()
+      );
     }
     console.log("Query: \n", user);
 
     return user;
   },
-  async course(parent, args, { Course }, Info) {
+  async course(parent, args, { Course, Assignment }, Info) {
     const ID = args.ID;
-    const courseInfo = await Course.findOne({ _id: ID }).exec();
-    return { ...courseInfo._doc, ID: ID };
+    const course = await Course.findOne({ _id: ID }).exec();
+    if (course !== null) {
+      course.assignments = course.assignments.map(
+        async (assignmentID) =>
+          await Assignment.findOne({ _id: assignmentID }).exec()
+      );
+    }
+
+    return course;
   },
   async assignment(parent, args, { Assignment, Grade }, Info) {
     const email = args.email;

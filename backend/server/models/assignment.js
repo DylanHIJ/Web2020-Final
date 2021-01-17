@@ -7,6 +7,10 @@ const AssignmentSchema = new Schema({
     type: String,
     required: [true, "Name field is required."],
   },
+  courseID: {
+    type: String,
+    required: [true, "Course ID field is required."],
+  },
   beginTime: {
     type: Date,
     required: [true, "Begin Time field is required."],
@@ -17,11 +21,11 @@ const AssignmentSchema = new Schema({
   },
   problems: {
     type: Array,
-    required: [true, "problem field is required."]
+    required: [true, "problem field is required."],
   },
   grade: {
     type: Number,
-  }
+  },
 });
 
 // Creating a table within database with the defined schema

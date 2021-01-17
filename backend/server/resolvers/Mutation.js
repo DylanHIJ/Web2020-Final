@@ -360,10 +360,10 @@ const Mutation = {
       }).exec();
       await Course.updateOne(
         { _id: assignment.courseID },
-        { assignment: [...course.assignment, ret._id.toString()] }
+        { assignments: [...course.assignments, ret._id.toString()] }
       );
 
-      course.student.forEach(async (email) => {
+      course.students.forEach(async (email) => {
         const grade = {
           email: email,
           assignmentID: ret._id.toString(),
@@ -577,6 +577,61 @@ const Mutation = {
     } else {
       message.type = "Error";
       message.message = "Crash";
+    }
+
+    return message;
+  },
+  async showGrade(parent, args, { Assignment, Problem, Grade }, info) {
+    const ID = args.ID;
+    let message = { type: undefined, message: undefined };
+    if (await Assignment.exists({ _id: ID })) {
+      const grade = Grade.find({ assignmentID: ID }).exec();
+
+      grade.forEach(async (studentGrade) => {
+        const assignment = Assignment.findOne({
+          _id: studentGrade.assignmentID,
+        });
+        let grades = [];
+        assignment.problems.forEach(async (problemID, idx) => {
+          const problem = await Problem.findOne({ _id: problemID }).exec();
+          const studentAns = studentGrade.answers[idx];
+          const Ans = problem.answers[idx];
+          let points = 0;
+          switch (problem.type) {
+            case "TF":
+            case "MULTIPLE_CHOICE":
+              points = studentAns[0] === Ans[0] ? problem.point : 0;
+              break;
+            case "CHECKBOX":
+              let flag = true;
+              Ans.forEach((ans, i) => {
+                if (ans !== studentAns[i]) {
+                  flag = false;
+                }
+              });
+              points = flag ? problem.point : 0;
+              break;
+            case "SHORT_QA":
+              points = studentGrade.grades[idx];
+              break;
+            default:
+              message.type = "Error";
+              message.message = "Problem Type Not Found";
+          }
+          grades.push(points);
+        });
+
+        await Grade.updateOne(
+          { $and: [{ email: studentGrade.email }, { assignmentID: ID }] },
+          { grades: grades, graded: true }
+        );
+      });
+
+      message.type = "Success";
+      message.message = `Show Assignment ${ID}'s Grade`;
+    } else {
+      message.type = "Error";
+      message.message = "Assignment Not Found";
     }
 
     return message;

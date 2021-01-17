@@ -27,6 +27,7 @@ type Mutation {
 
   updateAnswer(data: updateAnswerInput!): ReturnMessage!
   updateGrade(data: updateGradeInput!): ReturnMessage!
+  showGrade(ID: ID): ReturnMessage!
 }
 
 type Subscription {
@@ -36,8 +37,8 @@ type Subscription {
 type User {
   name: String!
   email: String!
-  studentCourses: [Course]!
-  teacherCourses: [Course]!
+  studentCourses: [CourseSimple]!
+  teacherCourses: [CourseSimple]!
   password: String!
   token: String!
 }
@@ -61,8 +62,8 @@ input UpdateUserCourseInput {
   TA: Boolean!
 }
 
-type Course {
-  ID: ID!
+type CourseSimple {
+  _id: ID!
   name: String!
   teacher: String!
   describe: String!
@@ -71,6 +72,18 @@ type Course {
   TAs: [ID]!
   students: [ID]!
   assignments: [ID]!
+}
+
+type Course {
+  _id: ID!
+  name: String!
+  teacher: String!
+  describe: String!
+  classTime: String!
+  classroom: String!
+  TAs: [ID]!
+  students: [ID]!
+  assignments: [Assignment]!
 }
 
 input UpdateCourseInfoInput {
@@ -92,6 +105,7 @@ input CreateCourseInput {
 }
 
 type Assignment {
+  _id: ID!
   courseID: ID!
   name: String!
   beginTime: String!
