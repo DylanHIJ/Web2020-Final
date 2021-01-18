@@ -10,8 +10,8 @@ export const UPDATE_COURSE_INFO = gql`
     $classroom: String!
   ) {
     updateCourseInfo(
+      ID: $cid
       data: {
-        ID: $cid
         name: $name
         teacher: $teacher
         describe: $describe

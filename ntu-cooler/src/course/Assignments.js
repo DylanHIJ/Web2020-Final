@@ -7,15 +7,19 @@ import {
   AccordionSummary,
   AccordionDetails,
   Container,
+  Fab,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
   Typography,
 } from "@material-ui/core";
-import { ExpandMore, NotesRounded } from "@material-ui/icons";
+import { ExpandMore, NotesRounded, Add } from "@material-ui/icons";
 import { GET_COURSE_ASSIGNMENTS } from "../graphql";
 
+const compareDeadline = (a, b) => {
+  return parseInt(a.endTime, 10) - parseInt(b.endTime, 10);
+};
 const useStyles = makeStyles((theme) => ({
   title: {
     marginTop: "6%",
@@ -36,18 +40,6 @@ const useStyles = makeStyles((theme) => ({
     textDecoration: "none",
   },
 }));
-
-// const assignments = {
-//   upcoming: [
-//     { id: "1", name: "Homework 0xA" },
-//     { id: "2", name: "Homework 0xB" },
-//     { id: "3", name: "Homework 0xC" },
-//   ],
-//   due: [
-//     { id: "4", name: "Homework 0x8" },
-//     { id: "5", name: "Homework 0x9" },
-//   ],
-// };
 
 export default function Assignments(props) {
   const { isTA } = props;
@@ -85,6 +77,7 @@ export default function Assignments(props) {
                 (assignment) =>
                   new Date(parseInt(assignment.endTime, 10)) >= new Date()
               )
+              .sort(compareDeadline)
               .map((assignment) => (
                 <NavLink
                   to={{
@@ -130,6 +123,7 @@ export default function Assignments(props) {
                 (assignment) =>
                   new Date(parseInt(assignment.endTime, 10)) < new Date()
               )
+              .sort(compareDeadline)
               .map((assignment) => (
                 <NavLink
                   to={{
@@ -154,6 +148,24 @@ export default function Assignments(props) {
           </List>
         </AccordionDetails>
       </Accordion>
+      {isTA ? (
+        <NavLink
+          to={{
+            pathname: `${match.url}/create`,
+            state: { isTA: isTA },
+          }}
+        >
+          <Fab
+            color="primary"
+            aria-label="add"
+            style={{ position: "fixed", right: "5%", bottom: "5%" }}
+          >
+            <Add />
+          </Fab>
+        </NavLink>
+      ) : (
+        <></>
+      )}
     </Container>
   );
 }

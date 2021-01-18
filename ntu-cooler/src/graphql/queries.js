@@ -69,6 +69,18 @@ export const GET_COURSE_ASSIGNMENTS = gql`
   }
 `;
 
+export const GET_ASSIGNMENT = gql`
+  query getAssignment($aid: ID!) {
+    assignment(ID: $aid) {
+      courseID
+      name
+      beginTime
+      endTime
+      problems
+    }
+  }
+`;
+
 // export const GET_COURSE_GRADES = gql`
 //   query getCourseGrades() {
 //       grades()

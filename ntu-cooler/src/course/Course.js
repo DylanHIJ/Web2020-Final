@@ -7,8 +7,10 @@ import Exams from "./Exams";
 import Grades from "./Grades";
 import Members from "./Members";
 import Settings from "./Settings";
+import AssignmentTA from "./AssignmentTA";
 import Grading from "../components/teachers/Grading";
 import Assignment from "../components/students/Assignment";
+import AddProblem from "../components/teachers/AddProblems";
 import { Switch, Route, Redirect, useRouteMatch } from "react-router-dom";
 import { CssBaseline } from "@material-ui/core";
 import {
@@ -48,7 +50,7 @@ const drawerWidth = 240;
 
 export default function Course(props) {
   let isTA = false;
-  if (props.location.state.isTA) isTA = props.location.state.isTA;
+  if (props.location.state) isTA = props.location.state.isTA;
   const classes = useStyles();
   const match = useRouteMatch();
   const [open, setOpen] = useState(true);
@@ -121,8 +123,24 @@ export default function Course(props) {
             render={() => <Assignments isTA={isTA} />}
           />
           <Route
+            exact
+            path={`${match.path}/assignments/create`}
+            render={() => <AddProblem />}
+          />
+          <Route
+            exact
             path={`${match.path}/assignments/:aid?`}
-            component={Assignment}
+            render={() =>
+              isTA ? <AssignmentTA isTA={isTA} /> : <Assignment />
+            }
+          />
+          <Route
+            path={`${match.path}/assignments/:aid?/modification`}
+            component={Grading}
+          />
+          <Route
+            path={`${match.path}/assignments/:aid?/grading`}
+            component={Grading}
           />
           <Route exact path={`${match.path}/exams`} component={Grading} />
           <Route exact path={`${match.path}/grades`} component={Grades} />
