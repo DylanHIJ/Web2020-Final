@@ -31,22 +31,26 @@ query QueryUser_1 {
     email,
     studentCourses { 
       _id
-      name
-      teacher
-      describe
-      classTime
-      classroom
+      info {
+      	name
+      	teacher
+      	describe
+      	classTime
+      	classroom
+      }
       TAs
       students
       assignments
     },
     teacherCourses {
       _id
-      name
-      teacher
-      describe
-      classTime
-      classroom
+      info {
+      	name
+      	teacher
+      	describe
+      	classTime
+      	classroom
+      }
       TAs
       students
       assignments
@@ -58,22 +62,28 @@ query QueryUser_2 {
   user(email: "b06902024@ntu.edu.tw", password: "12345678"){
     name,
     email,
-    studentCourses {      
-      name
-      teacher
-      describe
-      classTime
-      classroom
-      TAs
-      students
-      assignments
+    studentCourses {
+      _id
+      info{
+      	name
+      	teacher
+      	describe
+      	classTime
+      	classroom
+      }
+      	TAs
+      	students
+      	assignments
     },
     teacherCourses {
-      name
-      teacher
-      describe
-      classTime
-      classroom
+      _id
+      info {
+      	name
+      	teacher
+      	describe
+      	classTime
+      	classroom
+      }
       TAs
       students
       assignments
@@ -98,9 +108,8 @@ mutation DeleteUser_1 {
 }
 
 mutation AddToCourse_1 {
-  addUserToCourse(data: {
+  addUserToCourse(CID: "6005c2dd9268657df537efb2", data: {
     email: "b06902024@ntu.edu.tw"
-    ID: "6004336b92633ac0f5471064"
     TA: false
   }) {
     type
@@ -109,9 +118,8 @@ mutation AddToCourse_1 {
 }
 
 mutation DeleteToCourse_1 {
-  deleteUserFromCourse(data: {
+  deleteUserFromCourse(CID: "6005c2dd9268657df537efb2", data: {
     email: "b06902074@ntu.edu.tw"
-    ID: "6004336b92633ac0f5471064"
     TA: true
   }) {	
     type
@@ -120,9 +128,8 @@ mutation DeleteToCourse_1 {
 }
 
 mutation DeleteToCourse_2 {
-  deleteUserFromCourse(data: {
+  deleteUserFromCourse(CID: "6005c2dd9268657df537efb2", data: {
     email: "b06902024@ntu.edu.tw"
-    ID: "6004336b92633ac0f5471064"
     TA: false
   }) {
     type
@@ -134,13 +141,12 @@ mutation DeleteToCourse_2 {
 - Course
 ```javascript
 mutation CreateCourse_1 {
-  createCourse(data: {
+  createCourse(TA: "b06902074@ntu.edu.tw", data: {
     name: "web 1"
     teacher: "Ric"
     describe: "React.js Course"
     classTime: "Tue 9:10~12:10"
     classroom: "EE 112"
-    TAs: "b06902074@ntu.edu.tw"
   }) {
     type
     message
@@ -148,20 +154,25 @@ mutation CreateCourse_1 {
 }
 
 query QueryCourse_1 {
-  course(ID: "6004336b92633ac0f5471064"){
+  course(CID: "6005c2dd9268657df537efb2"){
     _id
-    name
-    teacher
-    describe
-    classTime
-    classroom
+    info{
+    	name
+    	teacher
+    	describe
+    	classTime
+    	classroom
+    }
     TAs
     students
     assignments {
       _id
-      name
-    	beginTime
-      endTime
+      info {
+      	name
+    		beginTime
+      	endTime
+        weight
+      }
       problems
       courseID
     }
@@ -169,7 +180,7 @@ query QueryCourse_1 {
 }
 
 mutation UpdateCourse_1 {
-  updateCourseInfo(ID: "6004336b92633ac0f5471064", data:{
+  updateCourseInfo(CID: "6005c2dd9268657df537efb2", data:{
     name: "SP"
     teacher: "PJ"
     describe: "system programing"
@@ -182,21 +193,20 @@ mutation UpdateCourse_1 {
 }
 
 mutation DeleteCourse_1 {
-  deleteCourse(ID: "6004336b92633ac0f5471064"){
+  deleteCourse(CID: "6005c2dd9268657df537efb2"){
     type
     message
   }
 }
 ```
-
 - Assignment
 ```javascript
 mutation CreateAssignment_1{
-  createAssignment(data: {
-    courseID: "6004336b92633ac0f5471064"
+  createAssignment(CID: "6005c2dd9268657df537efb2", data: {
     name: "HW1"
     beginTime: "2021-01-01T00:00:00.000Z"
     endTime: "2021-01-31T23:59:59.999Z"
+    weight: 0.2
   }) {
     type
     message
@@ -204,28 +214,32 @@ mutation CreateAssignment_1{
 }
 
 query QueryAssignment_1{
-  assignment(ID: "6004339592633ac0f5471065"){
+  assignment(AID: "6005c43f76697b8371a8797b"){
     _id
-    name
-    beginTime
-    endTime
+    info{
+    	name
+    	beginTime
+    	endTime
+      weight
+    }
     problems
     courseID
   }
 }
 
 mutation DeleteAssignment_1{
-  deleteAssignment(ID: "6004339592633ac0f5471065"){
+  deleteAssignment(AID: "6005c43f76697b8371a8797b"){
     type
     message
   }
 }
 
 mutation UpdataAssignment_1{
-  updateAssignmentInfo(ID: "6004339592633ac0f5471065", data: {
+  updateAssignmentInfo(AID: "6005c43f76697b8371a8797b", data: {
     name: "HW2"
     beginTime: "2021-02-01T00:00:00.000Z"
     endTime: "2021-02-28T23:59:59.999Z" 
+    weight: 0.2
   }){
     type
     message
