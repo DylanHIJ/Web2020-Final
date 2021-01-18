@@ -16,7 +16,7 @@ const Grader = (props) => {
   // Each instance is an object that has two properties, "score" and "comments"
   const [scores, setScores] = useState(
     students.reduce(
-      (o, s) => ({ ...o, [s.studentID]: { score: 0, comment: "" } }),
+      (o, s) => ({ ...o, [s.studentID]: { score: undefined, comment: "" } }),
       {}
     )
   );

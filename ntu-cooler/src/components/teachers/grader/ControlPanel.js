@@ -27,32 +27,65 @@ const ControlPanel = (props) => {
     students.findIndex((ele) => ele.studentID === studentID)
   );
 
-  const [inputValid, setInputValid] = useState(true);
+  const [inputScoreValid, setInputScoreValid] = useState(true);
   const [inputScoreString, setInputScoreString] = useState("0");
+  const [inputCommentString, setInputCommentString] = useState("");
 
-  const inputRef = useRef(null);
+  const inputScoreRef = useRef(null);
 
   useEffect(() => {
-    inputRef.current.focus();
-  });
+    inputScoreRef.current.focus();
+  }, [studentID]);
 
   useEffect(() => {
     const number = inputScoreString === "" ? 0 : parseFloat(inputScoreString);
     if (isNaN(number) || number < 0 || maxScore < number) {
-      setInputValid(false);
+      setInputScoreValid(false);
     } else {
-      setInputValid(true);
-      setScores((prev) => {
-        console.log(prev);
-        return {
-          ...prev,
-          [studentID]: {
-            score: number,
-          },
-        };
-      });
+      setInputScoreValid(true);
+      setScores((prev) => ({
+        ...prev,
+        [studentID]: {
+          score: number,
+          comment: prev[studentID].comment,
+        },
+      }));
     }
   }, [inputScoreString]);
+
+  useEffect(() => {
+    setScores((prev) => ({
+      ...prev,
+      [studentID]: {
+        score: prev[studentID].score,
+        comment: inputCommentString,
+      },
+    }));
+  }, [inputCommentString]);
+
+  const handleEnterAndShiftEnter = (event) => {
+    if (
+      event.code === "Enter" &&
+      !event.shiftKey &&
+      inputScoreValid &&
+      studentIndex !== students.length - 1
+    ) {
+      setStudentIndex((prev) => {
+        setStudentID(students[prev + 1].studentID);
+        return prev + 1;
+      });
+    } else if (
+      event.code === "Enter" &&
+      event.shiftKey &&
+      inputScoreValid &&
+      studentIndex !== 0
+    ) {
+      setStudentIndex((prev) => {
+        setStudentID(students[prev - 1].studentID);
+        return prev - 1;
+      });
+    }
+  };
 
   return (
     <Card variant="outlined" style={{ minHeight: "360px" }}>
@@ -104,45 +137,22 @@ const ControlPanel = (props) => {
         </Grid>
 
         {/* Score Input */}
-        <Container maxWidth="sm" style={{ marginTop: "6px" }}>
+        <Container maxWidth="sm" style={{ marginTop: "12px" }}>
           <Grid container justify="center" alignItems="center">
             <Grid item xs={4}>
               <TextField
-                inputRef={inputRef}
-                id="answer_field"
-                key={`${problemID}-${studentID}`}
+                inputRef={inputScoreRef}
+                id="score"
+                key={`${problemID}-${studentID}-score`}
                 placeholder={0}
-                // defaultValue={scores[studentID].score}
+                defaultValue={scores[studentID].score}
                 onChange={(event) => {
                   setInputScoreString(event.target.value);
                 }}
-                onKeyDown={(event) => {
-                  if (
-                    event.code === "Enter" &&
-                    !event.shiftKey &&
-                    inputValid &&
-                    studentIndex !== students.length - 1
-                  ) {
-                    setStudentIndex((prev) => {
-                      setStudentID(students[prev + 1].studentID);
-                      return prev + 1;
-                    });
-                  } else if (
-                    event.code === "Enter" &&
-                    event.shiftKey &&
-                    inputValid &&
-                    studentIndex !== 0
-                  ) {
-                    setStudentIndex((prev) => {
-                      setStudentID(students[prev - 1].studentID);
-                      return prev - 1;
-                    });
-                  }
-                }}
-                error={!inputValid}
+                onKeyDown={handleEnterAndShiftEnter}
+                error={!inputScoreValid}
                 variant="outlined"
                 margin="dense"
-                style={{ textAlign: "right" }}
               />
             </Grid>
             <Grid item xs={4}>
@@ -150,8 +160,23 @@ const ControlPanel = (props) => {
             </Grid>
           </Grid>
         </Container>
+
         {/* Comment Box */}
-        <p>{JSON.stringify(scores)} for debug &lt;3</p>
+        <Container maxWidth="md" style={{ marginTop: "24px" }}>
+          <TextField
+            id="comment"
+            key={`${problemID}-${studentID}-comment`}
+            placeholder="Some comments"
+            onChange={(event) => {
+              setInputCommentString(event.target.value);
+            }}
+            onKeyDown={handleEnterAndShiftEnter}
+            variant="outlined"
+            fullWidth
+            multiline
+            rows={4}
+          />
+        </Container>
       </CardContent>
     </Card>
   );
