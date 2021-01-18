@@ -31,7 +31,7 @@ const Grading = (props) => {
     <Container maxWidth="lg">
       {/* Assignment Name */}
       <Typography variant="h4" component="h2" className={classes.title}>
-        {assignment.name} (Correction Mode)
+        {assignment.name} (Grader Mode)
       </Typography>
 
       <Grader

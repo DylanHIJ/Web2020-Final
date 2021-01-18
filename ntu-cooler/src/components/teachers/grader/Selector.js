@@ -1,30 +1,15 @@
 import React from "react";
-import {
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  makeStyles,
-} from "@material-ui/core";
-
-const useStyles = makeStyles((theme) => ({
-  formControl: {
-    // minWidth: 120,
-    width: "80%",
-  },
-}));
+import { FormControl, InputLabel, Select, MenuItem } from "@material-ui/core";
 
 const Selector = (props) => {
-  const { value, setValue, options, name } = props;
-
-  const classes = useStyles();
+  const { value, updateFunc, options, name, style } = props;
 
   const handleChange = (event) => {
-    setValue(event.target.value);
+    updateFunc(event.target.value);
   };
 
   return (
-    <FormControl className={classes.formControl} variant="outlined">
+    <FormControl variant="outlined" style={style}>
       <InputLabel htmlFor={name}></InputLabel>
       <Select
         value={value}

@@ -13,7 +13,6 @@ const Highlighter = (props) => {
     text,
     keywords,
   });
-  console.log(chunks);
 
   const displayText = chunks.map((chunk) => {
     const { start, end, highlight, color } = chunk;
