@@ -10,30 +10,31 @@ import {
   Select,
   MenuItem,
 } from "@material-ui/core";
+import OptionModule from "./OptionModule";
 
 const ProblemModule = (props) => {
-  const { problem, updateProblem } = props;
-  const [problemEditing, setProblemEditing] = useState(problem);
+  const { problemIndex, initProblem, updateProblem } = props;
+  const [problem, setProblem] = useState(initProblem);
 
   useEffect(() => {
-    console.log(problemEditing);
-  }, [problemEditing]);
+    updateProblem(problem);
+  }, [problem]);
 
   return (
     <Card variant="outlined" style={{ marginTop: "12px" }}>
       <CardContent>
-        <Grid container spacing={4}>
+        <Grid container spacing={4} style={{ marginBottom: "12px" }}>
           <Grid item xs={9}>
             <TextField
               id="problem-statement"
               label="Problem Statement"
               placeholder=""
               variant="outlined"
-              value={problemEditing.statement}
+              value={problem.statement}
               fullWidth
               multiline
               onChange={(event) => {
-                setProblemEditing((prev) => ({
+                setProblem((prev) => ({
                   ...prev,
                   statement: event.target.value,
                 }));
@@ -48,9 +49,9 @@ const ProblemModule = (props) => {
               <Select
                 labelId="demo-simple-select-outlined-label"
                 id="demo-simple-select-outlined"
-                value={problemEditing.type}
+                value={problem.type}
                 onChange={(event) =>
-                  setProblemEditing((prev) => ({
+                  setProblem((prev) => ({
                     ...prev,
                     type: event.target.value,
                   }))
@@ -65,6 +66,15 @@ const ProblemModule = (props) => {
             </FormControl>
           </Grid>
         </Grid>
+        {problem.type === "MULTIPLE_CHOICE" || problem.type === "CHECKBOX" ? (
+          <OptionModule
+            problemIndex={problemIndex}
+            initOptions={problem.options}
+            updateOptions={(newOptions) => {
+              setProblem((prev) => ({ ...prev, options: newOptions }));
+            }}
+          />
+        ) : null}
       </CardContent>
     </Card>
   );

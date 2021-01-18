@@ -19,13 +19,15 @@ const ProblemEditor = (props) => {
     <Container maxWidth="md">
       <Card variant="outlined" style={{ marginTop: "30px" }}>
         <CardContent>
-          {problems.map((ele, idx) => (
+          {problems.map((ele, index) => (
             <React.Fragment>
               <ProblemModule
-                problem={ele}
+                key={`problem${index}`}
+                problemIndex={index}
+                initProblem={ele}
                 updateProblem={(newProblem) => {
                   setProblems((prev) => {
-                    prev[idx] = newProblem;
+                    prev[index] = newProblem;
                     return prev;
                   });
                 }}
