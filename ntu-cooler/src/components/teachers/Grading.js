@@ -8,7 +8,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
   },
   title: {
-    marginTop: "6%",
+    // marginTop: "6%",
     marginBottom: "3%",
   },
   center: {
@@ -28,7 +28,7 @@ const Grading = (props) => {
   const problems = getProblems(assignmentID).sort((a, b) => a.index - b.index);
 
   return (
-    <Container maxWidth="lg">
+    <Container maxWidth="lg" style={{ marginTop: "6%" }}>
       {/* Assignment Name */}
       <Typography variant="h4" component="h2" className={classes.title}>
         {assignment.name} (Grader Mode)
