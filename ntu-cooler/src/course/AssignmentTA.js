@@ -4,6 +4,8 @@ import { useParams, useRouteMatch, NavLink } from "react-router-dom";
 import { Button, Typography } from "@material-ui/core";
 import {
   PermIdentity,
+  Edit,
+  Check,
   AccessTime,
   Room,
   Description,
@@ -51,18 +53,21 @@ export default function AssignmentTA(props) {
         {data.assignment.name}
       </Typography>
       <hr />
-      <Typography variant="h6" component="h2" color="primary">
+      <Typography paragraph color="primary">
         Begin Time:{" "}
         {new Date(parseInt(data.assignment.beginTime, 10)).toString()}
-      </Typography>
-      <Typography variant="h6" component="h2" color="primary">
+        <br />
         End Time: {new Date(parseInt(data.assignment.endTime, 10)).toString()}
       </Typography>
       <NavLink
         to={{ pathname: `${match.url}/modification`, state: { isTA: isTA } }}
         className={classes.navlink}
       >
-        <Button variant="outlined" className={classes.button}>
+        <Button
+          variant="outlined"
+          className={classes.button}
+          startIcon={<Edit />}
+        >
           Modification
         </Button>
       </NavLink>
@@ -70,7 +75,11 @@ export default function AssignmentTA(props) {
         to={{ pathname: `${match.url}/grading`, state: { isTA: isTA } }}
         className={classes.navlink}
       >
-        <Button variant="outlined" className={classes.button}>
+        <Button
+          variant="outlined"
+          className={classes.button}
+          startIcon={<Check />}
+        >
           Grading
         </Button>
       </NavLink>

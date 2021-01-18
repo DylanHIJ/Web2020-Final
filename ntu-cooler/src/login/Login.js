@@ -66,6 +66,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Login(props) {
+  const { setLogin } = props;
   const classes = useStyles();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -90,6 +91,10 @@ export default function Login(props) {
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && e.target.value) verifyUser();
+  };
+
+  const handleClick = () => {
+    setLogin(false);
   };
 
   return (
@@ -148,6 +153,14 @@ export default function Login(props) {
             >
               Sign In
             </Button>
+            <Grid container>
+              <Grid item xs></Grid>
+              <Grid item>
+                <Link variant="body2" onClick={handleClick}>
+                  {"Don't have an account? Sign Up"}
+                </Link>
+              </Grid>
+            </Grid>
             <Box mt={5}>
               <Copyright />
             </Box>

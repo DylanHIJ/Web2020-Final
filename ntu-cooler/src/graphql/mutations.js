@@ -34,6 +34,15 @@ export const ADD_USER_TO_COURSE = gql`
   }
 `;
 
+export const CREATE_USER = gql`
+  mutation createUser($name: String!, $email: String!, $password: String!) {
+    createUser(data: { name: $name, email: $email, password: $password }) {
+      type
+      message
+    }
+  }
+`;
+
 export const UPDATE_USER_INFO = gql`
   mutation updateUserInfo(
     $email: String!
