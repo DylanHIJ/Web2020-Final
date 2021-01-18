@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useParams } from "react-router-dom";
 import {
   Button,
   Typography,
@@ -8,6 +9,7 @@ import {
 } from "@material-ui/core";
 import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
 import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
+
 import ProblemProgress from "./ProblemProgressBar";
 import Problem from "./problems";
 import { getAssignment } from "./utils";
@@ -27,9 +29,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Assignment = (assignement_id) => {
+const Assignment = (props) => {
   const classes = useStyles();
-  const assignment = getAssignment(assignement_id);
+  const { aid } = useParams();
+  const assignment = getAssignment(aid);
   const problems = assignment.problems;
 
   const [currentProblemIndex, setCurrentProblemIndex] = useState(0);
