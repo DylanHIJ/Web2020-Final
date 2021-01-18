@@ -1,47 +1,29 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   FormControl,
   FormControlLabel,
   FormHelperText,
   Radio,
   RadioGroup,
-  Typography,
-  makeStyles,
 } from "@material-ui/core";
 
-const useStyles = makeStyles((theme) => ({
-  formControl: {
-    margin: theme.spacing(3),
-  },
-  button: {
-    margin: theme.spacing(1, 1, 0, 0),
-  },
-}));
-
 const TrueFalse = (props) => {
-  const { problem, updateFunc } = props;
-  const classes = useStyles();
-
-  const [value, setValue] = useState(null);
-
-  const handleSubmit = () => {};
-  const handleChange = (event) => {
-    updateFunc(problem.pid, event.target.value);
-    setValue(event.target.value);
-  };
+  const { problem, answers, setAnswers } = props;
 
   return (
-    <form onSubmit={handleSubmit}>
-      <FormControl component="fieldset" className={classes.formControl}>
-        <Typography variant="h5" component="h4">
-          {problem.statement}
-        </Typography>
+    <form>
+      <FormControl component="fieldset">
         <FormHelperText>True/False</FormHelperText>
         <RadioGroup
-          aria-label="quiz"
-          name="quiz"
-          value={value}
-          onChange={handleChange}
+          aria-label={`assignment-${problem.problemID}`}
+          name={`assignment-${problem.problemID}`}
+          value={answers[problem.problemID]}
+          onChange={(event) => {
+            setAnswers((prev) => ({
+              ...prev,
+              [problem.problemID]: event.target.value,
+            }));
+          }}
         >
           <FormControlLabel value="True" control={<Radio />} label="True" />
           <FormControlLabel value="False" control={<Radio />} label="False" />

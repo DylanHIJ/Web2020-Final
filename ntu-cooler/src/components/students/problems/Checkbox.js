@@ -1,41 +1,14 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   FormControl,
   FormControlLabel,
   FormHelperText,
   FormGroup,
   Checkbox,
-  Typography,
-  makeStyles,
 } from "@material-ui/core";
 
-const useStyles = makeStyles((theme) => ({
-  formControl: {
-    margin: theme.spacing(3),
-  },
-  button: {
-    margin: theme.spacing(1, 1, 0, 0),
-  },
-}));
-
 const CheckboxProblem = (props) => {
-  const { problem, updateFunc } = props;
-  const classes = useStyles();
-
-  const [value, setValue] = useState([]);
-
-  const handleSubmit = () => {};
-  const handleRadioChange = (event) => {
-    setValue(
-      (prev) =>
-        event.target.checked
-          ? prev.concat([event.target.value])
-          : prev.filter((ele) => ele !== event.target.value),
-      () => {
-        updateFunc(problem.pid, value);
-      }
-    );
-  };
+  const { problem, answers, setAnswers } = props;
 
   const choices = problem.options.map((element) => (
     <FormControlLabel
@@ -47,17 +20,19 @@ const CheckboxProblem = (props) => {
   ));
 
   return (
-    <form onSubmit={handleSubmit}>
-      <FormControl component="fieldset" className={classes.formControl}>
-        <Typography variant="h5" component="h4">
-          {problem.statement}
-        </Typography>
+    <form>
+      <FormControl component="fieldset">
         <FormHelperText>Select all that apply.</FormHelperText>
         <FormGroup
-          aria-label="quiz"
-          name="quiz"
-          value={value}
-          onChange={handleRadioChange}
+          aria-label={`assignment-${problem.problemID}`}
+          name={`assignment-${problem.problemID}`}
+          value={answers[problem.problemID]}
+          onChange={(event) => {
+            setAnswers((prev) => ({
+              ...prev,
+              [problem.problemID]: event.target.value,
+            }));
+          }}
         >
           {choices}
         </FormGroup>

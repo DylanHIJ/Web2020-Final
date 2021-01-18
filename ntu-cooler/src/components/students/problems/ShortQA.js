@@ -1,52 +1,30 @@
-import React, { useState } from "react";
-import {
-  FormControl,
-  FormLabel,
-  FormHelperText,
-  Typography,
-  TextField,
-  makeStyles,
-  TextareaAutosize,
-} from "@material-ui/core";
-
-const useStyles = makeStyles((theme) => ({
-  formControl: {
-    margin: theme.spacing(3),
-  },
-  button: {
-    margin: theme.spacing(1, 1, 0, 0),
-  },
-}));
+import React from "react";
+import { FormControl, FormHelperText, TextField } from "@material-ui/core";
 
 const ShortQA = (props) => {
-  const { problem } = props;
-  const classes = useStyles();
-
-  const [value, setValue] = useState("");
-
-  const handleSubmit = () => {};
-  const handleChange = (event) => {
-    setValue(event.target.value);
-  };
+  const { problem, answers, setAnswers } = props;
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form>
       <FormControl component="fieldset" style={{ width: "90%" }}>
-        <Typography variant="h5" component="h4">
-          {problem.statement}
-        </Typography>
+        <FormHelperText>Short answer problem</FormHelperText>
         <TextField
-          id="answer_field"
-          label="Input Here"
+          name={`assignment-${problem.problemID}`}
+          // label="Input here"
+          variant="outlined"
           multiline
-          value={value}
-          onChange={handleChange}
-          variant="filled"
           style={{
-            margin: 8,
+            marginTop: 24,
+          }}
+          rows={6}
+          value={answers[problem.problemID]}
+          onChange={(event) => {
+            setAnswers((prev) => ({
+              ...prev,
+              [problem.problemID]: event.target.value,
+            }));
           }}
         />
-        <FormHelperText>helper text tbd</FormHelperText>
       </FormControl>
     </form>
   );
