@@ -118,7 +118,7 @@ export default function Course(props) {
           <Route
             exact
             path={`${match.path}/assignments`}
-            component={Assignments}
+            render={() => <Assignments isTA={isTA} />}
           />
           <Route
             path={`${match.path}/assignments/:aid?`}

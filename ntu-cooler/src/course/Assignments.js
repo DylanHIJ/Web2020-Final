@@ -49,7 +49,8 @@ const useStyles = makeStyles((theme) => ({
 //   ],
 // };
 
-export default function Assignments() {
+export default function Assignments(props) {
+  const { isTA } = props;
   const classes = useStyles();
   const match = useRouteMatch();
   const { cid } = useParams();
@@ -86,7 +87,10 @@ export default function Assignments() {
               )
               .map((assignment) => (
                 <NavLink
-                  to={`${match.url}/${assignment._id}`}
+                  to={{
+                    pathname: `${match.url}/${assignment._id}`,
+                    state: { isTA: isTA },
+                  }}
                   className={classes.navlink}
                 >
                   <ListItem button>
@@ -127,17 +131,25 @@ export default function Assignments() {
                   new Date(parseInt(assignment.endTime, 10)) < new Date()
               )
               .map((assignment) => (
-                <ListItem button>
-                  <ListItemIcon>
-                    <NotesRounded />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={assignment.name}
-                    secondary={`Deadline: ${new Date(
-                      parseInt(assignment.endTime, 10)
-                    )}`}
-                  />
-                </ListItem>
+                <NavLink
+                  to={{
+                    pathname: `${match.url}/${assignment._id}`,
+                    state: { isTA: isTA },
+                  }}
+                  className={classes.navlink}
+                >
+                  <ListItem button>
+                    <ListItemIcon>
+                      <NotesRounded />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={assignment.name}
+                      secondary={`Deadline: ${new Date(
+                        parseInt(assignment.endTime, 10)
+                      )}`}
+                    />
+                  </ListItem>
+                </NavLink>
               ))}
           </List>
         </AccordionDetails>
