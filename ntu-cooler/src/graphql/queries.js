@@ -30,13 +30,17 @@ export const GET_USER_COURSES = gql`
     user(token: $token) {
       studentCourses {
         _id
-        name
-        teacher
+        info {
+          name
+          teacher
+        }
       }
       teacherCourses {
         _id
-        name
-        teacher
+        info {
+          name
+          teacher
+        }
       }
     }
   }
@@ -44,26 +48,29 @@ export const GET_USER_COURSES = gql`
 
 export const GET_COURSE_INFO = gql`
   query getCourseInfo($cid: ID!) {
-    course(ID: $cid) {
-      name
-      teacher
-      classTime
-      classroom
-      describe
+    course(CID: $cid) {
+      info {
+        name
+        teacher
+        describe
+        classTime
+        classroom
+      }
     }
   }
 `;
 
 export const GET_COURSE_ASSIGNMENTS = gql`
   query getCourseAssignments($cid: ID!) {
-    course(ID: $cid) {
+    course(CID: $cid) {
       assignments {
         _id
         courseID
-        name
-        beginTime
-        endTime
-        problems
+        info {
+          name
+          beginTime
+          endTime
+        }
       }
     }
   }
@@ -71,11 +78,13 @@ export const GET_COURSE_ASSIGNMENTS = gql`
 
 export const GET_ASSIGNMENT = gql`
   query getAssignment($aid: ID!) {
-    assignment(ID: $aid) {
+    assignment(AID: $aid) {
       courseID
-      name
-      beginTime
-      endTime
+      info {
+        name
+        beginTime
+        endTime
+      }
       problems
     }
   }

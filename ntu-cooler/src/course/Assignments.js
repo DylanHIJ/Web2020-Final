@@ -23,7 +23,7 @@ const compareDeadline = (a, b) => {
 const useStyles = makeStyles((theme) => ({
   title: {
     marginTop: "6%",
-    marginBottom: "3%",
+    marginBottom: "1%",
   },
   root: {
     display: "flex",
@@ -50,20 +50,72 @@ export default function Assignments(props) {
     variables: { cid: cid },
   });
   if (loading) return "Loading";
-
   return (
     <Container maxWidth="lg">
       <Typography variant="h4" component="h2" className={classes.title}>
         Assignments
       </Typography>
-      <Accordion defaultExpanded="true">
+      <hr />
+      {isTA ? (
+        <Accordion defaultExpanded={true}>
+          <AccordionSummary
+            expandIcon={<ExpandMore />}
+            aria-controls="panel1a-content"
+            id="panel1a-header"
+          >
+            <Typography variant="h6" className={classes.heading}>
+              Upcoming Assignments
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <List
+              component="nav"
+              aria-label="main mailbox folders"
+              className={classes.list}
+            >
+              {data.course.assignments
+                .filter(
+                  (assignment) =>
+                    new Date(parseInt(assignment.info.beginTime, 10)) >
+                    new Date()
+                )
+                .sort(compareDeadline)
+                .map((assignment) => (
+                  <NavLink
+                    to={{
+                      pathname: `${match.url}/${assignment._id}`,
+                      state: { isTA: isTA },
+                    }}
+                    className={classes.navlink}
+                    key={assignment._id}
+                  >
+                    <ListItem button>
+                      <ListItemIcon>
+                        <NotesRounded />
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={assignment.info.name}
+                        secondary={`Deadline: ${new Date(
+                          parseInt(assignment.info.endTime, 10)
+                        )}`}
+                      />
+                    </ListItem>
+                  </NavLink>
+                ))}
+            </List>
+          </AccordionDetails>
+        </Accordion>
+      ) : (
+        <></>
+      )}
+      <Accordion defaultExpanded={true}>
         <AccordionSummary
           expandIcon={<ExpandMore />}
           aria-controls="panel1a-content"
           id="panel1a-header"
         >
           <Typography variant="h6" className={classes.heading}>
-            Upcoming Assignments
+            Ongoing Assignments
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
@@ -75,7 +127,10 @@ export default function Assignments(props) {
             {data.course.assignments
               .filter(
                 (assignment) =>
-                  new Date(parseInt(assignment.endTime, 10)) >= new Date()
+                  new Date(parseInt(assignment.info.endTime, 10)) >=
+                    new Date() &&
+                  new Date(parseInt(assignment.info.beginTime, 10)) <=
+                    new Date()
               )
               .sort(compareDeadline)
               .map((assignment) => (
@@ -85,15 +140,16 @@ export default function Assignments(props) {
                     state: { isTA: isTA },
                   }}
                   className={classes.navlink}
+                  key={assignment._id}
                 >
                   <ListItem button>
                     <ListItemIcon>
                       <NotesRounded />
                     </ListItemIcon>
                     <ListItemText
-                      primary={assignment.name}
+                      primary={assignment.info.name}
                       secondary={`Deadline: ${new Date(
-                        parseInt(assignment.endTime, 10)
+                        parseInt(assignment.info.endTime, 10)
                       )}`}
                     />
                   </ListItem>
@@ -102,7 +158,7 @@ export default function Assignments(props) {
           </List>
         </AccordionDetails>
       </Accordion>
-      <Accordion defaultExpanded="true">
+      <Accordion defaultExpanded={true}>
         <AccordionSummary
           expandIcon={<ExpandMore />}
           aria-controls="panel2a-content"
@@ -121,7 +177,7 @@ export default function Assignments(props) {
             {data.course.assignments
               .filter(
                 (assignment) =>
-                  new Date(parseInt(assignment.endTime, 10)) < new Date()
+                  new Date(parseInt(assignment.info.endTime, 10)) < new Date()
               )
               .sort(compareDeadline)
               .map((assignment) => (
@@ -131,15 +187,16 @@ export default function Assignments(props) {
                     state: { isTA: isTA },
                   }}
                   className={classes.navlink}
+                  key={assignment._id}
                 >
                   <ListItem button>
                     <ListItemIcon>
                       <NotesRounded />
                     </ListItemIcon>
                     <ListItemText
-                      primary={assignment.name}
+                      primary={assignment.info.name}
                       secondary={`Deadline: ${new Date(
-                        parseInt(assignment.endTime, 10)
+                        parseInt(assignment.info.endTime, 10)
                       )}`}
                     />
                   </ListItem>

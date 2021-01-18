@@ -71,7 +71,7 @@ export default function NewCourseDialog(props) {
           describe: description,
           classTime: classTime,
           classroom: classroom,
-          TAs: data.user.email,
+          TA: data.user.email,
         },
       });
       setSnackbarOpen(true);

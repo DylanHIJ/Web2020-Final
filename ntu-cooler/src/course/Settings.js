@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     marginTop: "6%",
-    marginBottom: "3%",
+    marginBottom: "1%",
   },
 }));
 
@@ -41,9 +41,9 @@ export default function AccountEdit() {
 
   useEffect(() => {
     if (!loading) {
-      setClassroom(data.course.classroom);
-      setClassTime(data.course.classTime);
-      setDescription(data.course.describe);
+      setClassroom(data.course.info.classroom);
+      setClassTime(data.course.info.classTime);
+      setDescription(data.course.info.describe);
     }
   }, [loading, data]);
 
@@ -53,8 +53,8 @@ export default function AccountEdit() {
     await updateCourseInfo({
       variables: {
         cid: cid,
-        name: data.course.name,
-        teacher: data.course.teacher,
+        name: data.course.info.name,
+        teacher: data.course.info.teacher,
         describe: description,
         classTime: classTime,
         classroom: classroom,
@@ -77,6 +77,7 @@ export default function AccountEdit() {
         <Typography variant="h4" component="h2" className={classes.title}>
           Course Settings
         </Typography>
+        <hr />
         <form className={classes.root} noValidate autoComplete="off">
           <TextField
             id="course-name"
@@ -84,7 +85,7 @@ export default function AccountEdit() {
             style={{ margin: 16, width: "50%" }}
             placeholder="Course Name"
             margin="normal"
-            value={data.course.name}
+            value={data.course.info.name}
             disabled
             InputLabelProps={{
               shrink: true,
@@ -96,7 +97,7 @@ export default function AccountEdit() {
             style={{ margin: 16, width: "50%" }}
             placeholder="Instructor"
             margin="normal"
-            value={data.course.teacher}
+            value={data.course.info.teacher}
             disabled
             InputLabelProps={{
               shrink: true,

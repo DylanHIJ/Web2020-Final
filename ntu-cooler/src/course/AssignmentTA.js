@@ -2,14 +2,7 @@ import React from "react";
 import { useQuery } from "@apollo/client";
 import { useParams, useRouteMatch, NavLink } from "react-router-dom";
 import { Button, Typography } from "@material-ui/core";
-import {
-  PermIdentity,
-  Edit,
-  Check,
-  AccessTime,
-  Room,
-  Description,
-} from "@material-ui/icons";
+import { Edit, Check } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 import { GET_ASSIGNMENT } from "../graphql";
 
@@ -50,14 +43,15 @@ export default function AssignmentTA(props) {
   return (
     <>
       <Typography variant="h4" component="h2" className={classes.title}>
-        {data.assignment.name}
+        {data.assignment.info.name}
       </Typography>
       <hr />
       <Typography paragraph color="primary">
         Begin Time:{" "}
-        {new Date(parseInt(data.assignment.beginTime, 10)).toString()}
+        {new Date(parseInt(data.assignment.info.beginTime, 10)).toString()}
         <br />
-        End Time: {new Date(parseInt(data.assignment.endTime, 10)).toString()}
+        End Time:{" "}
+        {new Date(parseInt(data.assignment.info.endTime, 10)).toString()}
       </Typography>
       <NavLink
         to={{ pathname: `${match.url}/modification`, state: { isTA: isTA } }}

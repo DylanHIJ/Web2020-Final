@@ -25,6 +25,8 @@ import {
   KeyboardArrowLeft,
   KeyboardArrowRight,
   LastPage,
+  SupervisorAccount,
+  EmojiPeople,
 } from "@material-ui/icons";
 import { ADD_USER_TO_COURSE } from "../graphql";
 
@@ -135,7 +137,7 @@ const useStyles2 = makeStyles({
   },
   title: {
     marginTop: "6%",
-    marginBottom: "3%",
+    marginBottom: "1%",
   },
 });
 
@@ -169,14 +171,14 @@ export default function Members() {
 
   const handleClickStudent = async () => {
     await addUserToCourse({
-      variables: { email: email, ID: cid, TA: false },
+      variables: { email: email, cid: cid, TA: false },
     });
     setOpen(true);
   };
 
   const handleClickTA = async () => {
     await addUserToCourse({
-      variables: { email: email, ID: cid, TA: true },
+      variables: { email: email, cid: cid, TA: true },
     });
     setOpen(true);
   };
@@ -186,6 +188,7 @@ export default function Members() {
       <Typography variant="h4" component="h2" className={classes.title}>
         Members
       </Typography>
+      <hr />
       {/* <TableContainer component={Paper}>
         <Table className={classes.table} aria-label="custom pagination table">
           <TableBody>
@@ -250,6 +253,7 @@ export default function Members() {
         color="primary"
         style={{ margin: 8 }}
         onClick={handleClickStudent}
+        startIcon={<EmojiPeople />}
       >
         Add New Student
       </Button>
@@ -258,6 +262,7 @@ export default function Members() {
         color="primary"
         style={{ margin: 8 }}
         onClick={handleClickTA}
+        startIcon={<SupervisorAccount />}
       >
         Add New TA
       </Button>

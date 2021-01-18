@@ -27,32 +27,6 @@ export default function CourseOverview() {
   });
 
   if (loading) return "Loading";
-  // const courses = [
-  //   {
-  //     name: "Computer Security",
-  //     id: "CSIE7016",
-  //   },
-  //   {
-  //     name: "Psychology",
-  //     id: "PSY1007-04",
-  //   },
-  //   {
-  //     name: "Machine Learning",
-  //     id: "CSIE1126",
-  //   },
-  //   {
-  //     name: "Web Programming",
-  //     id: "EE9983",
-  //   },
-  //   {
-  //     name: "Data Structure and Algorithm",
-  //     id: "CSIE1111",
-  //   },
-  //   {
-  //     name: "Linear Algebra",
-  //     id: "CSIE3267",
-  //   },
-  // ];
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -67,22 +41,30 @@ export default function CourseOverview() {
       <Typography variant="h4" component="h2" className={classes.title}>
         Course Overview
       </Typography>
-      <Typography variant="h5" component="h2" className={classes.subtitle}>
-        Student
-      </Typography>
+      {data.user.studentCourses.length !== 0 ? (
+        <Typography variant="h5" component="h2" className={classes.subtitle}>
+          Student Courses
+        </Typography>
+      ) : (
+        <></>
+      )}
       <Grid container spacing={4}>
         {data.user.studentCourses.map((course) => (
-          <Grid key={course.name} item xs={4}>
+          <Grid key={course._id} item xs={4}>
             <CourseCard course={course} isTA={false} />
           </Grid>
         ))}
       </Grid>
-      <Typography variant="h5" component="h2" className={classes.subtitle}>
-        TA
-      </Typography>
+      {data.user.teacherCourses.length !== 0 ? (
+        <Typography variant="h5" component="h2" className={classes.subtitle}>
+          TA Courses
+        </Typography>
+      ) : (
+        <></>
+      )}
       <Grid container spacing={4}>
         {data.user.teacherCourses.map((course) => (
-          <Grid key={course.name} item xs={4}>
+          <Grid key={course._id} item xs={4}>
             <CourseCard course={course} isTA={true} />
           </Grid>
         ))}

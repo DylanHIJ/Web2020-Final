@@ -25,7 +25,7 @@ function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {"Copyright © "}
-      <Link color="inherit" href="https://material-ui.com/">
+      <Link color="inherit" href="https://www.youtube.com/watch?v=_Z3IxJT4tUM">
         NTU COOLER
       </Link>{" "}
       {new Date().getFullYear()}

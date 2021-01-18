@@ -47,7 +47,7 @@ export default function CourseInfo() {
     <>
       <Container maxWidth="lg">
         <Typography variant="h4" component="h2" className={classes.title}>
-          {data.course.name}
+          {data.course.info.name}
         </Typography>
         <hr />
         <List className={classes.root}>
@@ -59,7 +59,7 @@ export default function CourseInfo() {
             </ListItemAvatar>
             <ListItemText
               primary="Instructor"
-              secondary={data.course.teacher}
+              secondary={data.course.info.teacher}
             />
           </ListItem>
           <Divider variant="inset" component="li" />
@@ -71,7 +71,7 @@ export default function CourseInfo() {
             </ListItemAvatar>
             <ListItemText
               primary="Class Time"
-              secondary={data.course.classTime}
+              secondary={data.course.info.classTime}
             />
           </ListItem>
           <Divider variant="inset" component="li" />
@@ -83,7 +83,7 @@ export default function CourseInfo() {
             </ListItemAvatar>
             <ListItemText
               primary="Classroom"
-              secondary={data.course.classroom}
+              secondary={data.course.info.classroom}
             />
           </ListItem>
           <Divider variant="inset" component="li" />
@@ -95,7 +95,7 @@ export default function CourseInfo() {
             </ListItemAvatar>
             <ListItemText
               primary="Description"
-              secondary={data.course.describe}
+              secondary={data.course.info.describe}
             />
           </ListItem>
         </List>

@@ -16,7 +16,7 @@ import { ExpandMore, NotesRounded } from "@material-ui/icons";
 const useStyles = makeStyles((theme) => ({
   title: {
     marginTop: "6%",
-    marginBottom: "3%",
+    marginBottom: "1%",
   },
   root: {
     display: "flex",
@@ -37,6 +37,7 @@ export default function Assignments() {
       <Typography variant="h4" component="h2" className={classes.title}>
         Exams
       </Typography>
+      <hr />
       <Accordion defaultExpanded="true">
         <AccordionSummary
           expandIcon={<ExpandMore />}

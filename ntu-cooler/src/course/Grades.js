@@ -46,7 +46,7 @@ const useStyles = makeStyles({
   },
   title: {
     marginTop: "6%",
-    marginBottom: "3%",
+    marginBottom: "1%",
   },
 });
 
@@ -57,6 +57,7 @@ export default function Grades() {
       <Typography variant="h4" component="h2" className={classes.title}>
         Grades
       </Typography>
+      <hr />
       <TableContainer component={Paper}>
         <Table className={classes.table} aria-label="customized table">
           <TableHead>

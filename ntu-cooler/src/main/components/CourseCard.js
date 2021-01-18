@@ -65,7 +65,7 @@ export default function CourseCard(props) {
         <CardMedia
           className={classes.media}
           image="/defaultCourseImg.jpeg"
-          title={`${course.name}`}
+          title={`${course.info.name}`}
         />
       </NavLink>
 
@@ -85,8 +85,8 @@ export default function CourseCard(props) {
               <MoreVertIcon />
             </IconButton>
           }
-          title={course.name}
-          subheader={course.teacher}
+          title={course.info.name}
+          subheader={course.info.teacher}
         ></CardHeader>
       </NavLink>
 

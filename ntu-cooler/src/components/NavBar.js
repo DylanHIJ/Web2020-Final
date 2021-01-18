@@ -1,5 +1,5 @@
 import Cookies from "js-cookie";
-import React, { useState } from "react";
+import React from "react";
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
 import { NavLink } from "react-router-dom";
@@ -7,8 +7,6 @@ import {
   AppBar,
   Button,
   Toolbar,
-  Menu,
-  MenuItem,
   Typography,
   IconButton,
 } from "@material-ui/core";
@@ -50,8 +48,6 @@ const useStyles = makeStyles((theme) => ({
 export default function NavBar(props) {
   const { open, setOpen } = props;
   const classes = useStyles();
-  const [anchorEl, setAnchorEl] = useState(null);
-  const isMenuOpen = Boolean(anchorEl);
 
   const handleClick = async () => {
     await Cookies.remove("token");
@@ -62,30 +58,7 @@ export default function NavBar(props) {
     setOpen(true);
   };
 
-  const handleProfileMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
-
   const menuId = "primary-search-account-menu";
-
-  const renderMenu = (
-    <Menu
-      anchorEl={anchorEl}
-      anchorOrigin={{ vertical: "top", horizontal: "right" }}
-      id={menuId}
-      keepMounted
-      transformOrigin={{ vertical: "top", horizontal: "right" }}
-      open={isMenuOpen}
-      onClose={handleMenuClose}
-    >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-    </Menu>
-  );
 
   return (
     <>
@@ -121,7 +94,6 @@ export default function NavBar(props) {
                 aria-label="account of current user"
                 aria-controls={menuId}
                 aria-haspopup="true"
-                onClick={handleProfileMenuOpen}
                 color="inherit"
               >
                 <AccountCircle />
@@ -130,7 +102,6 @@ export default function NavBar(props) {
           </div>
         </Toolbar>
       </AppBar>
-      {renderMenu}
     </>
   );
 }

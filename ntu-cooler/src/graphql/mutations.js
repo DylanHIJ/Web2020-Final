@@ -10,7 +10,7 @@ export const UPDATE_COURSE_INFO = gql`
     $classroom: String!
   ) {
     updateCourseInfo(
-      ID: $cid
+      CID: $cid
       data: {
         name: $name
         teacher: $teacher
@@ -26,8 +26,8 @@ export const UPDATE_COURSE_INFO = gql`
 `;
 
 export const ADD_USER_TO_COURSE = gql`
-  mutation addUserToCourse($email: String!, $ID: ID!, $TA: Boolean!) {
-    addUserToCourse(data: { email: $email, ID: $ID, TA: $TA }) {
+  mutation addUserToCourse($cid: ID!, $email: String!, $TA: Boolean!) {
+    addUserToCourse(CID: $cid, data: { email: $email, TA: $TA }) {
       type
       message
     }
@@ -71,16 +71,16 @@ export const CREATE_COURSE = gql`
     $describe: String!
     $classTime: String!
     $classroom: String!
-    $TAs: ID!
+    $TA: String!
   ) {
     createCourse(
+      TA: $TA
       data: {
         name: $name
         teacher: $teacher
         describe: $describe
         classTime: $classTime
         classroom: $classroom
-        TAs: $TAs
       }
     ) {
       type
