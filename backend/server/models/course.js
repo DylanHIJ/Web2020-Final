@@ -3,25 +3,28 @@ const Schema = mongoose.Schema;
 
 // Creating a schema, sort of like working with an ORM
 const CourseSchema = new Schema({
-  name: {
-    type: String,
-    required: [true, "Name field is required."],
-  },
-  teacher: {
-    type: String,
-    required: [true, "Teacher field is required."],
-  },
-  describe: {
-    type: String,
-    required: [true, "Discribe field is required."],
-  },
-  classTime: {
-    type: String,
-    required: [true, "Class Time field is required."],
-  },
-  classroom: {
-    type: String,
-    required: [true, "Class Room field is required."],
+  info: {
+    name: {
+      type: String,
+      required: [true, "Name field is required."],
+    },
+    teacher: {
+      type: String,
+      required: [true, "Teacher field is required."],
+    },
+    describe: {
+      type: String,
+      required: [true, "Discribe field is required."],
+    },
+    classTime: {
+      type: String,
+      required: [true, "Class Time field is required."],
+    },
+    classroom: {
+      type: String,
+      required: [true, "Class Room field is required."],
+    },
+    // required: [true, "info field is required."],
   },
   TAs: {
     type: Array,

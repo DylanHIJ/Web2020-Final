@@ -1,38 +1,36 @@
 type Query {
   user(email: String, password: String, token: String): User
-  course(ID: ID!): Course
-  assignment(ID: ID!): Assignment
-  problem(ID: ID!): Problem
-  shortQAProblem(ID: ID!): [Problem]!
+  course(CID: ID!): Course
+  assignment(AID: ID!): Assignment
+  problem(PID: ID!): Problem
+  shortQAProblem(AID: ID!): [Problem]!
   studentAnswer(query: gradeAnswerInput!): String
-  getGrade(email: String!, ID: ID!): Float
+  getGrade(email: String!, AID: ID!): Float
+  getAnswer(email: String!, AID: ID!): [Answer]
 }
 
 type Mutation {
   createUser(data: CreateUserInput!): ReturnMessage!
   deleteUser(email: String!): ReturnMessage!
   updateUserInfo(email: String!, data: UpdateUserInfoInput!): ReturnMessage!
-  addUserToCourse(data: UpdateUserCourseInput!): ReturnMessage!
-  deleteUserFromCourse(data: UpdateUserCourseInput!): ReturnMessage!
+  addUserToCourse(CID: ID!, data: UpdateUserCourseInput!): ReturnMessage!
+  deleteUserFromCourse(CID: ID!, data: UpdateUserCourseInput!): ReturnMessage!
 
-  createCourse(data: CreateCourseInput!): ReturnMessage!
-  deleteCourse(ID: ID!): ReturnMessage!
-  updateCourseInfo(ID: ID!, data: UpdateCourseInfoInput!): ReturnMessage!
+  createCourse(TA: String!, data: CourseInfoInput!): ReturnMessage!
+  deleteCourse(CID: ID!): ReturnMessage!
+  updateCourseInfo(CID: ID!, data: CourseInfoInput!): ReturnMessage!
 
-  createAssignment(data: CreateAssignmentInput!): ReturnMessage!
-  deleteAssignment(ID: ID!): ReturnMessage!
-  updateAssignmentInfo(
-    ID: ID!
-    data: updateAssignmentInfoInput!
-  ): ReturnMessage!
+  createAssignment(CID: ID!, data: AssignmentInput!): ReturnMessage!
+  deleteAssignment(AID: ID!): ReturnMessage!
+  updateAssignmentInfo(AID: ID!, data: AssignmentInput!): ReturnMessage!
 
-  createProblem(data: CreateProblemInput!): ReturnMessage!
-  deleteProblem(ID: ID!): ReturnMessage!
-  updateProblemInfo(ID: ID!, data: UpdateProblemInfoInput!): ReturnMessage!
+  createProblem(AID: ID!, data: ProblemInput!): ReturnMessage!
+  deleteProblem(PID: ID!): ReturnMessage!
+  updateProblemInfo(PID: ID!, data: ProblemInput!): ReturnMessage!
 
   updateAnswer(data: updateAnswerInput!): ReturnMessage!
   updateGrade(data: updateGradeInput!): ReturnMessage!
-  showGrade(ID: ID): ReturnMessage!
+  showGrade(AID: ID): ReturnMessage!
 }
 
 type User {
@@ -58,17 +56,28 @@ input UpdateUserInfoInput {
 
 input UpdateUserCourseInput {
   email: String!
-  ID: ID!
   TA: Boolean!
 }
 
-type CourseSimple {
-  _id: ID!
+input CourseInfoInput {
   name: String!
   teacher: String!
   describe: String!
   classTime: String!
   classroom: String!
+}
+
+type CourseInfo {
+  name: String!
+  teacher: String!
+  describe: String!
+  classTime: String!
+  classroom: String!
+}
+
+type CourseSimple {
+  _id: ID!
+  info: CourseInfo!
   TAs: [ID]!
   students: [ID]!
   assignments: [ID]!
@@ -76,53 +85,41 @@ type CourseSimple {
 
 type Course {
   _id: ID!
-  name: String!
-  teacher: String!
-  describe: String!
-  classTime: String!
-  classroom: String!
+  info: CourseInfo!
   TAs: [ID]!
   students: [ID]!
   assignments: [Assignment]!
 }
 
-input UpdateCourseInfoInput {
+type AssignmentInfo {
   name: String!
-  teacher: String!
-  describe: String!
-  classTime: String!
-  classroom: String!
-}
-
-input CreateCourseInput {
-  name: String!
-  teacher: String!
-  describe: String!
-  classTime: String!
-  classroom: String!
-  TAs: ID!
+  beginTime: String!
+  endTime: String!
+  weight: Float!
 }
 
 type Assignment {
   _id: ID!
   courseID: ID!
-  name: String!
-  beginTime: String!
-  endTime: String!
+  info: AssignmentInfo!
   problems: [ID]!
 }
 
-input CreateAssignmentInput {
-  courseID: ID!
+input AssignmentInput {
   name: String!
   beginTime: String!
   endTime: String!
+  weight: Float!
 }
 
-input updateAssignmentInfoInput {
-  name: String!
-  beginTime: String!
-  endTime: String!
+input keywordInput {
+  color: String!
+  keyword: String!
+}
+
+type keyword {
+  color: String!
+  keyword: String!
 }
 
 type Problem {
@@ -133,27 +130,17 @@ type Problem {
   statement: String!
   options: [String]!
   answers: [String]!
-  keywords: [String]!
+  keywords: [keyword]!
   index: Int!
 }
 
-input CreateProblemInput {
-  assignmentID: ID!
+input ProblemInput {
   type: String!
   point: Float!
   statement: String!
-  options: [String]!
-  answers: [String]!
-  keywords: [String]!
-}
-
-input UpdateProblemInfoInput {
-  type: String!
-  point: Float!
-  statement: String!
-  options: [String]!
-  answers: [String]!
-  keywords: [String]!
+  options: [String]
+  answers: [String]
+  keywords: [keywordInput]
 }
 
 type Grade {
@@ -181,6 +168,11 @@ input updateGradeInput {
   assignmentID: ID!
   problemID: ID!
   givenGrade: Float!
+}
+
+type Answer {
+  problemID: ID!
+  answer: [String]!
 }
 
 type ReturnMessage {

@@ -17,13 +17,13 @@ const deleteGrade = async (Grade, email, assignmentID) => {
   });
 };
 
-const addCourseToUserDB = async (User, email, ID, TA) => {
+const addCourseToUserDB = async (User, email, CID, TA) => {
   let message = { type: undefined, message: undefined };
   if (await User.exists({ email: email })) {
     const userInfo = await User.findOne({ email: email }).exec();
     if (
-      userInfo.teacherCourses.includes(ID) ||
-      userInfo.studentCourses.includes(ID)
+      userInfo.teacherCourses.includes(CID) ||
+      userInfo.studentCourses.includes(CID)
     ) {
       message.type = "Error";
       message.message = "Course Existed";
@@ -31,11 +31,11 @@ const addCourseToUserDB = async (User, email, ID, TA) => {
       await User.updateOne(
         { email: email },
         TA
-          ? { teacherCourses: [...userInfo.teacherCourses, ID] }
-          : { studentCourses: [...userInfo.studentCourses, ID] }
+          ? { teacherCourses: [...userInfo.teacherCourses, CID] }
+          : { studentCourses: [...userInfo.studentCourses, CID] }
       );
       message.type = "Success";
-      message.message = `Add Course ${ID} (${
+      message.message = `Add Course ${CID} (${
         TA ? "Teacher" : "Student"
       }) to ${email}`;
     }
@@ -47,7 +47,7 @@ const addCourseToUserDB = async (User, email, ID, TA) => {
   return message;
 };
 
-const deleteCourseInUserDB = async (User, email, ID, TA) => {
+const deleteCourseInUserDB = async (User, email, CID, TA) => {
   let message = { type: undefined, message: undefined };
   if (await User.exists({ email: email })) {
     const userInfo = await User.findOne({ email: email }).exec();
@@ -56,29 +56,17 @@ const deleteCourseInUserDB = async (User, email, ID, TA) => {
       TA
         ? {
             teacherCourses: userInfo.teacherCourses.filter(
-              (courseID) => courseID !== ID
+              (courseID) => courseID !== CID
             ),
           }
         : {
             studentCourses: userInfo.studentCourses.filter(
-              (courseID) => courseID !== ID
+              (courseID) => courseID !== CID
             ),
           }
     );
-    console.log(
-      `Mutation\n`,
-      userInfo,
-      TA ? userInfo.teacherCourses : userInfo.studentCourses,
-      TA
-        ? userInfo.teacherCourses.filter((courseID) => courseID !== ID)
-        : userInfo.studentCourses.filter((courseID) => courseID !== ID),
-      (TA
-        ? userInfo.teacherCourses.filter((courseID) => courseID !== ID)
-        : userInfo.studentCourses.filter((courseID) => courseID !== ID))[0] ===
-        (TA ? userInfo.teacherCourses : userInfo.studentCourses)[0]
-    );
     message.type = "Success";
-    message.message = `Delete Course ${ID} (${
+    message.message = `Delete Course ${CID} (${
       TA ? "Teacher" : "Student"
     }) from ${email}`;
   } else {
@@ -89,19 +77,19 @@ const deleteCourseInUserDB = async (User, email, ID, TA) => {
   return message;
 };
 
-const addUserToCourseDB = async (Course, Grade, email, ID, TA) => {
+const addUserToCourseDB = async (Course, Grade, email, CID, TA) => {
   let message = { type: undefined, message: undefined };
-  if (await Course.exists({ _id: ID })) {
-    const course = await Course.findOne({ _id: ID }).exec();
+  if (await Course.exists({ _id: CID })) {
+    const course = await Course.findOne({ _id: CID }).exec();
     if (course.TAs.includes(email) || course.students.includes(email)) {
       message.type = "Error";
       message.message = "Student Existed";
     } else {
       if (TA) {
-        await Course.updateOne({ _id: ID }, { TAs: [...course.TAs, email] });
+        await Course.updateOne({ _id: CID }, { TAs: [...course.TAs, email] });
       } else {
         await Course.updateOne(
-          { _id: ID },
+          { _id: CID },
           { students: [...course.students, email] }
         );
 
@@ -110,7 +98,7 @@ const addUserToCourseDB = async (Course, Grade, email, ID, TA) => {
         }
       }
       message.type = "Success";
-      message.message = `Add ${email} to Course ${ID} (${
+      message.message = `Add ${email} to Course ${CID} (${
         TA ? "Teacher" : "Student"
       })`;
     }
@@ -122,20 +110,20 @@ const addUserToCourseDB = async (Course, Grade, email, ID, TA) => {
   return message;
 };
 
-const deleteUserInCourseDB = async (Course, Grade, email, ID, TA) => {
+const deleteUserInCourseDB = async (Course, Grade, email, CID, TA) => {
   let message = { type: undefined, message: undefined };
-  if (await Course.exists({ _id: ID })) {
-    const course = await Course.findOne({ _id: ID }).exec();
+  if (await Course.exists({ _id: CID })) {
+    const course = await Course.findOne({ _id: CID }).exec();
     if (TA) {
       await Course.updateOne(
-        { _id: ID },
+        { _id: CID },
         {
           TAs: course.TAs.filter((userEmail) => userEmail !== email),
         }
       );
     } else {
       await Course.updateOne(
-        { _id: ID },
+        { _id: CID },
         {
           students: course.students.filter((userEmail) => userEmail !== email),
         }
@@ -146,7 +134,7 @@ const deleteUserInCourseDB = async (Course, Grade, email, ID, TA) => {
       }
     }
     message.type = "Success";
-    message.message = `Delete ${email} from Course ${ID} (${
+    message.message = `Delete ${email} from Course ${CID} (${
       TA ? "Teacher" : "Student"
     })`;
   } else {
@@ -157,31 +145,31 @@ const deleteUserInCourseDB = async (Course, Grade, email, ID, TA) => {
   return message;
 };
 
-const deleteAssignmentDB = async (Course, Assignment, Problem, Grade, ID) => {
+const deleteAssignmentDB = async (Course, Assignment, Problem, Grade, AID) => {
   let message = { type: undefined, message: undefined };
-  if (await Assignment.exists({ _id: ID })) {
-    const assignment = await Assignment.findOne({ _id: ID }).exec();
+  if (await Assignment.exists({ _id: AID })) {
+    const assignment = await Assignment.findOne({ _id: AID }).exec();
     const course = await Course.findOne({ _id: assignment.courseID });
     await Course.updateOne(
       { _id: assignment.courseID },
       {
         assignments: course.assignments.filter(
-          (assignmentID) => assignmentID !== ID
+          (assignmentID) => assignmentID !== AID
         ),
       }
     );
 
     for (const email of course.students) {
-      await deleteGrade(Grade, email, ID);
+      await deleteGrade(Grade, email, AID);
     }
 
     for (const problemID of assignment.problems) {
       await Problem.deleteOne({ _id: problemID });
     }
 
-    await Assignment.deleteOne({ _id: ID });
+    await Assignment.deleteOne({ _id: AID });
     message.type = "Success";
-    message.message = `Delete Assignment ${ID}`;
+    message.message = `Delete Assignment ${AID}`;
   } else {
     message.type = "Error";
     message.message = "Assignment Not Found";
@@ -259,20 +247,21 @@ const Mutation = {
     return message;
   },
   async addUserToCourse(parent, args, { User, Course, Grade }, info) {
-    const { email, ID, TA } = args.data;
+    const CID = args.CID;
+    const { email, TA } = args.data;
     const message = { type: undefined, message: undefined };
     const messageAddToCourse = await addUserToCourseDB(
       Course,
       Grade,
       email,
-      ID,
+      CID,
       TA
     );
     if (messageAddToCourse.type === "Success") {
-      const messageAddToUser = await addCourseToUserDB(User, email, ID, TA);
+      const messageAddToUser = await addCourseToUserDB(User, email, CID, TA);
       if (messageAddToUser.type === "Success") {
         message.type = "Success";
-        message.message = `Add User ${email} to Course ${ID}`;
+        message.message = `Add User ${email} to Course ${CID}`;
       } else {
         message.type = "Error";
         message.message = messageAddToUser.message;
@@ -285,25 +274,26 @@ const Mutation = {
     return message;
   },
   async deleteUserFromCourse(parent, args, { User, Course, Grade }, info) {
-    const { email, ID, TA } = args.data;
+    const CID = args.CID;
+    const { email, TA } = args.data;
     const message = { type: undefined, message: undefined };
     const messageDeleteFromCourse = await deleteUserInCourseDB(
       Course,
       Grade,
       email,
-      ID,
+      CID,
       TA
     );
     if (messageDeleteFromCourse.type === "Success") {
       const messageDeleteFromUser = await deleteCourseInUserDB(
         User,
         email,
-        ID,
+        CID,
         TA
       );
       if (messageDeleteFromUser.type === "Success") {
         message.type = "Success";
-        message.message = `Delete User ${email} from Course ${ID}`;
+        message.message = `Delete User ${email} from Course ${CID}`;
       } else {
         message.type = "Error";
         message.message = messageDeleteFromUser.message;
@@ -318,11 +308,16 @@ const Mutation = {
 
   // Course Mutation
   async createCourse(parent, args, { User, Course }, info) {
-    const course = { ...args.data, students: [], assignments: [] };
+    const TA = args.TA;
+    const course = {
+      info: { ...args.data },
+      students: [],
+      assignments: [],
+      TAs: [TA],
+    };
     let message = { type: undefined, message: undefined };
 
     if (User.exists({ email: course.TAs })) {
-      course.TAs = [course.TAs];
       const ret = await Course.create(course);
       await addCourseToUserDB(User, course.TAs[0], ret._id.toString(), true);
       message.type = "Success";
@@ -340,16 +335,16 @@ const Mutation = {
     { User, Course, Assignment, Problem, Grade },
     info
   ) {
-    const ID = args.ID;
-    const course = await Course.findOne({ _id: ID }).exec();
+    const CID = args.CID;
+    const course = await Course.findOne({ _id: CID }).exec();
     let message = { type: undefined, message: undefined };
 
-    if (await Course.exists({ _id: ID })) {
+    if (await Course.exists({ _id: CID })) {
       for (const TAID of course.TAs) {
-        await deleteCourseInUserDB(User, TAID, ID, true);
+        await deleteCourseInUserDB(User, TAID, CID, true);
       }
       for (const studentID of course.students) {
-        await deleteCourseInUserDB(User, studentID, ID, false);
+        await deleteCourseInUserDB(User, studentID, CID, false);
       }
       for (const assignmentID of course.assignments) {
         await deleteAssignmentDB(
@@ -361,9 +356,9 @@ const Mutation = {
         );
       }
 
-      await Course.deleteOne({ _id: ID });
+      await Course.deleteOne({ _id: CID });
       message.type = "Success";
-      message.message = `Delete Course ${ID}`;
+      message.message = `Delete Course ${CID}`;
     } else {
       message.type = "Error";
       message.message = "Course Not Found";
@@ -372,11 +367,11 @@ const Mutation = {
     return message;
   },
   async updateCourseInfo(parent, args, { Course }, info) {
-    const ID = args.ID;
+    const CID = args.CID;
     let message = { type: undefined, message: undefined };
 
-    if (await Course.exists({ _id: ID })) {
-      await Course.updateOne({ _id: ID }, args.data);
+    if (await Course.exists({ _id: CID })) {
+      await Course.updateOne({ _id: CID }, { info: args.data });
       message.type = "Success";
       message.message = `Update Course Info`;
     } else {
@@ -389,15 +384,16 @@ const Mutation = {
 
   // Assignment Mutation
   async createAssignment(parent, args, { Assignment, Grade, Course }, info) {
-    const assignment = { ...args.data, problems: [] };
+    const CID = args.CID;
+    const assignment = { info: { ...args.data }, problems: [], courseID: CID };
     let message = { type: undefined, message: undefined };
-    if (await Course.exists({ _id: assignment.courseID })) {
+    if (await Course.exists({ _id: CID })) {
       const ret = await Assignment.create(assignment);
       const course = await Course.findOne({
-        _id: assignment.courseID,
+        _id: CID,
       }).exec();
       await Course.updateOne(
-        { _id: assignment.courseID },
+        { _id: CID },
         { assignments: [...course.assignments, ret._id.toString()] }
       );
 
@@ -420,22 +416,22 @@ const Mutation = {
     { Assignment, Course, Grade, Problem },
     info
   ) {
-    const ID = args.ID;
+    const AID = args.AID;
     const message = await deleteAssignmentDB(
       Course,
       Assignment,
       Problem,
       Grade,
-      ID
+      AID
     );
 
     return message;
   },
   async updateAssignmentInfo(parent, args, { Assignment }, Info) {
-    const ID = args.ID;
+    const AID = args.AID;
     let message = { type: undefined, message: undefined };
-    if (await Assignment.exists({ _id: ID })) {
-      await Assignment.updateOne({ _id: ID }, args.data);
+    if (await Assignment.exists({ _id: AID })) {
+      await Assignment.updateOne({ _id: AID }, { info: args.data });
       message.type = "Success";
       message.message = `Update Assignment Info`;
     } else {
@@ -491,19 +487,21 @@ const Mutation = {
     { Problem, Assignment, Grade, Course },
     info
   ) {
-    const ID = args.ID;
+    const PID = args.PID;
     let message = { type: undefined, message: undefined };
-    if (await Problem.exists({ _id: ID })) {
-      const problem = await Problem.findOne({ _id: ID }).exec();
+    if (await Problem.exists({ _id: PID })) {
+      const problem = await Problem.findOne({ _id: PID }).exec();
       const assignment = await Assignment.findOne({
         _id: problem.assignmentID,
       });
 
-      const idx = assignment.problems.indexOf(ID);
+      const idx = assignment.problems.indexOf(PID);
       await Assignment.updateOne(
         { _id: problem.assignmentID },
         {
-          problems: assignment.problems.filter((problemID) => problemID !== ID),
+          problems: assignment.problems.filter(
+            (problemID) => problemID !== PID
+          ),
         }
       );
 
@@ -521,9 +519,9 @@ const Mutation = {
         );
       }
 
-      await Problem.deleteOne({ _id: ID });
+      await Problem.deleteOne({ _id: PID });
       message.type = "Success";
-      message.message = `Delete Problem ${ID}`;
+      message.message = `Delete Problem ${PID}`;
     } else {
       message.type = "Error";
       message.message = "Problem Not Found";
@@ -532,10 +530,10 @@ const Mutation = {
     return message;
   },
   async updateProblemInfo(parent, args, { Problem }, Info) {
-    const ID = args.ID;
+    const PID = args.PID;
     let message = { type: undefined, message: undefined };
-    if (await Problem.exists({ _id: ID })) {
-      await Problem.updateOne({ _id: ID }, args.data);
+    if (await Problem.exists({ _id: PID })) {
+      await Problem.updateOne({ _id: PID }, args.data);
       message.type = "Success";
       message.message = `Update Problem Info`;
     } else {
@@ -615,10 +613,10 @@ const Mutation = {
     return message;
   },
   async showGrade(parent, args, { Assignment, Problem, Grade }, info) {
-    const ID = args.ID;
+    const AID = args.AID;
     let message = { type: undefined, message: undefined };
-    if (await Assignment.exists({ _id: ID })) {
-      const grade = await Grade.find({ assignmentID: ID }).exec();
+    if (await Assignment.exists({ _id: AID })) {
+      const grade = await Grade.find({ assignmentID: AID }).exec();
 
       for (const studentGrade of grade) {
         const assignment = await Assignment.findOne({
@@ -629,6 +627,7 @@ const Mutation = {
           const problem = await Problem.findOne({ _id: problemID }).exec();
           const studentAns = studentGrade.answers[idx];
           const Ans = problem.answers;
+
           let points = 0;
           switch (problem.type) {
             case "TF":
@@ -637,13 +636,15 @@ const Mutation = {
               points = studentAns[0] === Ans[0] ? problem.point : 0;
               break;
             case "CHECKBOX":
-              let flag = true;
-              Ans.forEach((ans, i) => {
-                if (ans !== studentAns[i]) {
-                  flag = false;
-                }
-              });
-              points = flag ? problem.point : 0;
+              const difference = Ans.filter(
+                (x) => !studentAns.includes(x)
+              ).concat(studentAns.filter((x) => !Ans.includes(x)));
+              points = Math.max(
+                1 -
+                  ((2 * difference.length) / problem.options.length) *
+                    problem.point,
+                0
+              );
               break;
             case "SHORT_QA":
               points = studentGrade.grades[idx];
@@ -656,13 +657,13 @@ const Mutation = {
         }
 
         await Grade.updateOne(
-          { $and: [{ email: studentGrade.email }, { assignmentID: ID }] },
+          { $and: [{ email: studentGrade.email }, { assignmentID: AID }] },
           { grades: grades, graded: true }
         );
       }
 
       message.type = "Success";
-      message.message = `Show Assignment ${ID}'s Grade`;
+      message.message = `Show Assignment ${AID}'s Grade`;
     } else {
       message.type = "Error";
       message.message = "Assignment Not Found";

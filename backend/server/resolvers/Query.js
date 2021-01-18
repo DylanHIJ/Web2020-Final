@@ -39,8 +39,8 @@ const Query = {
     return user;
   },
   async course(parent, args, { Course, Assignment }, Info) {
-    const ID = args.ID;
-    const course = await Course.findOne({ _id: ID }).exec();
+    const CID = args.CID;
+    const course = await Course.findOne({ _id: CID }).exec();
     if (course !== null) {
       course.assignments = course.assignments.map(
         async (assignmentID) =>
@@ -51,17 +51,17 @@ const Query = {
     return course;
   },
   async assignment(parent, args, { Assignment }, Info) {
-    const ID = args.ID;
-    const assignment = await Assignment.findOne({ _id: ID }).exec();
+    const AID = args.AID;
+    const assignment = await Assignment.findOne({ _id: AID }).exec();
 
     return assignment;
   },
   async problem(parent, args, { Assignment, Problem }, Info) {
-    const ID = args.ID;
-    const problem = await Problem.findOne({ _id: ID }).exec();
+    const PID = args.PID;
+    const problem = await Problem.findOne({ _id: PID }).exec();
 
     if (problem != null) {
-      const idx = getProblemIndex(Assignment, problem.assignmentID, ID);
+      const idx = getProblemIndex(Assignment, problem.assignmentID, PID);
 
       return { ...problem._doc, index: idx };
     }
@@ -69,8 +69,8 @@ const Query = {
     return problem;
   },
   async shortQAProblem(parent, args, { Assignment, Problem }, info) {
-    const ID = args.ID;
-    const assignment = await Assignment.findOne({ _id: ID }).exec();
+    const PID = args.PID;
+    const assignment = await Assignment.findOne({ _id: PID }).exec();
     let ret = [];
     if (assignment !== null) {
       for (const problemID of assignment.problems) {
@@ -108,9 +108,9 @@ const Query = {
   },
   async getGrade(parent, args, { Grade }, info) {
     const email = args.email;
-    const ID = args.ID;
+    const AID = args.AID;
     const grade = await Grade.findOne({
-      $and: [{ email: email }, { assignmentID: ID }],
+      $and: [{ email: email }, { assignmentID: AID }],
     }).exec();
 
     let point = null;
@@ -118,6 +118,28 @@ const Query = {
       point = grade.grades.reduce((a, b) => a + b);
     }
     return point;
+  },
+  async getAnswer(parent, args, { Assignment, Grade }, info) {
+    const email = args.email;
+    const AID = args.AID;
+    let ret = [];
+
+    const assignment = await Assignment.findOne({ _id: AID }).exec();
+    if (assignment !== null) {
+      const grade = await Grade.findOne({
+        $and: [{ email: email }, { assignmentID: AID }],
+      }).exec();
+      if (grade !== null) {
+        for (let i in assignment.problems) {
+          ret.push({
+            problemID: assignment.problems[i],
+            answer: grade.answers[i],
+          });
+        }
+      }
+    }
+
+    return ret;
   },
 };
 

@@ -21,15 +21,15 @@ const ProblemSchema = new Schema({
   },
   options: {
     type: Array,
-    required: [true, "Option field is required."],
+    // required: [true, "Option field is required."],
   },
   answers: {
     type: Array,
-    required: [true, "Answer field is required."],
+    // required: [true, "Answer field is required."],
   },
   keywords: {
     type: Array,
-    required: [true, "Answer field is required."],
+    // required: [true, "Answer field is required."],
   },
 });
 
