@@ -11,7 +11,7 @@ const MultipleChoice = (props) => {
   const { problem, answers, setAnswers } = props;
   const choices = problem.options.map((element) => (
     <FormControlLabel
-      key={problem.problemID + "_" + element}
+      key={problem._id + "_" + element}
       value={element}
       label={element}
       control={<Radio />}
@@ -23,13 +23,13 @@ const MultipleChoice = (props) => {
       <FormControl component="fieldset">
         <FormHelperText>Multiple Choice</FormHelperText>
         <RadioGroup
-          aria-label={`assignment-${problem.problemID}`}
-          name={`assignment-${problem.problemID}`}
-          value={answers[problem.problemID]}
+          aria-label={`assignment-${problem._id}`}
+          name={`assignment-${problem._id}`}
+          value={answers[problem._id]}
           onChange={(event) => {
             setAnswers((prev) => ({
               ...prev,
-              [problem.problemID]: event.target.value,
+              [problem._id]: event.target.value,
             }));
           }}
         >

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
+import { useQuery } from "@apollo/client";
 import {
   Button,
   Typography,
@@ -12,7 +13,7 @@ import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
 
 import ProblemProgress from "./ProblemProgressBar";
 import Problem from "./problems";
-import { getAssignment } from "./utils";
+import { GET_ASSIGNMENT } from "../../graphql/queries";
 
 // answers is an object of
 // PID -> {type: string, answer: varies}
@@ -32,17 +33,30 @@ const useStyles = makeStyles((theme) => ({
 const Assignment = (props) => {
   const classes = useStyles();
   const { aid } = useParams();
-  const assignment = getAssignment(aid);
-  const problems = assignment.problems;
+
+  const { loading, data } = useQuery(GET_ASSIGNMENT, {
+    variables: { aid: aid },
+  });
+
+  // const assignment = getAssignment(aid);
+  const assignment = loading ? {} : data.assignment;
+
+  const problemIDs = loading ? [] : assignment.problems;
+
+  console.log(problemIDs);
 
   const [currentProblemIndex, setCurrentProblemIndex] = useState(0);
+
+  // TODO: need to get answers from server
   const [answers, setAnswers] = useState(
-    problems.reduce((o, k) => ({ ...o, [k]: undefined }), {})
+    problemIDs.reduce((o, k) => ({ ...o, [k]: undefined }), {})
   );
 
   const submitAnswer = () => {
     console.log(answers);
   };
+
+  if (loading) return <p>Loading</p>;
 
   return (
     <Container maxWidth="lg">
@@ -54,13 +68,13 @@ const Assignment = (props) => {
       {/* Progress Bar */}
       <ProblemProgress
         currentProblemIndex={currentProblemIndex}
-        totalNumProblems={problems.length}
+        totalNumProblems={problemIDs.length}
       />
 
       {/* Problem content */}
       <div className={classes.problem}>
         <Problem
-          problem={problems[currentProblemIndex]}
+          pid={problemIDs[currentProblemIndex]}
           answers={answers}
           setAnswers={setAnswers}
         ></Problem>

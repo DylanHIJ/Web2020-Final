@@ -15,13 +15,13 @@ const TrueFalse = (props) => {
       <FormControl component="fieldset">
         <FormHelperText>True/False</FormHelperText>
         <RadioGroup
-          aria-label={`assignment-${problem.problemID}`}
-          name={`assignment-${problem.problemID}`}
-          value={answers[problem.problemID]}
+          aria-label={`assignment-${problem._id}`}
+          name={`assignment-${problem._id}`}
+          value={answers[problem._id]}
           onChange={(event) => {
             setAnswers((prev) => ({
               ...prev,
-              [problem.problemID]: event.target.value,
+              [problem._id]: event.target.value,
             }));
           }}
         >

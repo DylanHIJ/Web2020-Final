@@ -95,3 +95,24 @@ export const GET_ASSIGNMENT = gql`
 //       grades()
 //   }
 // `;
+
+export const GET_ASSIGNMENT = gql`
+  query getAssignment($aid: ID!) {
+    assignment(ID: $aid) {
+      _id
+      name
+      problems
+    }
+  }
+`;
+
+export const GET_STUDENT_PROBLEM = gql`
+  query getStudentProblem($pid: ID!) {
+    problem(ID: $pid) {
+      _id
+      type
+      statement
+      options
+    }
+  }
+`;
