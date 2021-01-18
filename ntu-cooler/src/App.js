@@ -1,8 +1,8 @@
 import Cookies from "js-cookie";
 import React, { useState } from "react";
 import "./App.css";
-import Login from "./login/Login";
-import SignUp from "./login/SignUp";
+import Login from "./account/Login";
+import SignUp from "./account/SignUp";
 import Home from "./main/Home";
 import Course from "./course/Course";
 import Account from "./account/Account";

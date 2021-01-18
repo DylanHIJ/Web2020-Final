@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import {
   Avatar,
   Divider,
+  Container,
   List,
   ListItem,
   ListItemAvatar,
@@ -44,53 +45,61 @@ export default function CourseInfo() {
 
   return (
     <>
-      <Typography variant="h4" component="h2" className={classes.title}>
-        {data.course.name}
-      </Typography>
-      <hr />
-      <List className={classes.root}>
-        <ListItem>
-          <ListItemAvatar>
-            <Avatar>
-              <PermIdentity />
-            </Avatar>
-          </ListItemAvatar>
-          <ListItemText primary="Instructor" secondary={data.course.teacher} />
-        </ListItem>
-        <Divider variant="inset" component="li" />
-        <ListItem>
-          <ListItemAvatar>
-            <Avatar>
-              <AccessTime />
-            </Avatar>
-          </ListItemAvatar>
-          <ListItemText
-            primary="Class Time"
-            secondary={data.course.classTime}
-          />
-        </ListItem>
-        <Divider variant="inset" component="li" />
-        <ListItem>
-          <ListItemAvatar>
-            <Avatar>
-              <Room />
-            </Avatar>
-          </ListItemAvatar>
-          <ListItemText primary="Classroom" secondary={data.course.classroom} />
-        </ListItem>
-        <Divider variant="inset" component="li" />
-        <ListItem>
-          <ListItemAvatar>
-            <Avatar>
-              <Description />
-            </Avatar>
-          </ListItemAvatar>
-          <ListItemText
-            primary="Description"
-            secondary={data.course.describe}
-          />
-        </ListItem>
-      </List>
+      <Container maxWidth="lg">
+        <Typography variant="h4" component="h2" className={classes.title}>
+          {data.course.name}
+        </Typography>
+        <hr />
+        <List className={classes.root}>
+          <ListItem>
+            <ListItemAvatar>
+              <Avatar>
+                <PermIdentity />
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText
+              primary="Instructor"
+              secondary={data.course.teacher}
+            />
+          </ListItem>
+          <Divider variant="inset" component="li" />
+          <ListItem>
+            <ListItemAvatar>
+              <Avatar>
+                <AccessTime />
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText
+              primary="Class Time"
+              secondary={data.course.classTime}
+            />
+          </ListItem>
+          <Divider variant="inset" component="li" />
+          <ListItem>
+            <ListItemAvatar>
+              <Avatar>
+                <Room />
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText
+              primary="Classroom"
+              secondary={data.course.classroom}
+            />
+          </ListItem>
+          <Divider variant="inset" component="li" />
+          <ListItem>
+            <ListItemAvatar>
+              <Avatar>
+                <Description />
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText
+              primary="Description"
+              secondary={data.course.describe}
+            />
+          </ListItem>
+        </List>
+      </Container>
     </>
   );
 }
