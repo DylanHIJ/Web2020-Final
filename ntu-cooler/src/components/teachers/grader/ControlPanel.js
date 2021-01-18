@@ -38,8 +38,12 @@ const ControlPanel = (props) => {
   }, [studentID]);
 
   useEffect(() => {
-    const number = inputScoreString === "" ? 0 : parseFloat(inputScoreString);
-    if (isNaN(number) || number < 0 || maxScore < number) {
+    const number =
+      inputScoreString === "" ? undefined : parseFloat(inputScoreString);
+
+    if (number === undefined) {
+      setInputScoreValid(true);
+    } else if (isNaN(number) || number < 0 || maxScore < number) {
       setInputScoreValid(false);
     } else {
       setInputScoreValid(true);
@@ -100,7 +104,7 @@ const ControlPanel = (props) => {
                   return prev - 1;
                 });
               }}
-              disabled={studentIndex === 0}
+              disabled={studentIndex === 0 || !inputScoreValid}
             >
               <ArrowBackIosIcon />
             </IconButton>
@@ -129,7 +133,9 @@ const ControlPanel = (props) => {
                   return prev + 1;
                 });
               }}
-              disabled={studentIndex === students.length - 1}
+              disabled={
+                studentIndex === students.length - 1 || !inputScoreValid
+              }
             >
               <ArrowForwardIosIcon />
             </IconButton>
