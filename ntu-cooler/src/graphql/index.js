@@ -10,4 +10,5 @@ export {
   UPDATE_COURSE_INFO,
   ADD_USER_TO_COURSE,
   UPDATE_USER_INFO,
+  CREATE_COURSE,
 } from "./mutations.js";

@@ -54,3 +54,28 @@ export const UPDATE_USER_INFO = gql`
     }
   }
 `;
+
+export const CREATE_COURSE = gql`
+  mutation createCourse(
+    $name: String!
+    $teacher: String!
+    $describe: String!
+    $classTime: String!
+    $classroom: String!
+    $TAs: ID!
+  ) {
+    createCourse(
+      data: {
+        name: $name
+        teacher: $teacher
+        describe: $describe
+        classTime: $classTime
+        classroom: $classroom
+        TAs: $TAs
+      }
+    ) {
+      type
+      message
+    }
+  }
+`;
