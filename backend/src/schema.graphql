@@ -7,7 +7,7 @@ type Query {
   studentAnswer(email: String!, PID: ID!): Answer
   grade(email: String!, AID: ID!): AssignmentGrade
   allAssignmentGrade(token: String!, CID: ID!): [AssignmentGrade]
-  answer(email: String!, AID: ID!): [Answer]
+  answer(token: String!, AID: ID!): [Answer]
 }
 
 type Mutation {

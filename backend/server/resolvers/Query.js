@@ -25,6 +25,11 @@ const computeGrade = async (Grade, email, assignmentID) => {
   return point;
 };
 
+const tokenToEmail = async (User, token) => {
+  const user = await User.findOne({ token: token });
+  return user ? user.email : null;
+};
+
 const Query = {
   async user(parent, args, { User, Course }, info) {
     const email = args.email;
@@ -133,9 +138,10 @@ const Query = {
     const point = await computeGrade(Grade, email, AID);
     return { assignmentID: AID, score: point };
   },
-  async answer(parent, args, { Grade }, info) {
-    const email = args.email;
+  async answer(parent, args, { User, Grade }, info) {
+    const token = args.token;
     const AID = args.AID;
+    const email = await tokenToEmail(User, token);
 
     const grade = await Grade.findOne({
       $and: [{ email: email }, { assignmentID: AID }],
@@ -156,9 +162,8 @@ const Query = {
     const CID = args.CID;
 
     let ret = null;
-    const user = await User.findOne({ token: token }).exec();
-    if (user !== null) {
-      const email = user.email;
+    const email = await tokenToEmail(User, token);
+    if (email !== null) {
       const course = await Course.findOne({ _id: CID }).exec();
       if (course !== null) {
         ret = [];
