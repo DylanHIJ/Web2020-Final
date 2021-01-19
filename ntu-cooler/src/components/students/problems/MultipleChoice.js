@@ -8,11 +8,12 @@ import {
 } from "@material-ui/core";
 
 const MultipleChoice = (props) => {
-  const { problem, answers, setAnswers } = props;
-  const choices = problem.options.map((element) => (
+  const { problem, answer, setAnswer } = props;
+
+  const choices = problem.options.map((element, index) => (
     <FormControlLabel
       key={problem._id + "_" + element}
-      value={element}
+      value={`option_${index}`}
       label={element}
       control={<Radio />}
     />
@@ -25,12 +26,9 @@ const MultipleChoice = (props) => {
         <RadioGroup
           aria-label={`assignment-${problem._id}`}
           name={`assignment-${problem._id}`}
-          value={answers[problem._id]}
+          value={answer}
           onChange={(event) => {
-            setAnswers((prev) => ({
-              ...prev,
-              [problem._id]: event.target.value,
-            }));
+            setAnswer(event.target.value);
           }}
         >
           {choices}

@@ -29,8 +29,10 @@ const getAssignment = (assignment_id) => {
     name: "Test Assignment",
     beginTime: "",
     endTime: "",
-    problems: demoProblems,
+    problems: demoProblems.map((ele) => ele.problemID),
   };
 };
 
-export { getAssignment };
+const getProblem = (pid) => demoProblems.find((ele) => ele.problemID === pid);
+
+export { getAssignment, getProblem };
