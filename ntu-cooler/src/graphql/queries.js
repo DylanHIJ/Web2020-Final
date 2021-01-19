@@ -90,8 +90,16 @@ export const GET_ASSIGNMENT = gql`
   }
 `;
 
-// export const GET_COURSE_GRADES = gql`
-//   query getCourseGrades() {
-//       grades()
-//   }
-// `;
+export const GET_COURSE_GRADES = gql`
+  query getCourseGrades($token: String!, $cid: ID!) {
+    allAssignmentGrade(token: $token, CID: $cid) {
+      assignmentID
+      score
+      info {
+        name
+        weight
+        endTime
+      }
+    }
+  }
+`;

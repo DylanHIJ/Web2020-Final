@@ -5,6 +5,7 @@ export {
   GET_COURSE_INFO,
   GET_COURSE_ASSIGNMENTS,
   GET_ASSIGNMENT,
+  GET_COURSE_GRADES,
 } from "./queries";
 
 export {

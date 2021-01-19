@@ -1,3 +1,4 @@
+import Cookies from "js-cookie";
 import React from "react";
 import { withStyles, makeStyles } from "@material-ui/core/styles";
 import {
@@ -10,7 +11,12 @@ import {
   TableRow,
   Typography,
   Container,
+  Backdrop,
+  CircularProgress,
 } from "@material-ui/core";
+import { GET_COURSE_GRADES } from "../graphql";
+import { useQuery } from "@apollo/client";
+import { useParams } from "react-router-dom";
 
 function ccyFormat(num) {
   return `${num.toFixed(2)}`;
@@ -34,17 +40,7 @@ const StyledTableRow = withStyles((theme) => ({
   },
 }))(TableRow);
 
-function createData(name, dueDate, perc, score, total) {
-  return { name, dueDate, perc, score, total };
-}
-
-const rows = [
-  createData("Homework #7", "2020/09/26 23:59", 0.1, 86, 100),
-  createData("Homework #8", "2020/10/03 23:59", 0.1, 77, 100),
-  createData("Homework #9", "2020/10/10 23:59", 0.1, 93, 100),
-];
-
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   table: {
     minWidth: 700,
   },
@@ -55,10 +51,30 @@ const useStyles = makeStyles({
   tableRow: {
     fontSize: "24pt",
   },
-});
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: "#fff",
+  },
+}));
+
+const compareDeadline = (a, b) => {
+  return parseInt(a.info.endTime, 10) - parseInt(b.info.endTime, 10);
+};
 
 export default function Grades() {
   const classes = useStyles();
+  const { cid } = useParams();
+  const { loading, data } = useQuery(GET_COURSE_GRADES, {
+    variables: { token: Cookies.get("token"), cid: cid },
+  });
+
+  if (loading)
+    return (
+      <Backdrop className={classes.backdrop} open>
+        <CircularProgress color="inherit" />
+      </Backdrop>
+    );
+
   return (
     <Container maxWidth="lg">
       <Typography variant="h4" component="h2" className={classes.title}>
@@ -70,32 +86,56 @@ export default function Grades() {
           <TableHead>
             <TableRow className={classes.tableRow}>
               <StyledTableCell>Name</StyledTableCell>
-              <StyledTableCell align="right">Due Date</StyledTableCell>
-              <StyledTableCell align="right">Percentage</StyledTableCell>
-              <StyledTableCell align="right">Score</StyledTableCell>
-              <StyledTableCell align="right">Total</StyledTableCell>
+              <StyledTableCell align="center">Percentage</StyledTableCell>
+              <StyledTableCell align="center">Score</StyledTableCell>
+              <StyledTableCell align="center">Total</StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row) => (
-              <StyledTableRow key={row.name} className={classes.tableRow}>
-                <StyledTableCell component="th" scope="row">
-                  {row.name}
-                </StyledTableCell>
-                <StyledTableCell align="right">{row.dueDate}</StyledTableCell>
-                <StyledTableCell align="right">
-                  {row.perc * 100}%
-                </StyledTableCell>
-                <StyledTableCell align="right">{row.score}</StyledTableCell>
-                <StyledTableCell align="right">{row.total}</StyledTableCell>
-              </StyledTableRow>
-            ))}
+            {[...data.allAssignmentGrade]
+              .sort(compareDeadline)
+              .map((assignment) => (
+                <StyledTableRow
+                  key={assignment.assignmentID}
+                  className={classes.tableRow}
+                >
+                  <StyledTableCell component="th" scope="row">
+                    {assignment.info.name}
+                  </StyledTableCell>
+                  <StyledTableCell align="center">
+                    {assignment.info.weight * 100}%
+                  </StyledTableCell>
+                  <StyledTableCell align="center">
+                    {assignment.score === null ? "-" : assignment.score}
+                  </StyledTableCell>
+                  <StyledTableCell align="center">100</StyledTableCell>
+                </StyledTableRow>
+              ))}
             <TableRow>
-              <TableCell rowSpan={3} />
               <TableCell align="right">Final Grade</TableCell>
-              <TableCell align="right">30%</TableCell>
-              <TableCell align="right">26.6</TableCell>
-              <TableCell align="right">30</TableCell>
+              <TableCell align="center">
+                {Math.floor(
+                  data.allAssignmentGrade
+                    .map((assignment) => assignment.info.weight)
+                    .reduce((a, b) => a + b) * 100
+                )}
+                %
+              </TableCell>
+              <TableCell align="center">
+                {data.allAssignmentGrade
+                  .map(
+                    (assignment) => assignment.info.weight * assignment.score
+                  )
+                  .reduce((a, b) => a + b)
+                  .toFixed(2)}
+              </TableCell>
+              <TableCell align="center">
+                {Math.floor(
+                  data.allAssignmentGrade
+                    .map((assignment) => assignment.info.weight)
+                    .reduce((a, b) => a + b) * 100
+                )}
+              </TableCell>
             </TableRow>
           </TableBody>
         </Table>

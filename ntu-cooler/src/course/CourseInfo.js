@@ -10,6 +10,8 @@ import {
   ListItemAvatar,
   ListItemText,
   Typography,
+  Backdrop,
+  CircularProgress,
 } from "@material-ui/core";
 import {
   PermIdentity,
@@ -32,6 +34,10 @@ const useStyles = makeStyles((theme) => ({
   info: {
     marginTop: "3%",
   },
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: "#fff",
+  },
 }));
 
 export default function CourseInfo() {
@@ -41,7 +47,12 @@ export default function CourseInfo() {
     variables: { cid: cid },
     fetchPolicy: "no-cache",
   });
-  if (loading) return "Loading";
+  if (loading)
+    return (
+      <Backdrop className={classes.backdrop} open>
+        <CircularProgress color="inherit" />
+      </Backdrop>
+    );
 
   return (
     <>

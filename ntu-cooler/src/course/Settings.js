@@ -6,6 +6,8 @@ import {
   TextField,
   Typography,
   Snackbar,
+  Backdrop,
+  CircularProgress,
 } from "@material-ui/core";
 import MuiAlert from "@material-ui/lab/Alert";
 import { useParams } from "react-router-dom";
@@ -24,6 +26,10 @@ const useStyles = makeStyles((theme) => ({
   title: {
     marginTop: "6%",
     marginBottom: "1%",
+  },
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: "#fff",
   },
 }));
 
@@ -69,7 +75,12 @@ export default function AccountEdit() {
     }
     setOpen(false);
   };
-  if (loading) return "Loading";
+  if (loading)
+    return (
+      <Backdrop className={classes.backdrop} open>
+        <CircularProgress color="inherit" />
+      </Backdrop>
+    );
 
   return (
     <>

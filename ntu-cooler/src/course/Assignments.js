@@ -18,7 +18,7 @@ import { ExpandMore, NotesRounded, Add } from "@material-ui/icons";
 import { GET_COURSE_ASSIGNMENTS } from "../graphql";
 
 const compareDeadline = (a, b) => {
-  return parseInt(a.endTime, 10) - parseInt(b.endTime, 10);
+  return parseInt(a.info.endTime, 10) - parseInt(b.info.endTime, 10);
 };
 const useStyles = makeStyles((theme) => ({
   title: {
