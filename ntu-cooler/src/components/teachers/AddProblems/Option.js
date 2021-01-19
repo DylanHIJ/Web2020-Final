@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  FormControl,
-  FormControlLabel,
-  Radio,
-  Checkbox,
-  TextField,
-} from "@material-ui/core";
+import { FormControlLabel, TextField } from "@material-ui/core";
 
 const Option = (props) => {
   const { optionIndex, initOption, updateOption, control } = props;
