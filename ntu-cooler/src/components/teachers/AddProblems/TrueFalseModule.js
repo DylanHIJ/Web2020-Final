@@ -4,6 +4,8 @@ import {
   FormControlLabel,
   Radio,
   RadioGroup,
+  Grid,
+  FormHelperText,
 } from "@material-ui/core";
 
 const TrueFalseModule = (props) => {
@@ -27,8 +29,14 @@ const TrueFalseModule = (props) => {
           setAnswer(event.target.value);
         }}
       >
-        <FormControlLabel value="True" control={<Radio />} label="True" />
-        <FormControlLabel value="False" control={<Radio />} label="False" />
+        <Grid container justify="center">
+          <Grid item xs={6}>
+            <FormControlLabel value="True" control={<Radio />} label="True" />
+          </Grid>
+          <Grid item xs={6}>
+            <FormControlLabel value="False" control={<Radio />} label="False" />
+          </Grid>
+        </Grid>
       </RadioGroup>
     </FormControl>
   );

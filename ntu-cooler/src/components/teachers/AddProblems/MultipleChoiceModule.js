@@ -6,6 +6,7 @@ import {
   Container,
   IconButton,
   FormHelperText,
+  Grid,
 } from "@material-ui/core";
 
 import Option from "./Option";
@@ -21,14 +22,12 @@ const MultipleChoiceModule = (props) => {
   } = props;
 
   const [options, setOptions] = useState(
-    !Array.isArray(initOptions) ? ["", "", ""] : initOptions
+    Array.isArray(initOptions) && initOptions.length > 0
+      ? initOptions
+      : ["", "", "", ""]
   );
-  const [answer, setAnswer] = useState(
-    initOptions.filter((ele, index) => initAnswer === `option_${index}`)
-      .length > 0
-      ? initAnswer
-      : "option_0"
-  );
+
+  const [answer, setAnswer] = useState(initAnswer);
 
   useEffect(() => {
     updateOptions(options);
@@ -54,15 +53,19 @@ const MultipleChoiceModule = (props) => {
             setAnswer(event.target.value);
           }}
         >
-          {options.map((option, index) => (
-            <Option
-              key={`problem_${problemIndex}-option_${index}`}
-              optionIndex={index}
-              initOption={option}
-              updateOption={updateOption}
-              control={<Radio />}
-            />
-          ))}
+          <Grid container>
+            {options.map((option, index) => (
+              <Grid item xs={4}>
+                <Option
+                  key={`problem_${problemIndex}-option_${index}`}
+                  optionIndex={index}
+                  initOption={option}
+                  updateOption={updateOption}
+                  control={<Radio />}
+                />
+              </Grid>
+            ))}
+          </Grid>
         </RadioGroup>
       </FormControl>
 
