@@ -6,7 +6,7 @@ type Query {
   shortQAProblem(AID: ID!): [Problem]!
   studentAnswer(email: String!, PID: ID!): Answer
   grade(email: String!, AID: ID!): AssignmentGrade
-  allAssignmentGrade(email: String!, CID: ID!): [AssignmentGrade]
+  allAssignmentGrade(token: String!, CID: ID!): [AssignmentGrade]
   answer(email: String!, AID: ID!): [Answer]
 }
 

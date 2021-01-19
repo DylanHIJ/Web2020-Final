@@ -146,25 +146,34 @@ const Query = {
 
     return null;
   },
-  async allAssignmentGrade(parent, args, { Course, Assignment, Grade }, info) {
-    const email = args.email;
+  async allAssignmentGrade(
+    parent,
+    args,
+    { User, Course, Assignment, Grade },
+    info
+  ) {
+    const token = args.token;
     const CID = args.CID;
 
-    const course = await Course.findOne({ _id: CID }).exec();
-    let ret = null;
-    if (course !== null) {
-      ret = [];
-      for (let assignmentID of course.assignments) {
-        const assignment = await Assignment.findOne({
-          _id: assignmentID,
-        }).exec();
-        if (assignment !== null) {
-          const point = await computeGrade(Grade, email, assignmentID);
-          ret.push({
-            assignmentID: assignmentID,
-            score: point,
-            info: assignment.info,
-          });
+    const user = await User.findOne({ token: token }).exec();
+    if (user !== null) {
+      const email = user.email;
+      const course = await Course.findOne({ _id: CID }).exec();
+      let ret = null;
+      if (course !== null) {
+        ret = [];
+        for (let assignmentID of course.assignments) {
+          const assignment = await Assignment.findOne({
+            _id: assignmentID,
+          }).exec();
+          if (assignment !== null) {
+            const point = await computeGrade(Grade, email, assignmentID);
+            ret.push({
+              assignmentID: assignmentID,
+              score: point,
+              info: assignment.info,
+            });
+          }
         }
       }
     }
