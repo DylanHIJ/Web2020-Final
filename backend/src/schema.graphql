@@ -181,6 +181,7 @@ type Score {
 type AssignmentGrade {
   assignmentID: ID!
   score: Float
+  info: AssignmentInfo
 }
 
 type ReturnMessage {

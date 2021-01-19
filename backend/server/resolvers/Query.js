@@ -146,7 +146,7 @@ const Query = {
 
     return null;
   },
-  async allAssignmentGrade(parent, args, { Course, Grade }, info) {
+  async allAssignmentGrade(parent, args, { Course, Assignment, Grade }, info) {
     const email = args.email;
     const CID = args.CID;
 
@@ -155,8 +155,17 @@ const Query = {
     if (course !== null) {
       ret = [];
       for (let assignmentID of course.assignments) {
-        const point = await computeGrade(Grade, email, assignmentID);
-        ret.push({ assignmentID: assignmentID, score: point });
+        const assignment = await Assignment.findOne({
+          _id: assignmentID,
+        }).exec();
+        if (assignment !== null) {
+          const point = await computeGrade(Grade, email, assignmentID);
+          ret.push({
+            assignmentID: assignmentID,
+            score: point,
+            info: assignment.info,
+          });
+        }
       }
     }
 
