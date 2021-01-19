@@ -1,44 +1,26 @@
 import React from "react";
-import { Container, Typography, makeStyles } from "@material-ui/core";
+import { useParams } from "react-router-dom";
+import { Container, Typography } from "@material-ui/core";
 import Grader from "./grader";
 import { getAssignment, getProblems, getStudentList } from "./utils";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-  },
-  title: {
-    // marginTop: "6%",
-    marginBottom: "3%",
-  },
-  center: {
-    float: "center",
-  },
-}));
-
 const Grading = (props) => {
-  const { assignmentID } = props;
+  const { aid } = useParams();
 
-  const classes = useStyles();
-
-  const assignment = getAssignment(assignmentID);
-  const students = getStudentList(assignmentID).sort((a, b) =>
+  const assignment = getAssignment(aid);
+  const students = getStudentList(aid).sort((a, b) =>
     a.studentID <= b.studentID ? -1 : 1
   );
-  const problems = getProblems(assignmentID).sort((a, b) => a.index - b.index);
+  const problems = getProblems(aid).sort((a, b) => a.index - b.index);
 
   return (
     <Container maxWidth="lg" style={{ marginTop: "6%" }}>
       {/* Assignment Name */}
-      <Typography variant="h4" component="h2" className={classes.title}>
+      <Typography variant="h4" component="h2" style={{ marginBottom: "3%" }}>
         {assignment.name} (Grader Mode)
       </Typography>
 
-      <Grader
-        assignmentID={assignmentID}
-        problems={problems}
-        students={students}
-      />
+      <Grader assignmentID={aid} problems={problems} students={students} />
     </Container>
   );
 };

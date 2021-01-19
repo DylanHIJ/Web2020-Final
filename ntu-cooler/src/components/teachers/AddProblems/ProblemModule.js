@@ -20,8 +20,12 @@ const ProblemModule = (props) => {
   const [problem, setProblem] = useState(initProblem);
 
   const updateAnswer = (newAnswer) => {
-    console.log("Updating answer ->", newAnswer);
-    setProblem((prev) => ({ ...prev, answer: newAnswer }));
+    const wrappedNewAnswer = Array.isArray(newAnswer) ? newAnswer : [newAnswer];
+    console.log("Updating answer ->", wrappedNewAnswer);
+    setProblem((prev) => ({
+      ...prev,
+      answer: wrappedNewAnswer,
+    }));
   };
   const updateOptions = (newOptions) => {
     console.log("Updating options -> ", newOptions);
