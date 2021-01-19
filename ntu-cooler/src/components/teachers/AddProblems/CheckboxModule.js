@@ -58,7 +58,7 @@ const CheckboxModule = (props) => {
                   control={
                     <Checkbox
                       name={`option_${index}`}
-                      checked={answer[`option_${index}`]}
+                      checked={answer.find(`option_${index}`) !== undefined}
                       onChange={(event) => {
                         setAnswer((prev) =>
                           prev
