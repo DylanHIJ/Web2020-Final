@@ -155,11 +155,11 @@ const Query = {
     const token = args.token;
     const CID = args.CID;
 
+    let ret = null;
     const user = await User.findOne({ token: token }).exec();
     if (user !== null) {
       const email = user.email;
       const course = await Course.findOne({ _id: CID }).exec();
-      let ret = null;
       if (course !== null) {
         ret = [];
         for (let assignmentID of course.assignments) {
