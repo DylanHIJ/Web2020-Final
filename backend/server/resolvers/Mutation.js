@@ -632,31 +632,33 @@ const Mutation = {
           const Ans = problem.answers;
 
           let points = 0;
-          switch (problem.type) {
-            case "TF":
-            case "MULTIPLE_CHOICE":
-              points = Ans[0] === studentAns[0] ? problem.point : 0;
-              break;
-            case "CHECKBOX":
-              const difference = Ans.filter(
-                (x) => !studentAns.includes(x)
-              ).concat(studentAns.filter((x) => !Ans.includes(x)));
-              points = Math.max(
-                1 -
-                  ((2 * difference.length) / problem.options.length) *
-                    problem.point,
-                0
-              );
-              break;
-            case "SHORT_QA":
-              points =
-                studentGrade.grades[idx].score === null
-                  ? 0
-                  : studentGrade.grades[idx].score;
-              break;
-            default:
-              message.type = "Error";
-              message.message = "Problem Type Not Found";
+          if (studentAns) {
+            switch (problem.type) {
+              case "TF":
+              case "MULTIPLE_CHOICE":
+                points = Ans[0] === studentAns[0] ? problem.point : 0;
+                break;
+              case "CHECKBOX":
+                const difference = Ans.filter(
+                  (x) => !studentAns.includes(x)
+                ).concat(studentAns.filter((x) => !Ans.includes(x)));
+                points = Math.max(
+                  1 -
+                    ((2 * difference.length) / problem.options.length) *
+                      problem.point,
+                  0
+                );
+                break;
+              case "SHORT_QA":
+                points =
+                  studentGrade.grades[idx].score === null
+                    ? 0
+                    : studentGrade.grades[idx].score;
+                break;
+              default:
+                message.type = "Error";
+                message.message = "Problem Type Not Found";
+            }
           }
           grades.push({
             problemID: studentGrade.answers[idx].problemID,
