@@ -89,7 +89,7 @@ const Query = {
 
     return problem;
   },
-  async shortQAProblem(parent, args, { Assignment, Problem }, info) {
+  async shortQAProblem(parent, args, { Course, Assignment, Problem }, info) {
     const AID = args.AID;
     const assignment = await Assignment.findOne({ _id: AID }).exec();
     let ret = [];
@@ -106,6 +106,9 @@ const Query = {
           ret.push({ ...problem._doc, index: idx });
         }
       }
+
+      const course = await Course.findOne({ _id: assignment.courseID }).exec();
+      ret = { problems: ret, students: course.students };
     }
 
     return ret;

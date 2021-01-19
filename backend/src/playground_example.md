@@ -339,7 +339,7 @@ mutation UpdataProblem_1{
 
 ```javascript
 mutation UpdateAnswer_1{
-  updateAnswer(email: "b06902024@ntu.edu.tw", AID: "6006bc45f9245fba6d8081ac",
+  updateAnswer(email: "b06902024@ntu.edu.tw", AID: "6006bc45f9245fba6d8081ac", 
     data: [{problemID: "6006bdd2688dcbbea4c0d4d3", answer: ["HAMSTER"]},
     			 {problemID: "6006bde8688dcbbea4c0d4d4", answer: ["HAMSTER"]}]){
     type
@@ -349,18 +349,21 @@ mutation UpdateAnswer_1{
 
 query ShortQAProblem_1{
   shortQAProblem(AID: "6006bc45f9245fba6d8081ac"){
-    _id
-    assignmentID
-    type
-    point
-    statement
-    options
-    answers
-    keywords {
-      word
-      color
+    problems{
+    	_id
+    	assignmentID
+    	type
+    	point
+    	statement
+    	options
+    	answers
+    	keywords {
+      	word
+      	color
+    	}
+    	index
     }
-    index
+    students
   }
 }
 
@@ -379,9 +382,15 @@ query GetGrade_1{
 }
 
 query GetAllGrade_1{
-  allAssignmentGrade(email: "b06902024@ntu.edu.tw", CID: "6006bb0aec612bb83f08c9c7"){
+  allAssignmentGrade(token: "bB4MkEYgCPSXb5jTT5fj5iOszNg=", CID: "6006bb0aec612bb83f08c9c7"){
     assignmentID
     score
+    info{
+      weight
+      name
+      beginTime
+      endTime
+    }
   }
 }
 
@@ -404,7 +413,7 @@ mutation ShowGrade_1{
 }
 
 query GetAnswer_1{
-	answer(email: "b06902024@ntu.edu.tw", AID: "6006bc45f9245fba6d8081ac"){
+	answer(token:"bB4MkEYgCPSXb5jTT5fj5iOszNg=", AID: "6006bc45f9245fba6d8081ac"){
       problemID
       answer
   }
