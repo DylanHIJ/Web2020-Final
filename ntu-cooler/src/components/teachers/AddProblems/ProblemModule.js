@@ -10,11 +10,28 @@ import {
   Select,
   MenuItem,
 } from "@material-ui/core";
-import OptionModule from "./OptionModule";
+import TrueFalseModule from "./TrueFalseModule";
+import MultipleChoiceModule from "./MultipleChoiceModule";
+import CheckboxModule from "./CheckboxModule";
+import KeywordModule from "./KeywordModule";
 
 const ProblemModule = (props) => {
   const { problemIndex, initProblem, updateProblem } = props;
   const [problem, setProblem] = useState(initProblem);
+
+  const updateAnswer = (newAnswer) => {
+    console.log("Updating answer ->", newAnswer);
+    setProblem((prev) => ({ ...prev, answer: newAnswer }));
+  };
+  const updateOptions = (newOptions) => {
+    console.log("Updating options -> ", newOptions);
+    setProblem((prev) => ({ ...prev, options: newOptions }));
+  };
+
+  const updateKeywords = (newKeywords) => {
+    console.log("Updating newKeywords -> ", newKeywords);
+    setProblem((prev) => ({ ...prev, options: newKeywords }));
+  };
 
   useEffect(() => {
     updateProblem(problem);
@@ -66,15 +83,39 @@ const ProblemModule = (props) => {
             </FormControl>
           </Grid>
         </Grid>
-        {problem.type === "MULTIPLE_CHOICE" || problem.type === "CHECKBOX" ? (
-          <OptionModule
-            problemIndex={problemIndex}
-            initOptions={problem.options}
-            updateOptions={(newOptions) => {
-              setProblem((prev) => ({ ...prev, options: newOptions }));
-            }}
-          />
-        ) : null}
+
+        <Container maxWidth="lg" style={{ textAlign: "center" }}>
+          {
+            problem.type === "TF" ? (
+              <TrueFalseModule
+                initAnswer={problem.answer}
+                updateAnswer={updateAnswer}
+              />
+            ) : problem.type === "MULTIPLE_CHOICE" ? (
+              <MultipleChoiceModule
+                problemIndex={problemIndex}
+                initAnswer={problem.answer}
+                updateAnswer={updateAnswer}
+                initOptions={problem.options}
+                updateOptions={updateOptions}
+              />
+            ) : problem.type === "CHECKBOX" ? (
+              <CheckboxModule
+                problemIndex={problemIndex}
+                initAnswer={problem.answer}
+                updateAnswer={updateAnswer}
+                initOptions={problem.options}
+                updateOptions={updateOptions}
+              />
+            ) : problem.type === "SHORT_QA" ? (
+              <KeywordModule
+                problemIndex={problemIndex}
+                initKeywords={problem.keywords}
+                updateKeywords={updateKeywords}
+              />
+            ) : null //
+          }
+        </Container>
       </CardContent>
     </Card>
   );
