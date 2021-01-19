@@ -1,15 +1,22 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { FormControl, FormHelperText, TextField } from "@material-ui/core";
 
 const ShortQA = (props) => {
-  const { problem, answers, setAnswers } = props;
+  const { problem, answer, setAnswer } = props;
+
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    inputRef.current.focus();
+  }, [inputRef]);
 
   return (
     <form>
       <FormControl component="fieldset" style={{ width: "90%" }}>
         <FormHelperText>Short answer problem</FormHelperText>
         <TextField
-          name={`assignment-${problem.problemID}`}
+          inputRef={inputRef}
+          name={`assignment-${problem._id}`}
           // label="Input here"
           variant="outlined"
           multiline
@@ -17,12 +24,9 @@ const ShortQA = (props) => {
             marginTop: 24,
           }}
           rows={6}
-          value={answers[problem.problemID]}
+          value={answer}
           onChange={(event) => {
-            setAnswers((prev) => ({
-              ...prev,
-              [problem.problemID]: event.target.value,
-            }));
+            setAnswer(event.target.value);
           }}
         />
       </FormControl>

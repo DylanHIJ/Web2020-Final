@@ -8,33 +8,38 @@ import {
 } from "@material-ui/core";
 
 const CheckboxProblem = (props) => {
-  const { problem, answers, setAnswers } = props;
-
-  const choices = problem.options.map((element) => (
-    <FormControlLabel
-      key={problem.PID + "_" + element}
-      value={element}
-      control={<Checkbox />}
-      label={element}
-    />
-  ));
+  const { problem, answer, setAnswer } = props;
 
   return (
     <form>
       <FormControl component="fieldset">
         <FormHelperText>Select all that apply.</FormHelperText>
         <FormGroup
-          aria-label={`assignment-${problem.problemID}`}
-          name={`assignment-${problem.problemID}`}
-          value={answers[problem.problemID]}
-          onChange={(event) => {
-            setAnswers((prev) => ({
-              ...prev,
-              [problem.problemID]: event.target.value,
-            }));
-          }}
+          aria-label={`assignment-${problem._id}`}
+          name={`assignment-${problem._id}`}
         >
-          {choices}
+          {problem.options.map((option, index) => (
+            <FormControlLabel
+              key={`problem_${problem._id}-option_${index}`}
+              control={
+                <Checkbox
+                  name={`option_${index}`}
+                  checked={
+                    answer.find((e) => e === `option_${index}`) !== undefined
+                  }
+                  onChange={(event) => {
+                    setAnswer((prev) =>
+                      prev
+                        .filter((e) => e !== event.target.name)
+                        .concat(event.target.checked ? [event.target.name] : [])
+                        .sort()
+                    );
+                  }}
+                />
+              }
+              label={option}
+            />
+          ))}
         </FormGroup>
       </FormControl>
     </form>

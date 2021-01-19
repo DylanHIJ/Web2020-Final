@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { useQuery } from "@apollo/client";
 import {
   Button,
   Typography,
@@ -8,9 +10,11 @@ import {
 } from "@material-ui/core";
 import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
 import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
+
 import ProblemProgress from "./ProblemProgressBar";
 import Problem from "./problems";
-import { getAssignment } from "./utils";
+import { GET_ASSIGNMENT_FOR_STUDENT_ANSWERING } from "../../graphql/queries";
+import { getAssignment } from "./utils.js";
 
 // answers is an object of
 // PID -> {type: string, answer: varies}
@@ -27,19 +31,35 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Assignment = (assignement_id) => {
+const Assignment = (props) => {
   const classes = useStyles();
-  const assignment = getAssignment(assignement_id);
-  const problems = assignment.problems;
+  const { aid } = useParams();
+
+  // const { loading, data } = useQuery(GET_ASSIGNMENT_FOR_STUDENT_ANSWERING, {
+  //   variables: { aid: aid },
+  // });
+
+  const assignment = getAssignment(aid);
+  const problemIDs = assignment.problems;
+
+  // const assignment = loading ? {} : data.assignment;
+  // const problemIDs = loading ? [] : assignment.problems;
 
   const [currentProblemIndex, setCurrentProblemIndex] = useState(0);
-  const [answers, setAnswers] = useState(
-    problems.reduce((o, k) => ({ ...o, [k]: undefined }), {})
-  );
+
+  // TODO: need to get answers from server
+  const [answers, setAnswers] = useState({});
 
   const submitAnswer = () => {
     console.log(answers);
   };
+
+  const updateAnswer = (problemID, newAnswer) => {
+    console.log(`Updating answer of problem [${problemID}] -> `, newAnswer);
+    setAnswers((prev) => ({ ...prev, [problemID]: newAnswer }));
+  };
+
+  // if (loading) return <p>Loading</p>;
 
   return (
     <Container maxWidth="lg">
@@ -51,15 +71,18 @@ const Assignment = (assignement_id) => {
       {/* Progress Bar */}
       <ProblemProgress
         currentProblemIndex={currentProblemIndex}
-        totalNumProblems={problems.length}
+        totalNumProblems={problemIDs.length}
       />
 
       {/* Problem content */}
       <div className={classes.problem}>
         <Problem
-          problem={problems[currentProblemIndex]}
-          answers={answers}
-          setAnswers={setAnswers}
+          key={`problem_${problemIDs[currentProblemIndex]}`}
+          pid={problemIDs[currentProblemIndex]}
+          initAnswer={answers[problemIDs[currentProblemIndex]]}
+          updateAnswer={(newAnswer) => {
+            updateAnswer(problemIDs[currentProblemIndex], newAnswer);
+          }}
         ></Problem>
       </div>
 

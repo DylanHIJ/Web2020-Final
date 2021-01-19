@@ -8,21 +8,18 @@ import {
 } from "@material-ui/core";
 
 const TrueFalse = (props) => {
-  const { problem, answers, setAnswers } = props;
+  const { problem, answer, setAnswer } = props;
 
   return (
     <form>
       <FormControl component="fieldset">
         <FormHelperText>True/False</FormHelperText>
         <RadioGroup
-          aria-label={`assignment-${problem.problemID}`}
-          name={`assignment-${problem.problemID}`}
-          value={answers[problem.problemID]}
+          aria-label={`assignment-${problem._id}`}
+          name={`assignment-${problem._id}`}
+          value={answer}
           onChange={(event) => {
-            setAnswers((prev) => ({
-              ...prev,
-              [problem.problemID]: event.target.value,
-            }));
+            setAnswer(event.target.value);
           }}
         >
           <FormControlLabel value="True" control={<Radio />} label="True" />
