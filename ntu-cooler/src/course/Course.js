@@ -125,7 +125,7 @@ export default function Course(props) {
           <Route
             exact
             path={`${match.path}/assignments/create`}
-            render={() => <AddProblem />}
+            render={() => <AddProblem create={true} />}
           />
           <Route
             exact
@@ -135,8 +135,8 @@ export default function Course(props) {
             }
           />
           <Route
-            path={`${match.path}/assignments/:aid?/modification`}
-            component={Grading}
+            path={`${match.path}/assignments/:aid?/edit`}
+            component={AddProblem}
           />
           <Route
             path={`${match.path}/assignments/:aid?/grading`}

@@ -85,7 +85,7 @@ export default function AssignmentTA(props) {
         </ListItem>
       </List>
       <NavLink
-        to={{ pathname: `${match.url}/modification`, state: { isTA: isTA } }}
+        to={{ pathname: `${match.url}/edit`, state: { isTA: isTA } }}
         className={classes.navlink}
       >
         <Button
@@ -93,7 +93,7 @@ export default function AssignmentTA(props) {
           className={classes.button}
           startIcon={<Edit />}
         >
-          Modification
+          Edit
         </Button>
       </NavLink>
       <NavLink
