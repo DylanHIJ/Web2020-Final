@@ -5,8 +5,9 @@ type Query {
   problem(PID: ID!): Problem
   shortQAProblem(AID: ID!): [Problem]!
   studentAnswer(email: String!, PID: ID!): Answer
-  getGrade(email: String!, AID: ID!): Float
-  getAnswer(email: String!, AID: ID!): [Answer]
+  grade(email: String!, AID: ID!): AssignmentGrade
+  allAssignmentGrade(email: String!, CID: ID!): [AssignmentGrade]
+  answer(email: String!, AID: ID!): [Answer]
 }
 
 type Mutation {
@@ -174,6 +175,11 @@ input ScoreInput {
 
 type Score {
   problemID: ID!
+  score: Float
+}
+
+type AssignmentGrade {
+  assignmentID: ID!
   score: Float
 }
 

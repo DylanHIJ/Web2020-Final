@@ -1,7 +1,9 @@
 # GraphQL API example
 
-**Update On 2021/1/17**
+**Update On 2021/1/19**
+
 - User
+
 ```javascript
 mutation CreateUser_1 {
   createUser(data: {
@@ -29,7 +31,7 @@ query QueryUser_1 {
   user(email: "b06902074@ntu.edu.tw", password: "12345678"){
     name,
     email,
-    studentCourses { 
+    studentCourses {
       _id
       info {
       	name
@@ -54,7 +56,7 @@ query QueryUser_1 {
       TAs
       students
       assignments
-    }, 
+    },
   }
 }
 
@@ -87,7 +89,7 @@ query QueryUser_2 {
       TAs
       students
       assignments
-    }, 
+    },
   }
 }
 
@@ -121,7 +123,7 @@ mutation DeleteToCourse_1 {
   deleteUserFromCourse(CID: "6005c2dd9268657df537efb2", data: {
     email: "b06902074@ntu.edu.tw"
     TA: true
-  }) {	
+  }) {
     type
     message
   }
@@ -139,6 +141,7 @@ mutation DeleteToCourse_2 {
 ```
 
 - Course
+
 ```javascript
 mutation CreateCourse_1 {
   createCourse(TA: "b06902074@ntu.edu.tw", data: {
@@ -199,7 +202,9 @@ mutation DeleteCourse_1 {
   }
 }
 ```
+
 - Assignment
+
 ```javascript
 mutation CreateAssignment_1{
   createAssignment(CID: "6006bb0aec612bb83f08c9c7", data: {
@@ -238,7 +243,7 @@ mutation UpdataAssignment_1{
   updateAssignmentInfo(AID: "6006bc45f9245fba6d8081ac", data: {
     name: "HW2"
     beginTime: "2021-02-01T00:00:00.000Z"
-    endTime: "2021-02-28T23:59:59.999Z" 
+    endTime: "2021-02-28T23:59:59.999Z"
     weight: 0.2
   }){
     type
@@ -248,6 +253,7 @@ mutation UpdataAssignment_1{
 ```
 
 - Problem
+
 ```javascript
 mutation CreateProblem_1{
   createProblem(AID:"6006bc45f9245fba6d8081ac" data: {
@@ -330,9 +336,10 @@ mutation UpdataProblem_1{
 ```
 
 - Grade
+
 ```javascript
 mutation UpdateAnswer_1{
-  updateAnswer(email: "b06902024@ntu.edu.tw", AID: "6006bc45f9245fba6d8081ac", 
+  updateAnswer(email: "b06902024@ntu.edu.tw", AID: "6006bc45f9245fba6d8081ac",
     data: [{problemID: "6006bdd2688dcbbea4c0d4d3", answer: ["HAMSTER"]},
     			 {problemID: "6006bde8688dcbbea4c0d4d4", answer: ["HAMSTER"]}]){
     type
@@ -365,7 +372,17 @@ query StudentAnswer_1{
 }
 
 query GetGrade_1{
-  getGrade(email: "b06902024@ntu.edu.tw", AID: "6006bc45f9245fba6d8081ac")
+  grade(email: "b06902024@ntu.edu.tw", AID: "6006bc45f9245fba6d8081ac"){
+    assignmentID
+    score
+  }
+}
+
+query GetAllGrade_1{
+  allAssignmentGrade(email: "b06902024@ntu.edu.tw", CID: "6006bb0aec612bb83f08c9c7"){
+    assignmentID
+    score
+  }
 }
 
 mutation UpdateGrade_1{
@@ -387,7 +404,7 @@ mutation ShowGrade_1{
 }
 
 query GetAnswer_1{
-  getAnswer(email: "b06902024@ntu.edu.tw", AID: "6006bc45f9245fba6d8081ac"){
+	answer(email: "b06902024@ntu.edu.tw", AID: "6006bc45f9245fba6d8081ac"){
       problemID
       answer
   }
