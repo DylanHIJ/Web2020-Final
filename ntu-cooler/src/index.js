@@ -5,6 +5,7 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
 import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
+import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import { split } from "apollo-link";
 import { HttpLink } from "apollo-link-http";
 import { WebSocketLink } from "apollo-link-ws";
@@ -36,13 +37,26 @@ const client = new ApolloClient({
   link,
   cache: new InMemoryCache().restore({}),
 });
+
+const THEME = createMuiTheme({
+  typography: {
+    fontFamily: `"Arimo"`,
+    fontSize: 16,
+    fontWeightLight: 300,
+    fontWeightRegular: 400,
+    fontWeightMedium: 500,
+  },
+});
+
 ReactDOM.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <ApolloProvider client={client}>
-        <App />
-      </ApolloProvider>
-    </BrowserRouter>
+    <MuiThemeProvider theme={THEME}>
+      <BrowserRouter>
+        <ApolloProvider client={client}>
+          <App />
+        </ApolloProvider>
+      </BrowserRouter>
+    </MuiThemeProvider>
   </React.StrictMode>,
   document.getElementById("root")
 );

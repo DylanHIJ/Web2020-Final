@@ -11,7 +11,7 @@ import { GET_USER_COURSES } from "../graphql";
 const useStyles = makeStyles((theme) => ({
   title: {
     marginTop: "6%",
-    marginBottom: "3%",
+    marginBottom: "1%",
   },
   subtitle: {
     marginTop: "3%",
@@ -41,6 +41,15 @@ export default function CourseOverview() {
       <Typography variant="h4" component="h2" className={classes.title}>
         Course Overview
       </Typography>
+      <hr />
+      {data.user.studentCourses.length === 0 &&
+      data.user.teacherCourses.length === 0 ? (
+        <Typography variant="h5" component="h2" className={classes.subtitle}>
+          No courses yet.
+        </Typography>
+      ) : (
+        <></>
+      )}
       {data.user.studentCourses.length !== 0 ? (
         <Typography variant="h5" component="h2" className={classes.subtitle}>
           Student Courses
@@ -69,6 +78,7 @@ export default function CourseOverview() {
           </Grid>
         ))}
       </Grid>
+
       <Fab
         color="primary"
         aria-label="add"

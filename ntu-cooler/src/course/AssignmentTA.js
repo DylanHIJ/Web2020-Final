@@ -1,15 +1,24 @@
 import React from "react";
 import { useQuery } from "@apollo/client";
 import { useParams, useRouteMatch, NavLink } from "react-router-dom";
-import { Button, Typography } from "@material-ui/core";
-import { Edit, Check } from "@material-ui/icons";
+import {
+  Button,
+  Typography,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemAvatar,
+  Avatar,
+  Divider,
+} from "@material-ui/core";
+import { Edit, Check, AccessTime, AccessAlarm } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 import { GET_ASSIGNMENT } from "../graphql";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
-    maxWidth: 360,
+    maxWidth: 480,
   },
   title: {
     marginTop: "6%",
@@ -46,13 +55,35 @@ export default function AssignmentTA(props) {
         {data.assignment.info.name}
       </Typography>
       <hr />
-      <Typography paragraph color="primary">
-        Begin Time:{" "}
-        {new Date(parseInt(data.assignment.info.beginTime, 10)).toString()}
-        <br />
-        End Time:{" "}
-        {new Date(parseInt(data.assignment.info.endTime, 10)).toString()}
-      </Typography>
+      <List className={classes.root}>
+        <ListItem>
+          <ListItemAvatar>
+            <Avatar>
+              <AccessTime />
+            </Avatar>
+          </ListItemAvatar>
+          <ListItemText
+            primary="Begin Time"
+            secondary={new Date(
+              parseInt(data.assignment.info.beginTime, 10)
+            ).toString()}
+          />
+        </ListItem>
+        <Divider variant="inset" component="li" />
+        <ListItem>
+          <ListItemAvatar>
+            <Avatar>
+              <AccessAlarm />
+            </Avatar>
+          </ListItemAvatar>
+          <ListItemText
+            primary="End Time"
+            secondary={new Date(
+              parseInt(data.assignment.info.endTime, 10)
+            ).toString()}
+          />
+        </ListItem>
+      </List>
       <NavLink
         to={{ pathname: `${match.url}/modification`, state: { isTA: isTA } }}
         className={classes.navlink}

@@ -80,23 +80,25 @@ export default function CourseCard(props) {
       >
         <CardHeader
           className={classes.header}
-          action={
-            <IconButton aria-label="settings">
-              <MoreVertIcon />
-            </IconButton>
-          }
           title={course.info.name}
           subheader={course.info.teacher}
         ></CardHeader>
       </NavLink>
 
       <CardActions disableSpacing className={classes.actions}>
-        <IconButton aria-label="add to favorites">
-          <Favorite />
-        </IconButton>
-        <IconButton aria-label="share">
-          <LibraryBooks />
-        </IconButton>
+        <NavLink
+          to={{
+            pathname: `/courses/${course._id}/assignments`,
+            state: {
+              isTA: isTA,
+            },
+          }}
+          className={classes.navlink}
+        >
+          <IconButton aria-label="share">
+            <LibraryBooks />
+          </IconButton>
+        </NavLink>
       </CardActions>
       <div style={{ height: 64 }} />
     </Card>
