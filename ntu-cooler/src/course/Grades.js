@@ -11,16 +11,11 @@ import {
   TableRow,
   Typography,
   Container,
-  Backdrop,
-  CircularProgress,
 } from "@material-ui/core";
 import { GET_COURSE_GRADES } from "../graphql";
 import { useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
-
-function ccyFormat(num) {
-  return `${num.toFixed(2)}`;
-}
+import Loading from "../components/Loading";
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -51,10 +46,6 @@ const useStyles = makeStyles((theme) => ({
   tableRow: {
     fontSize: "24pt",
   },
-  backdrop: {
-    zIndex: theme.zIndex.drawer + 1,
-    color: "#fff",
-  },
 }));
 
 const compareDeadline = (a, b) => {
@@ -68,12 +59,7 @@ export default function Grades() {
     variables: { token: Cookies.get("token"), cid: cid },
   });
 
-  if (loading)
-    return (
-      <Backdrop className={classes.backdrop} open>
-        <CircularProgress color="inherit" />
-      </Backdrop>
-    );
+  if (loading) return <Loading />;
 
   return (
     <Container maxWidth="lg">

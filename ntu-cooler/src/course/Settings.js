@@ -6,13 +6,12 @@ import {
   TextField,
   Typography,
   Snackbar,
-  Backdrop,
-  CircularProgress,
 } from "@material-ui/core";
 import MuiAlert from "@material-ui/lab/Alert";
 import { useParams } from "react-router-dom";
 import { useQuery, useMutation } from "@apollo/client";
 import { GET_COURSE_INFO, UPDATE_COURSE_INFO } from "../graphql";
+import Loading from "../components/Loading";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -27,16 +26,12 @@ const useStyles = makeStyles((theme) => ({
     marginTop: "6%",
     marginBottom: "1%",
   },
-  backdrop: {
-    zIndex: theme.zIndex.drawer + 1,
-    color: "#fff",
-  },
 }));
 
 export default function AccountEdit() {
   const classes = useStyles();
   const { cid } = useParams();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const [classroom, setClassroom] = useState("");
   const [classTime, setClassTime] = useState("");
   const [description, setDescription] = useState("");
@@ -75,13 +70,7 @@ export default function AccountEdit() {
     }
     setOpen(false);
   };
-  if (loading)
-    return (
-      <Backdrop className={classes.backdrop} open>
-        <CircularProgress color="inherit" />
-      </Backdrop>
-    );
-
+  if (loading) return <Loading />;
   return (
     <>
       <Container maxWidth="lg">

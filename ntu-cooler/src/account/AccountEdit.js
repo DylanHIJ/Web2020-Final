@@ -5,6 +5,8 @@ import MuiAlert from "@material-ui/lab/Alert";
 import { Button, TextField, Typography, Snackbar } from "@material-ui/core";
 import { GET_USER_INFO, UPDATE_USER_INFO } from "../graphql";
 import { useQuery, useMutation } from "@apollo/client";
+import Loading from "../components/Loading";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -89,7 +91,7 @@ export default function AccountEdit() {
     setErrorOpen(false);
   };
 
-  if (loading) return "Loading";
+  if (loading) return <Loading />;
   return (
     <>
       <Typography variant="h4" component="h2" className={classes.title}>

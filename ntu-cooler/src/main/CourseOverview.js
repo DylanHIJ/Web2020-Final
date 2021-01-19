@@ -7,6 +7,7 @@ import CourseCard from "./components/CourseCard";
 import NewCourseDialog from "./components/NewCourseDialog";
 import { useQuery } from "@apollo/client";
 import { GET_USER_COURSES } from "../graphql";
+import Loading from "../components/Loading";
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -26,7 +27,7 @@ export default function CourseOverview() {
     variables: { token: Cookies.get("token") },
   });
 
-  if (loading) return "Loading";
+  if (loading) return <Loading />;
 
   const handleClickOpen = () => {
     setOpen(true);

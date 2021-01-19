@@ -14,6 +14,7 @@ import {
 import { Edit, Check, AccessTime, AccessAlarm } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 import { GET_ASSIGNMENT } from "../graphql";
+import Loading from "../components/Loading";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -23,9 +24,6 @@ const useStyles = makeStyles((theme) => ({
   title: {
     marginTop: "6%",
     marginBottom: "1%",
-  },
-  info: {
-    marginTop: "3%",
   },
   button: {
     marginTop: "1%",
@@ -47,7 +45,7 @@ export default function AssignmentTA(props) {
     fetchPolicy: "no-cache",
   });
 
-  if (loading) return "Loading";
+  if (loading) return <Loading />;
 
   return (
     <>

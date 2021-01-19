@@ -16,10 +16,12 @@ import {
 } from "@material-ui/core";
 import { ExpandMore, NotesRounded, Add } from "@material-ui/icons";
 import { GET_COURSE_ASSIGNMENTS } from "../graphql";
+import Loading from "../components/Loading";
 
 const compareDeadline = (a, b) => {
   return parseInt(a.info.endTime, 10) - parseInt(b.info.endTime, 10);
 };
+
 const useStyles = makeStyles((theme) => ({
   title: {
     marginTop: "6%",
@@ -27,10 +29,6 @@ const useStyles = makeStyles((theme) => ({
   },
   root: {
     display: "flex",
-  },
-  content: {
-    flexGrow: 1,
-    padding: theme.spacing(3),
   },
   list: {
     width: "100%",
@@ -49,7 +47,7 @@ export default function Assignments(props) {
   const { loading, data } = useQuery(GET_COURSE_ASSIGNMENTS, {
     variables: { cid: cid },
   });
-  if (loading) return "Loading";
+  if (loading) return <Loading />;
   return (
     <Container maxWidth="lg">
       <Typography variant="h4" component="h2" className={classes.title}>
