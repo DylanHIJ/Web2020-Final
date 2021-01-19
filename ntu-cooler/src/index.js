@@ -41,7 +41,7 @@ const client = new ApolloClient({
 const THEME = createMuiTheme({
   typography: {
     fontFamily: `"Arimo"`,
-    fontSize: 16,
+    fontSize: 14,
     fontWeightLight: 300,
     fontWeightRegular: 400,
     fontWeightMedium: 500,
