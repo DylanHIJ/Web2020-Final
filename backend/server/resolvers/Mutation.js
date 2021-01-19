@@ -319,9 +319,10 @@ const Mutation = {
 
     if (User.exists({ email: course.TAs })) {
       const ret = await Course.create(course);
-      await addCourseToUserDB(User, course.TAs[0], ret._id.toString(), true);
+      const courseID = ret._id.toString();
+      await addCourseToUserDB(User, course.TAs[0], courseID, true);
       message.type = "Success";
-      message.message = `Create Course ${ret._id}`;
+      message.message = `Create Course ${courseID}`;
     } else {
       message.type = "Error";
       message.message = "User Not Found";
@@ -389,20 +390,21 @@ const Mutation = {
     let message = { type: undefined, message: undefined };
     if (await Course.exists({ _id: CID })) {
       const ret = await Assignment.create(assignment);
+      const assignmentID = ret._id.toString();
       const course = await Course.findOne({
         _id: CID,
       }).exec();
       await Course.updateOne(
         { _id: CID },
-        { assignments: [...course.assignments, ret._id.toString()] }
+        { assignments: [...course.assignments, assignmentID] }
       );
 
       for (const email of course.students) {
-        await createGrade(Grade, email, ret._id.toString());
+        await createGrade(Grade, email, assignmentID);
       }
 
       message.type = "Success";
-      message.message = `Create Assignment ${ret._id}`;
+      message.message = `Create Assignment ${assignmentID}`;
     } else {
       message.type = "Error";
       message.message = "Course Not Found";
@@ -449,31 +451,36 @@ const Mutation = {
     { Problem, Assignment, Grade, Course },
     Info
   ) {
-    const problem = args.data;
+    const AID = args.AID;
+    const problem = { assignmentID: AID, ...args.data };
     let message = { type: undefined, message: undefined };
-    if (await Assignment.exists({ _id: problem.assignmentID })) {
+    if (await Assignment.exists({ _id: AID })) {
       const ret = await Problem.create(problem);
+      const problemID = ret._id.toString();
       const assignment = await Assignment.findOne({
-        _id: problem.assignmentID,
+        _id: AID,
       });
       await Assignment.updateOne(
-        { _id: problem.assignmentID },
-        { problems: [...assignment.problems, ret._id.toString()] }
+        { _id: AID },
+        { problems: [...assignment.problems, problemID] }
       );
 
       const course = await Course.findOne({ _id: assignment.courseID }).exec();
       for (const email of course.students) {
         const grade = await Grade.findOne({
-          $and: [{ email: email }, { assignmentID: problem.assignmentID }],
+          $and: [{ email: email }, { assignmentID: AID }],
         }).exec();
         await Grade.updateOne(
-          { $and: [{ email: email }, { assignmentID: problem.assignmentID }] },
-          { grades: [...grade.grades, 0], answers: [...grade.answers, []] }
+          { $and: [{ email: email }, { assignmentID: AID }] },
+          {
+            grades: [...grade.grades, { problemID: problemID, score: null }],
+            answers: [...grade.answers, { problemID: problemID, answer: null }],
+          }
         );
       }
 
       message.type = "Success";
-      message.message = `Create Problem ${ret._id}`;
+      message.message = `Create Problem ${problemID}`;
     } else {
       message.type = "Error";
       message.message = "Assignment Not Found";
@@ -495,7 +502,6 @@ const Mutation = {
         _id: problem.assignmentID,
       });
 
-      const idx = assignment.problems.indexOf(PID);
       await Assignment.updateOne(
         { _id: problem.assignmentID },
         {
@@ -513,8 +519,8 @@ const Mutation = {
         await Grade.updateOne(
           { $and: [{ email: email }, { assignmentID: problem.assignmentID }] },
           {
-            grades: grade.grades.filter((_, i) => i !== idx),
-            answers: grade.answers.filter((_, i) => i !== idx),
+            grades: grade.grades.filter((score) => score.problemID !== PID),
+            answers: grade.answers.filter((answer) => answer.problemID !== PID),
           }
         );
       }
@@ -546,94 +552,90 @@ const Mutation = {
 
   // Grade Mutation
   async updateAnswer(parent, args, { Grade }, Info) {
-    const { email, assignmentID, answers } = args.data;
+    const email = args.email;
+    const AID = args.AID;
+    const Answers = args.data;
     let message = { type: undefined, message: undefined };
     if (
       await Grade.exists({
-        $and: [{ email: email }, { assignmentID: assignmentID }],
+        $and: [{ email: email }, { assignmentID: AID }],
       })
     ) {
       await Grade.updateOne(
         {
-          $and: [{ email: email }, { assignmentID: assignmentID }],
+          $and: [{ email: email }, { assignmentID: AID }],
         },
-        { answers: answers }
+        { answers: Answers }
       );
       message.type = "Success";
-      message.message = `${email} Update Assignment ${assignmentID}'s Answer`;
+      message.message = `${email} Update Assignment ${AID}'s Answer`;
     } else {
       message.type = "Error";
       message.message = "Crash";
     }
+
     return message;
   },
-  async updateGrade(parent, args, { Assignment, Grade }) {
-    const { email, assignmentID, problemID, givenGrade } = args.data;
+  async updateGrade(parent, args, { Problem, Grade }) {
+    const email = args.email;
+    const PID = args.PID;
+    const Score = args.Score;
     let message = { type: undefined, message: undefined };
 
-    if (
-      await Grade.exists({
-        $and: [{ email: email }, { assignmentID: assignmentID }],
-      })
-    ) {
-      if (await Assignment.exists({ _id: assignmentID })) {
-        const assignment = await Assignment.findOne({
-          _id: assignmentID,
+    if (await Problem.exists({ _id: PID })) {
+      const problem = await Problem.findOne({ _id: PID }).exec();
+      if (
+        await Grade.exists({
+          $and: [{ email: email }, { assignmentID: problem.assignmentID }],
+        })
+      ) {
+        const grade = await Grade.findOne({
+          $and: [{ email: email }, { assignmentID: problem.assignmentID }],
         }).exec();
-        const idx = assignment.problems.indexOf(problemID);
-        if (idx !== -1) {
-          const grade = await Grade.findOne({
-            $and: [{ email: email }, { assignmentID: assignmentID }],
-          }).exec();
-          await Grade.updateOne(
-            {
-              $and: [{ email: email }, { assignmentID: assignmentID }],
-            },
-            {
-              grades: grade.grades.map((originGrade, i) =>
-                i === idx ? givenGrade : originGrade
-              ),
-            }
-          );
-          message.type = "Success";
-          message.message = "Update Grade";
-        } else {
-          message.type = "Error";
-          message.message = "Problem Not Found";
-        }
+        await Grade.updateOne(
+          {
+            $and: [{ email: email }, { assignmentID: problem.assignmentID }],
+          },
+          {
+            grades: grade.grades.map((score) =>
+              score.problemID === PID ? { ...score, score: Score } : score
+            ),
+          }
+        );
+
+        message.type = "Success";
+        message.message = `Update Problem ${PID}' Grade To ${Score}`;
       } else {
         message.type = "Error";
-        message.message = "Assignment Not Found";
+        message.message = "Crash";
       }
     } else {
       message.type = "Error";
-      message.message = "Crash";
+      message.message = "Problem Not Found";
     }
 
     return message;
   },
-  async showGrade(parent, args, { Assignment, Problem, Grade }, info) {
+  async showGrade(parent, args, { Problem, Grade }, info) {
     const AID = args.AID;
     let message = { type: undefined, message: undefined };
-    if (await Assignment.exists({ _id: AID })) {
+    if (await Grade.exists({ assignmentID: AID })) {
       const grade = await Grade.find({ assignmentID: AID }).exec();
 
       for (const studentGrade of grade) {
-        const assignment = await Assignment.findOne({
-          _id: studentGrade.assignmentID,
-        });
         let grades = [];
-        for (const [idx, problemID] of assignment.problems.entries()) {
-          const problem = await Problem.findOne({ _id: problemID }).exec();
-          const studentAns = studentGrade.answers[idx];
+        for (let idx in studentGrade.answers) {
+          const problem = await Problem.findOne({
+            _id: studentGrade.answers[idx].problemID,
+          }).exec();
+          const studentAns = studentGrade.answers[idx].answers;
           const Ans = problem.answers;
 
           let points = 0;
           switch (problem.type) {
             case "TF":
             case "MULTIPLE_CHOICE":
-              console.log(studentAns, Ans);
-              points = studentAns[0] === Ans[0] ? problem.point : 0;
+              points = Ans[0] === studentAns[0] ? problem.point : 0;
               break;
             case "CHECKBOX":
               const difference = Ans.filter(
@@ -647,13 +649,19 @@ const Mutation = {
               );
               break;
             case "SHORT_QA":
-              points = studentGrade.grades[idx];
+              points =
+                studentGrade.grades[idx].score === null
+                  ? 0
+                  : studentGrade.grades[idx].score;
               break;
             default:
               message.type = "Error";
               message.message = "Problem Type Not Found";
           }
-          grades.push(points);
+          grades.push({
+            problemID: studentGrade.answers[idx].problemID,
+            score: points,
+          });
         }
 
         await Grade.updateOne(

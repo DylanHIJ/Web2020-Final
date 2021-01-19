@@ -13,11 +13,11 @@ const GradeSchema = new Schema({
   },
   grades: {
     type: Array,
-    required: [true, "Grade field is required."],
+    required: [true, "Grades field is required"],
   },
   answers: {
     type: Array,
-    required: [true, "Answer field is required."],
+    required: [true, "Answers field is required"],
   },
   graded: {
     type: Boolean,

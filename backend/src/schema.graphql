@@ -4,7 +4,7 @@ type Query {
   assignment(AID: ID!): Assignment
   problem(PID: ID!): Problem
   shortQAProblem(AID: ID!): [Problem]!
-  studentAnswer(query: gradeAnswerInput!): String
+  studentAnswer(email: String!, PID: ID!): Answer
   getGrade(email: String!, AID: ID!): Float
   getAnswer(email: String!, AID: ID!): [Answer]
 }
@@ -28,9 +28,9 @@ type Mutation {
   deleteProblem(PID: ID!): ReturnMessage!
   updateProblemInfo(PID: ID!, data: ProblemInput!): ReturnMessage!
 
-  updateAnswer(data: updateAnswerInput!): ReturnMessage!
-  updateGrade(data: updateGradeInput!): ReturnMessage!
-  showGrade(AID: ID): ReturnMessage!
+  updateAnswer(email: String!, AID: ID!, data: [AnswerInput]!): ReturnMessage!
+  updateGrade(email: String!, PID: String!, Score: Float!): ReturnMessage!
+  showGrade(AID: ID!): ReturnMessage!
 }
 
 type User {
@@ -114,12 +114,12 @@ input AssignmentInput {
 
 input keywordInput {
   color: String!
-  keyword: String!
+  word: String!
 }
 
 type keyword {
   color: String!
-  keyword: String!
+  word: String!
 }
 
 type Problem {
@@ -128,9 +128,9 @@ type Problem {
   type: String!
   point: Float!
   statement: String!
-  options: [String]!
-  answers: [String]!
-  keywords: [keyword]!
+  options: [String]
+  answers: [String]
+  keywords: [keyword]
   index: Int!
 }
 
@@ -146,15 +146,9 @@ input ProblemInput {
 type Grade {
   email: String!
   assignmentID: ID!
-  grades: [Float]!
-  answers: [[String]]!
+  grades: [Score]!
+  answers: [Answer]!
   graded: Boolean!
-}
-
-input updateAnswerInput {
-  email: String!
-  assignmentID: ID!
-  answers: [[String]]!
 }
 
 input gradeAnswerInput {
@@ -163,16 +157,24 @@ input gradeAnswerInput {
   problemID: ID!
 }
 
-input updateGradeInput {
-  email: String!
-  assignmentID: ID!
+input AnswerInput {
   problemID: ID!
-  givenGrade: Float!
+  answer: [String]
 }
 
 type Answer {
   problemID: ID!
-  answer: [String]!
+  answer: [String]
+}
+
+input ScoreInput {
+  problemID: ID!
+  score: Float
+}
+
+type Score {
+  problemID: ID!
+  score: Float
 }
 
 type ReturnMessage {

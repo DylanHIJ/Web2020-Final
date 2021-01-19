@@ -202,7 +202,7 @@ mutation DeleteCourse_1 {
 - Assignment
 ```javascript
 mutation CreateAssignment_1{
-  createAssignment(CID: "6005c2dd9268657df537efb2", data: {
+  createAssignment(CID: "6006bb0aec612bb83f08c9c7", data: {
     name: "HW1"
     beginTime: "2021-01-01T00:00:00.000Z"
     endTime: "2021-01-31T23:59:59.999Z"
@@ -214,7 +214,7 @@ mutation CreateAssignment_1{
 }
 
 query QueryAssignment_1{
-  assignment(AID: "6005c43f76697b8371a8797b"){
+  assignment(AID: "6006bc45f9245fba6d8081ac"){
     _id
     info{
     	name
@@ -228,14 +228,14 @@ query QueryAssignment_1{
 }
 
 mutation DeleteAssignment_1{
-  deleteAssignment(AID: "6005c43f76697b8371a8797b"){
+  deleteAssignment(AID: "6006bc45f9245fba6d8081ac"){
     type
     message
   }
 }
 
 mutation UpdataAssignment_1{
-  updateAssignmentInfo(AID: "6005c43f76697b8371a8797b", data: {
+  updateAssignmentInfo(AID: "6006bc45f9245fba6d8081ac", data: {
     name: "HW2"
     beginTime: "2021-02-01T00:00:00.000Z"
     endTime: "2021-02-28T23:59:59.999Z" 
@@ -250,14 +250,11 @@ mutation UpdataAssignment_1{
 - Problem
 ```javascript
 mutation CreateProblem_1{
-  createProblem(data: {
-    assignmentID: "6004339592633ac0f5471065"
+  createProblem(AID:"6006bc45f9245fba6d8081ac" data: {
     type: "TF"
     point: 10
     statement: "PingChiaHuang is Hamster"
-    options: ["True", "False"]
     answers: ["True"]
-    keywords: []
   }) {
     type
     message
@@ -265,14 +262,12 @@ mutation CreateProblem_1{
 }
 
 mutation CreateProblem_2{
-  createProblem(data: {
-    assignmentID: "6004339592633ac0f5471065"
+  createProblem(AID: "6006bc45f9245fba6d8081ac" data: {
     type: "SHORT_QA"
     point: 20
     statement: "Describe Hamster"
-    options: []
     answers: ["HAMSTER!"]
-    keywords: []
+    keywords: [{word: "HAMSTER", color: "Green"}]
   }) {
     type
     message
@@ -280,7 +275,7 @@ mutation CreateProblem_2{
 }
 
 query QueryProblem_1{
-  problem(ID: "600433b192633ac0f5471067"){
+  problem(PID: "6006bdd2688dcbbea4c0d4d3"){
     _id
     assignmentID
     type
@@ -288,13 +283,16 @@ query QueryProblem_1{
     statement
     options
     answers
-    keywords
+    keywords {
+      word
+      color
+    }
     index
   }
 }
 
 query QueryProblem_2{
-  problem(ID: "600433f792633ac0f5471068"){
+  problem(PID: "6006bde8688dcbbea4c0d4d4"){
     _id
     assignmentID
     type
@@ -302,26 +300,28 @@ query QueryProblem_2{
     statement
     options
     answers
-    keywords
+    keywords {
+      word
+      color
+    }
     index
   }
 }
 
 mutation DeleteProblem_1{
-  deleteProblem(ID: "600433b192633ac0f5471067"){
+  deleteProblem(PID: "6006bdd2688dcbbea4c0d4d3"){
     type
     message
   }
 }
 
 mutation UpdataProblem_1{
-  updateProblemInfo(ID: "600433b192633ac0f5471067", data: {
+  updateProblemInfo(PID: "6006bdd2688dcbbea4c0d4d3", data: {
     type: "SHORT_QA"
     point: 20
     statement: "Describe Hamster"
-    options: []
     answers: ["HAMSTERR!!"]
-    keywords: ["HAMSTER"]
+    keywords: [{word: "HAMSTER", color: "Red"}]
   }){
     type
     message
@@ -332,18 +332,16 @@ mutation UpdataProblem_1{
 - Grade
 ```javascript
 mutation UpdateAnswer_1{
-  updateAnswer(data: {
-    email: "b06902024@ntu.edu.tw"
-    assignmentID: "6004339592633ac0f5471065"
-    answers: [["True"], ["HAMSTER"]]
-  }){
+  updateAnswer(email: "b06902024@ntu.edu.tw", AID: "6006bc45f9245fba6d8081ac", 
+    data: [{problemID: "6006bdd2688dcbbea4c0d4d3", answer: ["HAMSTER"]},
+    			 {problemID: "6006bde8688dcbbea4c0d4d4", answer: ["HAMSTER"]}]){
     type
     message
   }
 }
 
 query ShortQAProblem_1{
-  shortQAProblem(ID: "6004339592633ac0f5471065"){
+  shortQAProblem(AID: "6006bc45f9245fba6d8081ac"){
     _id
     assignmentID
     type
@@ -351,39 +349,47 @@ query ShortQAProblem_1{
     statement
     options
     answers
-    keywords
+    keywords {
+      word
+      color
+    }
     index
   }
 }
 
 query StudentAnswer_1{
-  studentAnswer(query: {
-    email: "b06902024@ntu.edu.tw"
-    assignmentID: "6004339592633ac0f5471065"
-    problemID: "600433f792633ac0f5471068"
-  })
+  studentAnswer(email: "b06902024@ntu.edu.tw" PID: "6006bde8688dcbbea4c0d4d4"){
+    problemID
+    answer
+  }
 }
 
 query GetGrade_1{
-  getGrade(email: "b06902024@ntu.edu.tw", ID: "6004339592633ac0f5471065")
+  getGrade(email: "b06902024@ntu.edu.tw", AID: "6006bc45f9245fba6d8081ac")
 }
 
 mutation UpdateGrade_1{
-  updateGrade(data: {
+  updateGrade(
     email: "b06902024@ntu.edu.tw"
-    assignmentID: "6004339592633ac0f5471065"
-    problemID: "600433f792633ac0f5471068"
-    givenGrade: 15
-  }){
+    PID: "6006bde8688dcbbea4c0d4d4"
+    Score: 15
+  ){
     type
     message
   }
 }
 
 mutation ShowGrade_1{
-  showGrade(ID: "6004339592633ac0f5471065"){
+  showGrade(AID: "6006bc45f9245fba6d8081ac"){
     type
     message
+  }
+}
+
+query GetAnswer_1{
+  getAnswer(email: "b06902024@ntu.edu.tw", AID: "6006bc45f9245fba6d8081ac"){
+      problemID
+      answer
   }
 }
 ```
