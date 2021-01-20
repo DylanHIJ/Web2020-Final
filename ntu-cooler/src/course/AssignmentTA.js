@@ -131,12 +131,13 @@ export default function AssignmentTA(props) {
             variant="outlined"
             className={classes.button}
             startIcon={<DoneAll />}
-            onClick={() => {
-              showGrade({
+            onClick={async () => {
+              const result = await showGrade({
                 variables: {
                   aid: aid,
                 },
               });
+              console.log(result);
             }}
           >
             Show Grade

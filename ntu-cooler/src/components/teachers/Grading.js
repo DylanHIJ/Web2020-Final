@@ -26,7 +26,7 @@ const Grading = (props) => {
   useEffect(() => {
     if (!loading) {
       console.log("Retrieved shortQA problems from server -> ", data);
-      setStudents(data.shortQAProblem.students.sort());
+      setStudents([...data.shortQAProblem.students].sort());
       setProblems(data.shortQAProblem.problems);
     }
   }, [loading, data]);
