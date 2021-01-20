@@ -47,6 +47,7 @@ export default function Assignments(props) {
   const { cid } = useParams();
   const { loading, data } = useQuery(GET_COURSE_ASSIGNMENTS, {
     variables: { cid: cid },
+    fetchPolicy: "no-cache",
   });
   if (loading) return <Loading />;
   return (
