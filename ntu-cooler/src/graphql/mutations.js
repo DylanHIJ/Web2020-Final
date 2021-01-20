@@ -188,3 +188,12 @@ export const CREATE_ASSIGNMENT = gql`
     }
   }
 `;
+
+export const UPDATE_GRADE = gql`
+  mutation updateGrade($email: String!, $pid: ID!, $score: Float!) {
+    updateGrade(email: $email, PID: $pid, Score: $score) {
+      type
+      message
+    }
+  }
+`;

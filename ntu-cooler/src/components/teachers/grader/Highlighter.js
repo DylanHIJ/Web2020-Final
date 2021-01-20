@@ -14,10 +14,14 @@ const Highlighter = (props) => {
     keywords,
   });
 
-  const displayText = chunks.map((chunk) => {
+  const displayText = chunks.map((chunk, index) => {
     const { start, end, highlight, color } = chunk;
     const piece = text.substr(start, end - start);
-    return highlight ? <Marker text={piece} color={color} /> : piece;
+    return highlight ? (
+      <Marker key={`chunk_${index}`} text={piece} color={color} />
+    ) : (
+      piece
+    );
   });
 
   return (
