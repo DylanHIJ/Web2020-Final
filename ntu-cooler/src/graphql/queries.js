@@ -87,6 +87,7 @@ export const GET_ASSIGNMENT = gql`
         weight
       }
       problems {
+        _id
         type
         point
         statement

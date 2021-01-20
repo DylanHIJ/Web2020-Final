@@ -24,7 +24,7 @@ const ProblemModule = (props) => {
     console.log("Updating answer ->", wrappedNewAnswer);
     setProblem((prev) => ({
       ...prev,
-      answer: wrappedNewAnswer,
+      answers: wrappedNewAnswer,
     }));
   };
   const updateOptions = (newOptions) => {
@@ -34,7 +34,7 @@ const ProblemModule = (props) => {
 
   const updateKeywords = (newKeywords) => {
     console.log("Updating newKeywords -> ", newKeywords);
-    setProblem((prev) => ({ ...prev, options: newKeywords }));
+    setProblem((prev) => ({ ...prev, keywords: newKeywords }));
   };
 
   useEffect(() => {

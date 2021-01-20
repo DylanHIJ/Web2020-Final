@@ -111,3 +111,57 @@ export const UPDATE_ASSIGNMENT_INFO = gql`
     }
   }
 `;
+
+export const UPDATE_PROBLEM_INFO = gql`
+  mutation updateProblemInfo(
+    $pid: ID!
+    $type: String!
+    $point: Float!
+    $statement: String!
+    $options: [String]
+    $answers: [String]
+    $keywords: [keywordInput]
+  ) {
+    updateProblemInfo(
+      PID: $pid
+      data: {
+        type: $type
+        point: $point
+        statement: $statement
+        options: $options
+        answers: $answers
+        keywords: $keywords
+      }
+    ) {
+      type
+      message
+    }
+  }
+`;
+
+export const CREATE_PROBLEM = gql`
+  mutation createProblem(
+    $aid: ID!
+    $type: String!
+    $point: Float!
+    $statement: String!
+    $options: [String]
+    $answers: [String]
+    $keywords: [keywordInput]
+  ) {
+    createProblem(
+      AID: $aid
+      data: {
+        type: $type
+        point: $point
+        statement: $statement
+        options: $options
+        answers: $answers
+        keywords: $keywords
+      }
+    ) {
+      type
+      message
+    }
+  }
+`;

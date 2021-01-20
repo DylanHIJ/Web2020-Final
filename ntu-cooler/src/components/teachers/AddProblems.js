@@ -7,7 +7,12 @@ import { makeStyles } from "@material-ui/styles";
 import { useParams } from "react-router-dom";
 import { useQuery, useMutation } from "@apollo/client";
 import GENERATE_ASSIGNMENT_TEMPLATE from "../../templates/assignment";
-import { GET_ASSIGNMENT, UPDATE_ASSIGNMENT_INFO } from "../../graphql";
+import {
+  GET_ASSIGNMENT,
+  UPDATE_ASSIGNMENT_INFO,
+  UPDATE_PROBLEM_INFO,
+  CREATE_PROBLEM,
+} from "../../graphql";
 import Loading from "../Loading";
 
 function Alert(props) {
@@ -39,6 +44,9 @@ const AddProblem = (props) => {
   const [problems, setProblems] = useState([]);
 
   const [updateAssignmentInfo] = useMutation(UPDATE_ASSIGNMENT_INFO);
+  const [updateProblemInfo] = useMutation(UPDATE_PROBLEM_INFO);
+  const [createProblem] = useMutation(CREATE_PROBLEM);
+
   const { loading, data } = useQuery(GET_ASSIGNMENT, {
     variables: { aid: aid },
     fetchPolicy: "no-cache",
@@ -71,12 +79,12 @@ const AddProblem = (props) => {
     setOpen(false);
   };
 
-  const createProblem = () => {
-    console.log("Submitting problems to server......");
-    // Question: How do we wait for all setStates done and them finally we can submit to server?
-    // TODO - 1. Create assignment with metadata
-    // TODO - 2. Upload problems one by one
-  };
+  // const createProblem = () => {
+  //   console.log("Submitting problems to server......");
+  //   // Question: How do we wait for all setStates done and them finally we can submit to server?
+  //   // TODO - 1. Create assignment with metadata
+  //   // TODO - 2. Upload problems one by one
+  // };
 
   return (
     <Container maxWidth="lg" style={{ marginTop: "6%" }}>
@@ -90,21 +98,56 @@ const AddProblem = (props) => {
         {/* TODO */}
         <Button
           onClick={async () => {
-            createProblem();
-            await updateAssignmentInfo({
-              variables: {
-                aid: aid,
-                name: metadata.name,
-                beginTime: metadata.beginTime.toString(),
-                endTime: metadata.endTime.toString(),
-                weight: parseFloat(metadata.weight),
-              },
-            });
-            setOpen(true);
+            if (create) createProblem();
+            else {
+              await updateAssignmentInfo({
+                variables: {
+                  aid: aid,
+                  name: metadata.name,
+                  beginTime: metadata.beginTime.toString(),
+                  endTime: metadata.endTime.toString(),
+                  weight: parseFloat(metadata.weight),
+                },
+              });
+              for (let i = 0; i < problems.length; i++) {
+                if (problems[i]._id === undefined)
+                  await createProblem({
+                    variables: {
+                      aid: aid,
+                      type: problems[i].type,
+                      point: 10,
+                      statement: problems[i].statement,
+                      options: problems[i].options,
+                      answers: problems[i].answers,
+                      keywords: problems[i].keywords.map((keyword) => ({
+                        color: keyword.color,
+                        word: keyword.word,
+                      })),
+                    },
+                  });
+                else {
+                  await updateProblemInfo({
+                    variables: {
+                      pid: problems[i]._id,
+                      type: problems[i].type,
+                      point: 10,
+                      statement: problems[i].statement,
+                      options: problems[i].options,
+                      answers: problems[i].answers,
+                      keywords: problems[i].keywords.map((keyword) => ({
+                        color: keyword.color,
+                        word: keyword.word,
+                      })),
+                    },
+                  });
+                }
+              }
+              setOpen(true);
+            }
           }}
           variant="outlined"
         >
-          Save
+          {create ? "Create" : "Save Changes"}
         </Button>
       </Container>
       <Snackbar open={open} autoHideDuration={5000} onClose={handleClose}>
