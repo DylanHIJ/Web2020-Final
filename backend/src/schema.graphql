@@ -32,7 +32,7 @@ type Mutation {
   updateAnswer(token: String!, AID: ID!, data: [AnswerInput]!): ReturnMessage!
   updateGrade(
     email: String!
-    PID: String!
+    PID: ID!
     Score: Float!
     Comment: String!
   ): ReturnMessage!
