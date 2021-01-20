@@ -103,7 +103,7 @@ type Assignment {
   _id: ID!
   courseID: ID!
   info: AssignmentInfo!
-  problems: [ID]!
+  problems: [Problem]!
 }
 
 input AssignmentInput {

@@ -48,12 +48,19 @@ const Query = {
     }
 
     if (user !== null) {
-      user.studentCourses = user.studentCourses.map(
-        async (courseID) => await Course.findOne({ _id: courseID }).exec()
-      );
-      user.teacherCourses = user.teacherCourses.map(
-        async (courseID) => await Course.findOne({ _id: courseID }).exec()
-      );
+      const studentCourses = [];
+      for (let courseID of user.studentCourses) {
+        const course = await Course.findOne({ _id: courseID }).exec();
+        studentCourses.push(course);
+      }
+      user.studentCourses = studentCourses;
+
+      const teacherCourses = [];
+      for (let courseID of user.teacherCourses) {
+        const course = await Course.findOne({ _id: courseID }).exec();
+        teacherCourses.push(course);
+      }
+      user.teacherCourses = teacherCourses;
     }
     console.log("Query: \n", user);
 
@@ -63,17 +70,33 @@ const Query = {
     const CID = args.CID;
     const course = await Course.findOne({ _id: CID }).exec();
     if (course !== null) {
-      course.assignments = course.assignments.map(
-        async (assignmentID) =>
-          await Assignment.findOne({ _id: assignmentID }).exec()
-      );
+      const courseAssignment = [];
+      for (let assignmentID of course.assignments) {
+        const assignment = await Assignment.findOne({
+          _id: assignmentID,
+        }).exec();
+        courseAssignment.push(assignment);
+      }
+
+      course.assignments = courseAssignment;
     }
 
     return course;
   },
-  async assignment(parent, args, { Assignment }, Info) {
+  async assignment(parent, args, { Assignment, Problem }, Info) {
     const AID = args.AID;
     const assignment = await Assignment.findOne({ _id: AID }).exec();
+
+    if (assignment !== null) {
+      const assignmentProblem = [];
+      for (let problemID of assignment.problems) {
+        const problem = await Problem.findOne({ _id: problemID }).exec();
+        const idx = getProblemIndex(Assignment, AID, problemID);
+        assignmentProblem.push({ ...problem._doc, index: idx });
+      }
+
+      assignment.problems = assignmentProblem;
+    }
 
     return assignment;
   },
