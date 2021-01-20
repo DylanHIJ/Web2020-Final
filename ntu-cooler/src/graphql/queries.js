@@ -116,3 +116,21 @@ export const GET_COURSE_GRADES = gql`
     }
   }
 `;
+
+export const GET_SHORT_QA_PROBLEMS = gql`
+  query getShortQAProblems($aid: ID!) {
+    shortQAProblem(AID: $aid) {
+      problems {
+        _id
+        statement
+        point
+        keywords {
+          color
+          word
+        }
+        index
+      }
+      students
+    }
+  }
+`;

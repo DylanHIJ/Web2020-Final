@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Container, Grid, Typography } from "@material-ui/core";
 
 import Selector from "./Selector";
@@ -9,22 +9,21 @@ import { getStudentResponse } from "../utils";
 const Grader = (props) => {
   const { assignmentID, problems, students } = props;
 
-  const [studentID, setStudentID] = useState(students[0].studentID);
-  const [problemID, setProblemID] = useState(problems[0].problemID);
+  const [studentID, setStudentID] = useState(students[0]);
+  const [problemID, setProblemID] = useState(problems[0]._id);
+
   const [problem, setProblem] = useState(problems[0]);
+
+  useEffect(() => {
+    setProblem(problems.find((ele) => ele._id === problemID));
+  }, [problemID]);
 
   // Each instance is an object that has two properties, "score" and "comments"
   const [scores, setScores] = useState(
     students.reduce(
-      (o, s) => ({ ...o, [s.studentID]: { score: undefined, comment: "" } }),
+      (o, s) => ({ ...o, [s]: { score: undefined, comment: "" } }),
       {}
     )
-  );
-
-  const studentResponse = getStudentResponse(
-    assignmentID,
-    problemID,
-    studentID
   );
 
   return (
@@ -44,7 +43,7 @@ const Grader = (props) => {
               setProblemID(value);
             }}
             options={problems.map((ele) => ({
-              ID: ele.problemID,
+              ID: ele._id,
               description: `Prob. ${ele.index}`,
             }))}
             style={{ width: "80%" }}
@@ -53,12 +52,13 @@ const Grader = (props) => {
       </Grid>
 
       {/* Student Related */}
-      <Grid container style={{ marginTop: "20px" }} spacing="3">
+      <Grid container style={{ marginTop: "20px" }} spacing={3}>
         <Grid item xs={8}>
           <Highlighter
-            text={studentResponse.text}
+            text="Hello"
+            // text={studentResponse.text}
             keywords={problem.keywords}
-          ></Highlighter>
+          />
         </Grid>
         <Grid item xs={4}>
           <ControlPanel
@@ -67,8 +67,8 @@ const Grader = (props) => {
             setStudentID={setStudentID}
             scores={scores}
             setScores={setScores}
-            problemID={problem.problemID}
-            maxScore={problem.maxScore}
+            problemID={problem._id}
+            maxScore={problem.point}
           />
         </Grid>
       </Grid>
