@@ -28,7 +28,8 @@ const CheckboxModule = (props) => {
   );
 
   const [answer, setAnswer] = useState(
-    Array.isArray(initAnswer) ? initAnswer : []
+    []
+    //Array.isArray(initAnswer) ? initAnswer : []
     // Array.isArray(initAnswer) ? initAnswer.filter(): []
   );
 
