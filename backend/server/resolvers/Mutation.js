@@ -665,11 +665,11 @@ const Mutation = {
                   (x) => !studentAns.includes(x)
                 ).concat(studentAns.filter((x) => !Ans.includes(x)));
                 points = Math.max(
-                  1 -
-                    ((2 * difference.length) / problem.options.length) *
-                      problem.point,
+                  (1 - (2 * difference.length) / problem.options.length) *
+                    problem.point,
                   0
                 );
+                console.log(Ans, studentAns, difference, points);
                 break;
               case "SHORT_QA":
                 console.log(studentGrade.grades[idx].score);
