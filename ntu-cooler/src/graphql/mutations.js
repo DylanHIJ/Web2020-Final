@@ -203,8 +203,13 @@ export const UPDATE_ANSWER = gql`
 `;
 
 export const UPDATE_GRADE = gql`
-  mutation updateGrade($email: String!, $pid: String!, $score: Float!) {
-    updateGrade(email: $email, PID: $pid, Score: $score) {
+  mutation updateGrade(
+    $email: String!
+    $pid: ID!
+    $score: Float!
+    $comment: String!
+  ) {
+    updateGrade(email: $email, PID: $pid, Score: $score, Comment: $comment) {
       type
       message
     }

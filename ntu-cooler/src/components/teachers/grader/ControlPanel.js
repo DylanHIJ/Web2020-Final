@@ -69,7 +69,7 @@ const ControlPanel = (props) => {
         [studentID]: {
           score: prev[problemID][studentID].score,
           comment: inputCommentString,
-          graded: prev[problemID][studentID],
+          graded: prev[problemID][studentID].graded,
         },
       },
     }));
@@ -176,7 +176,7 @@ const ControlPanel = (props) => {
         </Container>
 
         {/* Comment Box */}
-        {/* <Container maxWidth="md" style={{ marginTop: "24px" }}>
+        <Container maxWidth="md" style={{ marginTop: "24px" }}>
           <TextField
             id="comment"
             key={`${problemID}-${studentID}-comment`}
@@ -190,7 +190,7 @@ const ControlPanel = (props) => {
             multiline
             rows={4}
           />
-        </Container> */}
+        </Container>
       </CardContent>
     </Card>
   );
