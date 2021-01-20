@@ -8,7 +8,6 @@ import {
   List,
   ListItem,
   ListItemIcon,
-  ListItemText,
   Typography,
 } from "@material-ui/core";
 import { ChevronLeft, ChevronRight } from "@material-ui/icons";
@@ -77,10 +76,6 @@ export default function LeftDrawer(props) {
           >
             <ListItem button key={listItem.name}>
               <ListItemIcon>{listItem.icon}</ListItemIcon>
-              {/* <ListItemText
-                primary={listItem.name}
-                className={classes.drawerText}
-              /> */}
               <Typography
                 variant="h6"
                 component="h2"

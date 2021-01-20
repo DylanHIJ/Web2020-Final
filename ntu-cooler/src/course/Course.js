@@ -48,7 +48,12 @@ const drawerWidth = 240;
 
 export default function Course(props) {
   let isTA = false;
-  if (props.location.state) isTA = props.location.state.isTA;
+  let isDue = false;
+  if (props.location.state) {
+    isTA = props.location.state.isTA;
+    isDue = props.location.state.idDue;
+  }
+
   const classes = useStyles();
   const match = useRouteMatch();
   const [open, setOpen] = useState(true);
@@ -130,7 +135,7 @@ export default function Course(props) {
             exact
             path={`${match.path}/assignments/:aid?`}
             render={() =>
-              isTA ? <AssignmentTA isTA={isTA} /> : <Assignment />
+              isTA ? <AssignmentTA isTA={isTA} /> : <Assignment isDue={isDue} />
             }
           />
           <Route

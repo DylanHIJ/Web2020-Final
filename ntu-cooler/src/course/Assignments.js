@@ -83,7 +83,12 @@ export default function Assignments(props) {
                   <NavLink
                     to={{
                       pathname: `${match.url}/${assignment._id}`,
-                      state: { isTA: isTA },
+                      state: {
+                        isTA: isTA,
+                        isDue:
+                          new Date(parseInt(assignment.info.endTime, 10)) <
+                          new Date(),
+                      },
                     }}
                     className={classes.navlink}
                     key={assignment._id}

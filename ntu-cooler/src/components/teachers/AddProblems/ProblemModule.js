@@ -105,36 +105,34 @@ const ProblemModule = (props) => {
         </Grid>
 
         <Container maxWidth="lg" style={{ textAlign: "center" }}>
-          {
-            problem.type === "TF" ? (
-              <TrueFalseModule
-                initAnswer={problem.answer}
-                updateAnswer={updateAnswer}
-              />
-            ) : problem.type === "MULTIPLE_CHOICE" ? (
-              <MultipleChoiceModule
-                problemIndex={problemIndex}
-                initAnswer={problem.answer}
-                updateAnswer={updateAnswer}
-                initOptions={problem.options}
-                updateOptions={updateOptions}
-              />
-            ) : problem.type === "CHECKBOX" ? (
-              <CheckboxModule
-                problemIndex={problemIndex}
-                initAnswer={problem.answer}
-                updateAnswer={updateAnswer}
-                initOptions={problem.options}
-                updateOptions={updateOptions}
-              />
-            ) : problem.type === "SHORT_QA" ? (
-              <KeywordModule
-                problemIndex={problemIndex}
-                initKeywords={problem.keywords}
-                updateKeywords={updateKeywords}
-              />
-            ) : null //
-          }
+          {problem.type === "TF" ? (
+            <TrueFalseModule
+              initAnswer={problem.answers[0]}
+              updateAnswer={updateAnswer}
+            />
+          ) : problem.type === "MULTIPLE_CHOICE" ? (
+            <MultipleChoiceModule
+              problemIndex={problemIndex}
+              initAnswer={problem.answers[0]}
+              updateAnswer={updateAnswer}
+              initOptions={problem.options}
+              updateOptions={updateOptions}
+            />
+          ) : problem.type === "CHECKBOX" ? (
+            <CheckboxModule
+              problemIndex={problemIndex}
+              initAnswer={problem.answers}
+              updateAnswer={updateAnswer}
+              initOptions={problem.options}
+              updateOptions={updateOptions}
+            />
+          ) : problem.type === "SHORT_QA" ? (
+            <KeywordModule
+              problemIndex={problemIndex}
+              initKeywords={problem.keywords}
+              updateKeywords={updateKeywords}
+            />
+          ) : null}
         </Container>
       </CardContent>
     </Card>

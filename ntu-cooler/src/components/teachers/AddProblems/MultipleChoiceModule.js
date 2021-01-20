@@ -28,6 +28,7 @@ const MultipleChoiceModule = (props) => {
   );
 
   const [answer, setAnswer] = useState(initAnswer);
+  console.log(answer);
 
   useEffect(() => {
     updateOptions(options);
