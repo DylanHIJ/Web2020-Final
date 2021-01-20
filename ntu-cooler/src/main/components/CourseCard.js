@@ -63,7 +63,7 @@ export default function CourseCard(props) {
       >
         <CardMedia
           className={classes.media}
-          image="/defaultCourseImg.jpeg"
+          image="/defaultCourseImg.jpg"
           title={`${course.info.name}`}
         />
       </NavLink>

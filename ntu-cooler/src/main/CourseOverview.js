@@ -61,7 +61,7 @@ export default function CourseOverview() {
       )}
       <Grid container spacing={4}>
         {data.user.studentCourses.map((course) => (
-          <Grid key={course._id} item xs={4}>
+          <Grid key={course._id} item sm={12} md={6} lg={4}>
             <CourseCard course={course} isTA={false} />
           </Grid>
         ))}
@@ -75,7 +75,7 @@ export default function CourseOverview() {
       )}
       <Grid container spacing={4}>
         {data.user.teacherCourses.map((course) => (
-          <Grid key={course._id} item xs={4}>
+          <Grid key={course._id} item sm={12} md={6} lg={4}>
             <CourseCard course={course} isTA={true} />
           </Grid>
         ))}
