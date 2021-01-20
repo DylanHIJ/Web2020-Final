@@ -24,21 +24,12 @@ const CheckboxProblem = (props) => {
               control={
                 <Checkbox
                   name={`option_${index}`}
-                  checked={
-                    // answer.find((e) => e === `option_${index}`) !== undefined
-                    answer.includes(option)
-                  }
+                  checked={answer.includes(`option_${index}`)}
                   onChange={(event) => {
-                    // setAnswer((prev) =>
-                    //   prev
-                    //     .filter((e) => e !== event.target.name)
-                    //     .concat(event.target.checked ? [event.target.name] : [])
-                    //     .sort()
-                    // );
                     setAnswer((prev) =>
-                      prev.includes(option)
-                        ? prev.filter((op) => option !== op).sort()
-                        : [...prev, option].sort()
+                      prev.includes(`option_${index}`)
+                        ? prev.filter((op) => `option_${index}` !== op).sort()
+                        : [...prev, `option_${index}`].sort()
                     );
                   }}
                 />
