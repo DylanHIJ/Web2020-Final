@@ -111,3 +111,16 @@ export const UPDATE_ASSIGNMENT_INFO = gql`
     }
   }
 `;
+
+export const UPDATE_ANSWER = gql`
+  mutation updateStudentAnswer(
+    $token: String!
+    $aid: ID!
+    $data: [AnswerInput]!
+  ) {
+    updateAnswer(token: $token, AID: $aid, data: $data) {
+      type
+      message
+    }
+  }
+`;

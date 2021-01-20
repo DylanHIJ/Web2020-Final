@@ -87,6 +87,7 @@ export const GET_ASSIGNMENT = gql`
         weight
       }
       problems {
+        _id
         type
         point
         statement
@@ -112,6 +113,15 @@ export const GET_COURSE_GRADES = gql`
         weight
         endTime
       }
+    }
+  }
+`;
+
+export const GET_STUDENT_ANSWER = gql`
+  query getStudentAnswer($token: String!, $aid: ID!) {
+    answer(token: $token, AID: $aid) {
+      problemID
+      answer
     }
   }
 `;

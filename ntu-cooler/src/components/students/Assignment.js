@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { useQuery } from "@apollo/client";
+import { useParams, useHistory } from "react-router-dom";
+import { useQuery, useMutation } from "@apollo/client";
 import {
   Button,
   Typography,
@@ -10,11 +10,15 @@ import {
 } from "@material-ui/core";
 import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
 import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
-
 import ProblemProgress from "./ProblemProgressBar";
 import Problem from "./problems";
-import { GET_ASSIGNMENT_FOR_STUDENT_ANSWERING } from "../../graphql/queries";
-import { getAssignment } from "./utils.js";
+import {
+  GET_STUDENT_ANSWER,
+  GET_ASSIGNMENT,
+  UPDATE_ANSWER,
+} from "../../graphql";
+import Cookies from "js-cookie";
+import Loading from "../Loading";
 
 // answers is an object of
 // PID -> {type: string, answer: varies}
@@ -32,34 +36,79 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Assignment = (props) => {
+  const history = useHistory();
   const classes = useStyles();
   const { aid } = useParams();
 
-  // const { loading, data } = useQuery(GET_ASSIGNMENT_FOR_STUDENT_ANSWERING, {
-  //   variables: { aid: aid },
-  // });
+  const { loading: getAssignmentLoading, data: getAssignmentData } = useQuery(
+    GET_ASSIGNMENT,
+    {
+      variables: { aid: aid },
+      fetchPolicy: "no-cache",
+    }
+  );
 
-  const assignment = getAssignment(aid);
-  const problemIDs = assignment.problems;
-
-  // const assignment = loading ? {} : data.assignment;
-  // const problemIDs = loading ? [] : assignment.problems;
+  const { loading: getAnswerLoading, data: getAnswerData } = useQuery(
+    GET_STUDENT_ANSWER,
+    {
+      variables: { token: Cookies.get("token"), aid: aid },
+      fetchPolicy: "no-cache",
+    }
+  );
 
   const [currentProblemIndex, setCurrentProblemIndex] = useState(0);
+  const [updateStudentAnswer] = useMutation(UPDATE_ANSWER);
 
-  // TODO: need to get answers from server
-  const [answers, setAnswers] = useState({});
+  const [answers, setAnswers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [rerender, setRerender] = useState(true);
 
-  const submitAnswer = () => {
-    console.log(answers);
+  const submitAnswer = async () => {
+    const returnAnswer = answers.map((ans) => {
+      return { problemID: ans.problemID, answer: ans.answer };
+    });
+    const result = await updateStudentAnswer({
+      variables: {
+        token: Cookies.get("token"),
+        aid: aid,
+        data: returnAnswer,
+      },
+    });
+    console.log(result);
+    history.push("../assignments");
   };
 
-  const updateAnswer = (problemID, newAnswer) => {
+  const getInitAnswer = (problemID, type) => {
+    const ans = answers.filter((ans) => ans.problemID === problemID)[0];
+
+    return ans ? (type === "CHECKBOX" ? ans.answer : ans.answer[0]) : null;
+  };
+
+  const updateAnswer = (problemID, type, newAnswer) => {
     console.log(`Updating answer of problem [${problemID}] -> `, newAnswer);
-    setAnswers((prev) => ({ ...prev, [problemID]: newAnswer }));
+    setAnswers((prev) =>
+      prev.map((ans) =>
+        ans.problemID === problemID
+          ? { ...ans, answer: type === "CHECKBOX" ? newAnswer : [newAnswer] }
+          : ans
+      )
+    );
   };
 
-  // if (loading) return <p>Loading</p>;
+  useEffect(() => {
+    if (!getAssignmentLoading && !getAnswerLoading) {
+      setAnswers(getAnswerData.answer);
+    }
+  }, [getAnswerData, getAnswerLoading, getAssignmentLoading]);
+
+  useEffect(() => {
+    if (getAnswerData !== undefined) {
+      setLoading(false);
+    }
+  }, [answers]);
+
+  if (getAssignmentLoading || getAnswerLoading || loading) return <Loading />;
+  const assignment = getAssignmentLoading ? {} : getAssignmentData.assignment;
 
   return (
     <Container maxWidth="lg">
@@ -70,19 +119,29 @@ const Assignment = (props) => {
 
       {/* Progress Bar */}
       <ProblemProgress
-        currentProblemIndex={currentProblemIndex}
-        totalNumProblems={problemIDs.length}
+        currentProblemIndex={currentProblemIndex + 1}
+        totalNumProblems={assignment.problems.length}
       />
 
       {/* Problem content */}
       <div className={classes.problem}>
         <Problem
-          key={`problem_${problemIDs[currentProblemIndex]}`}
-          pid={problemIDs[currentProblemIndex]}
-          initAnswer={answers[problemIDs[currentProblemIndex]]}
+          key={`problem_${assignment.problems[currentProblemIndex]._id}`}
+          // pid={problemIDs[currentProblemIndex]}
+          problem={assignment.problems[currentProblemIndex]}
+          initialAnswer={getInitAnswer(
+            assignment.problems[currentProblemIndex]._id,
+            assignment.problems[currentProblemIndex].type
+          )}
           updateAnswer={(newAnswer) => {
-            updateAnswer(problemIDs[currentProblemIndex], newAnswer);
+            updateAnswer(
+              assignment.problems[currentProblemIndex]._id,
+              assignment.problems[currentProblemIndex].type,
+              newAnswer
+            );
           }}
+          rerender={rerender}
+          setRerender={setRerender}
         ></Problem>
       </div>
 
@@ -93,6 +152,7 @@ const Assignment = (props) => {
             variant="contained"
             onClick={() => {
               setCurrentProblemIndex((prev) => prev - 1);
+              setRerender(true);
             }}
             disabled={currentProblemIndex === 0}
           >
@@ -108,6 +168,7 @@ const Assignment = (props) => {
                 submitAnswer();
               } else {
                 setCurrentProblemIndex((prev) => prev + 1);
+                setRerender(true);
               }
             }}
           >
