@@ -1,0 +1,218 @@
+type Query {
+  user(email: String, password: String, token: String): User
+  course(CID: ID!): Course
+  assignment(AID: ID!): Assignment
+  problem(PID: ID!): Problem
+  shortQAProblem(AID: ID!): AssignmentProblem
+  studentAnswer(email: String!, PID: ID!): Answer
+  grade(email: String!, AID: ID!): AssignmentGrade
+  allAssignmentGrade(token: String!, CID: ID!): [AssignmentGrade]
+  answer(token: String!, AID: ID!): [Answer]
+}
+
+type Mutation {
+  createUser(data: CreateUserInput!): ReturnMessage!
+  deleteUser(email: String!): ReturnMessage!
+  updateUserInfo(email: String!, data: UpdateUserInfoInput!): ReturnMessage!
+  addUserToCourse(CID: ID!, data: UpdateUserCourseInput!): ReturnMessage!
+  deleteUserFromCourse(CID: ID!, data: UpdateUserCourseInput!): ReturnMessage!
+
+  createCourse(TA: String!, data: CourseInfoInput!): ReturnMessage!
+  deleteCourse(CID: ID!): ReturnMessage!
+  updateCourseInfo(CID: ID!, data: CourseInfoInput!): ReturnMessage!
+
+  createAssignment(CID: ID!, data: AssignmentInput!): ReturnMessage!
+  deleteAssignment(AID: ID!): ReturnMessage!
+  updateAssignmentInfo(AID: ID!, data: AssignmentInput!): ReturnMessage!
+
+  createProblem(AID: ID!, data: ProblemInput!): ReturnMessage!
+  deleteProblem(PID: ID!): ReturnMessage!
+  updateProblemInfo(PID: ID!, data: ProblemInput!): ReturnMessage!
+
+  updateAnswer(token: String!, AID: ID!, data: [AnswerInput]!): ReturnMessage!
+  updateGrade(
+    email: String!
+    PID: ID!
+    Score: Float!
+    Comment: String
+  ): ReturnMessage!
+  showGrade(AID: ID!): ReturnMessage!
+}
+
+type User {
+  name: String!
+  email: String!
+  studentCourses: [CourseSimple]!
+  teacherCourses: [CourseSimple]!
+  password: String!
+  token: String!
+}
+
+input CreateUserInput {
+  name: String!
+  email: String!
+  password: String!
+}
+
+input UpdateUserInfoInput {
+  name: String
+  currentPassword: String
+  newPassword: String
+}
+
+input UpdateUserCourseInput {
+  email: String!
+  TA: Boolean!
+}
+
+input CourseInfoInput {
+  name: String!
+  teacher: String!
+  describe: String!
+  classTime: String!
+  classroom: String!
+}
+
+type CourseInfo {
+  name: String!
+  teacher: String!
+  describe: String!
+  classTime: String!
+  classroom: String!
+}
+
+type CourseSimple {
+  _id: ID!
+  info: CourseInfo!
+  TAs: [ID]!
+  students: [ID]!
+  assignments: [ID]!
+}
+
+type Course {
+  _id: ID!
+  info: CourseInfo!
+  TAs: [ID]!
+  students: [ID]!
+  assignments: [AssignmentSimple]!
+}
+
+type AssignmentInfo {
+  name: String!
+  beginTime: String!
+  endTime: String!
+  weight: Float!
+}
+
+type Assignment {
+  _id: ID!
+  courseID: ID!
+  info: AssignmentInfo!
+  problems: [Problem]!
+}
+
+type AssignmentSimple {
+  _id: ID!
+  courseID: ID!
+  info: AssignmentInfo!
+  problems: [ID]!
+}
+
+input AssignmentInput {
+  name: String!
+  beginTime: String!
+  endTime: String!
+  weight: Float!
+}
+
+input keywordInput {
+  color: String!
+  word: String!
+}
+
+type keyword {
+  color: String!
+  word: String!
+}
+
+type Problem {
+  _id: ID!
+  assignmentID: ID!
+  type: String!
+  point: Float!
+  statement: String!
+  options: [String]
+  answers: [String]
+  keywords: [keyword]
+  index: Int!
+}
+
+input ProblemInput {
+  type: String!
+  point: Float!
+  statement: String!
+  options: [String]
+  answers: [String]
+  keywords: [keywordInput]
+}
+
+type Grade {
+  email: String!
+  assignmentID: ID!
+  grades: [Score]!
+  answers: [Answer]!
+  comments: [Comment]!
+  graded: Boolean!
+}
+
+input gradeAnswerInput {
+  email: String!
+  assignmentID: ID!
+  problemID: ID!
+}
+
+input AnswerInput {
+  problemID: ID!
+  answer: [String]
+}
+
+type Answer {
+  problemID: ID!
+  answer: [String]
+}
+
+input ScoreInput {
+  problemID: ID!
+  score: Float
+}
+
+type Score {
+  problemID: ID!
+  score: Float
+}
+
+type Comment {
+  problemID: ID!
+  comment: String
+}
+
+input CommentInput {
+  problemID: ID!
+  comment: String
+}
+
+type AssignmentGrade {
+  assignmentID: ID!
+  score: Float
+  info: AssignmentInfo
+}
+
+type AssignmentProblem {
+  problems: [Problem]!
+  students: [String]!
+}
+
+type ReturnMessage {
+  type: String!
+  message: String!
+}
