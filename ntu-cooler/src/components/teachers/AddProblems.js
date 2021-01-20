@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Container, Button, Grid } from "@material-ui/core";
+import { Container, Button, Snackbar } from "@material-ui/core";
+import MuiAlert from "@material-ui/lab/Alert";
 import MetadataEditor from "./AddProblems/MetadataEditor";
 import ProblemEditor from "./AddProblems/ProblemEditor";
 import { makeStyles } from "@material-ui/styles";
@@ -9,6 +10,9 @@ import GENERATE_ASSIGNMENT_TEMPLATE from "../../templates/assignment";
 import { GET_ASSIGNMENT, UPDATE_ASSIGNMENT_INFO } from "../../graphql";
 import Loading from "../Loading";
 
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 const EmptyInfo = {
   name: "",
   beginTime: "20210101T00:00:00",
@@ -30,6 +34,7 @@ const AddProblem = (props) => {
   const { aid } = useParams();
   const classes = useStyles();
 
+  const [open, setOpen] = useState(false);
   const [metadata, setMetadata] = useState(GENERATE_ASSIGNMENT_TEMPLATE());
   const [problems, setProblems] = useState([]);
 
@@ -49,6 +54,7 @@ const AddProblem = (props) => {
         weight: data.assignment.info.weight,
       };
       setMetadata(metadata);
+      setProblems(data.assignment.problems);
     }
   }, [loading, data, create]);
 
@@ -57,6 +63,13 @@ const AddProblem = (props) => {
   if (!create) {
     // Retrieve metadata and problems from server
   }
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
 
   const createProblem = () => {
     console.log("Submitting problems to server......");
@@ -76,9 +89,9 @@ const AddProblem = (props) => {
       <Container maxWidth="sm" className={classes.buttonContainer}>
         {/* TODO */}
         <Button
-          onClick={() => {
+          onClick={async () => {
             createProblem();
-            updateAssignmentInfo({
+            await updateAssignmentInfo({
               variables: {
                 aid: aid,
                 name: metadata.name,
@@ -87,12 +100,18 @@ const AddProblem = (props) => {
                 weight: parseFloat(metadata.weight),
               },
             });
+            setOpen(true);
           }}
           variant="outlined"
         >
           Save
         </Button>
       </Container>
+      <Snackbar open={open} autoHideDuration={5000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="success">
+          Changes have been saved!
+        </Alert>
+      </Snackbar>
     </Container>
   );
 };

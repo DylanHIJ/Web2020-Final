@@ -9,7 +9,7 @@ export const LOGIN = gql`
 `;
 
 export const CHECK_TOKEN = gql`
-  query checkToken($token: String!) {
+  query checkToken($token: String) {
     user(token: $token) {
       token
     }
@@ -86,7 +86,18 @@ export const GET_ASSIGNMENT = gql`
         endTime
         weight
       }
-      problems
+      problems {
+        type
+        point
+        statement
+        options
+        answers
+        keywords {
+          color
+          word
+        }
+        index
+      }
     }
   }
 `;
