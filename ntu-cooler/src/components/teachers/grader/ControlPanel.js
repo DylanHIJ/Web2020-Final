@@ -24,7 +24,7 @@ const ControlPanel = (props) => {
   } = props;
 
   const [studentIndex, setStudentIndex] = useState(
-    students.findIndex((ele) => ele.studentID === studentID)
+    students.findIndex((ele) => ele === studentID)
   );
 
   const [inputScoreValid, setInputScoreValid] = useState(true);
@@ -49,9 +49,13 @@ const ControlPanel = (props) => {
       setInputScoreValid(true);
       setScores((prev) => ({
         ...prev,
-        [studentID]: {
-          score: number,
-          comment: prev[studentID].comment,
+        [problemID]: {
+          ...prev[problemID],
+          [studentID]: {
+            score: number,
+            comment: prev[problemID][studentID].comment,
+            graded: true,
+          },
         },
       }));
     }
@@ -60,9 +64,13 @@ const ControlPanel = (props) => {
   useEffect(() => {
     setScores((prev) => ({
       ...prev,
-      [studentID]: {
-        score: prev[studentID].score,
-        comment: inputCommentString,
+      [problemID]: {
+        ...prev[problemID],
+        [studentID]: {
+          score: prev[problemID][studentID].score,
+          comment: inputCommentString,
+          graded: prev[problemID][studentID].graded,
+        },
       },
     }));
   }, [inputCommentString]);
@@ -75,7 +83,7 @@ const ControlPanel = (props) => {
       studentIndex !== students.length - 1
     ) {
       setStudentIndex((prev) => {
-        setStudentID(students[prev + 1].studentID);
+        setStudentID(students[prev + 1]);
         return prev + 1;
       });
     } else if (
@@ -85,7 +93,7 @@ const ControlPanel = (props) => {
       studentIndex !== 0
     ) {
       setStudentIndex((prev) => {
-        setStudentID(students[prev - 1].studentID);
+        setStudentID(students[prev - 1]);
         return prev - 1;
       });
     }
@@ -100,7 +108,7 @@ const ControlPanel = (props) => {
             <IconButton
               onClick={() => {
                 setStudentIndex((prev) => {
-                  setStudentID(students[prev - 1].studentID);
+                  setStudentID(students[prev - 1]);
                   return prev - 1;
                 });
               }}
@@ -115,13 +123,13 @@ const ControlPanel = (props) => {
               value={studentID}
               updateFunc={(value) => {
                 setStudentID(value);
-                setStudentIndex(
-                  students.findIndex((ele) => ele.studentID === value)
-                );
+                setStudentIndex(students.findIndex((ele) => ele === value));
               }}
               options={students.map((ele) => ({
-                ID: ele.studentID,
-                description: `${ele.name} (${ele.studentID})`,
+                ID: ele,
+                description: `${ele}`,
+                // TODO: change schema to make students returning a list of student infos
+                // description: `${ele.name} (${ele})`,
               }))}
             />
           </Grid>
@@ -150,8 +158,8 @@ const ControlPanel = (props) => {
                 inputRef={inputScoreRef}
                 id="score"
                 key={`${problemID}-${studentID}-score`}
-                placeholder={0}
-                defaultValue={scores[studentID].score}
+                placeholder="0"
+                defaultValue={scores[problemID][studentID].score}
                 onChange={(event) => {
                   setInputScoreString(event.target.value);
                 }}

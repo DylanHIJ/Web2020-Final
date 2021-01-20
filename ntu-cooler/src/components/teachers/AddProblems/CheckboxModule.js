@@ -28,7 +28,8 @@ const CheckboxModule = (props) => {
   );
 
   const [answer, setAnswer] = useState(
-    Array.isArray(initAnswer) ? initAnswer : []
+    []
+    //Array.isArray(initAnswer) ? initAnswer : []
     // Array.isArray(initAnswer) ? initAnswer.filter(): []
   );
 
@@ -58,11 +59,7 @@ const CheckboxModule = (props) => {
                   control={
                     <Checkbox
                       name={`option_${index}`}
-<<<<<<< HEAD
                       checked={answer.includes(`option_${index}`)}
-=======
-                      checked={answer.find(`option_${index}`) !== undefined}
->>>>>>> origin/frontend-stu-problems
                       onChange={(event) => {
                         setAnswer((prev) =>
                           prev

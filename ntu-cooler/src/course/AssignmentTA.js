@@ -1,5 +1,5 @@
 import React from "react";
-import { useQuery } from "@apollo/client";
+import { useQuery, useMutation } from "@apollo/client";
 import { useParams, useRouteMatch, NavLink } from "react-router-dom";
 import {
   Button,
@@ -17,9 +17,10 @@ import {
   AccessTime,
   AccessAlarm,
   PieChart,
+  DoneAll,
 } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
-import { GET_ASSIGNMENT } from "../graphql";
+import { GET_ASSIGNMENT, SHOW_GRADE } from "../graphql";
 import Loading from "../components/Loading";
 
 const useStyles = makeStyles((theme) => ({
@@ -51,6 +52,7 @@ export default function AssignmentTA(props) {
     variables: { aid: aid },
     fetchPolicy: "no-cache",
   });
+  const [showGrade] = useMutation(SHOW_GRADE);
 
   if (loading) return <Loading />;
 
@@ -125,6 +127,21 @@ export default function AssignmentTA(props) {
               Grading
             </Button>
           </NavLink>
+          <Button
+            variant="outlined"
+            className={classes.button}
+            startIcon={<DoneAll />}
+            onClick={async () => {
+              const result = await showGrade({
+                variables: {
+                  aid: aid,
+                },
+              });
+              console.log(result);
+            }}
+          >
+            Show Grade
+          </Button>
         </ListItem>
       </List>
     </>

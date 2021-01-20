@@ -188,3 +188,39 @@ export const CREATE_ASSIGNMENT = gql`
     }
   }
 `;
+
+export const UPDATE_ANSWER = gql`
+  mutation updateStudentAnswer(
+    $token: String!
+    $aid: ID!
+    $data: [AnswerInput]!
+  ) {
+    updateAnswer(token: $token, AID: $aid, data: $data) {
+      type
+      message
+    }
+  }
+`;
+
+export const UPDATE_GRADE = gql`
+  mutation updateGrade(
+    $email: String!
+    $pid: ID!
+    $score: Float!
+    $comment: String!
+  ) {
+    updateGrade(email: $email, PID: $pid, Score: $score, Comment: $comment) {
+      type
+      message
+    }
+  }
+`;
+
+export const SHOW_GRADE = gql`
+  mutation showGrade($aid: ID!) {
+    showGrade(AID: $aid) {
+      type
+      message
+    }
+  }
+`;

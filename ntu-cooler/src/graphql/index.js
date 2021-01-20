@@ -7,6 +7,7 @@ export {
   GET_COURSE_ASSIGNMENTS,
   GET_ASSIGNMENT,
   GET_COURSE_GRADES,
+  GET_STUDENT_ANSWER,
 } from "./queries";
 
 export {
@@ -19,4 +20,7 @@ export {
   UPDATE_PROBLEM_INFO,
   CREATE_PROBLEM,
   CREATE_ASSIGNMENT,
-} from "./mutations.js";
+  UPDATE_ANSWER,
+  UPDATE_GRADE,
+  SHOW_GRADE,
+} from "./mutations";

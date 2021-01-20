@@ -12,6 +12,9 @@ import {
 } from "@material-ui/core";
 import { AccountCircle } from "@material-ui/icons";
 import MenuIcon from "@material-ui/icons/Menu";
+import { GET_USER_INFO } from "../graphql";
+import { useQuery } from "@apollo/client";
+import Loading from "./Loading";
 
 const drawerWidth = 240;
 
@@ -43,6 +46,10 @@ const useStyles = makeStyles((theme) => ({
     color: "inherit",
     textDecoration: "none",
   },
+  button: {
+    textTransform: "none",
+    fontSize: 16,
+  },
   logo: {
     fontFamily: `'Potta One', cursive`,
   },
@@ -51,6 +58,9 @@ const useStyles = makeStyles((theme) => ({
 export default function NavBar(props) {
   const { open, setOpen } = props;
   const classes = useStyles();
+  const { loading, data } = useQuery(GET_USER_INFO, {
+    variables: { token: Cookies.get("token") },
+  });
 
   const handleClick = async () => {
     await Cookies.remove("token");
@@ -62,7 +72,7 @@ export default function NavBar(props) {
   };
 
   const menuId = "primary-search-account-menu";
-
+  if (loading) return <Loading />;
   return (
     <>
       <AppBar
@@ -91,6 +101,7 @@ export default function NavBar(props) {
             <Button variant="outlined" onClick={handleClick} color="inherit">
               Logout
             </Button>
+
             <NavLink to="/account" className={classes.navlink}>
               <IconButton
                 edge="end"
@@ -101,6 +112,11 @@ export default function NavBar(props) {
               >
                 <AccountCircle />
               </IconButton>
+            </NavLink>
+            <NavLink to="/account" className={classes.navlink}>
+              <Button color="inherit" className={classes.button}>
+                {data.user.name}
+              </Button>
             </NavLink>
           </div>
         </Toolbar>

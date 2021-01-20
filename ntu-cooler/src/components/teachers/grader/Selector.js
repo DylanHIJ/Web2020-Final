@@ -15,12 +15,14 @@ const Selector = (props) => {
         value={value}
         onChange={handleChange}
         inputProps={{
-          name: { name },
-          id: { name },
+          name: name,
+          id: name,
         }}
       >
         {options.map((ele) => (
-          <MenuItem value={ele.ID}>{ele.description}</MenuItem>
+          <MenuItem key={ele.ID} value={ele.ID}>
+            {ele.description}
+          </MenuItem>
         ))}
       </Select>
     </FormControl>

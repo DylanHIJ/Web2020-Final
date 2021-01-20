@@ -128,9 +128,36 @@ export const GET_STUDENT_PROBLEM = gql`
   }
 `;
 
-export const GET_ANSWER = gql`
-  query getAnswer($email: String!, $aid: ID!) {
-    answer(email: $email, AID: $aid) {
+export const GET_STUDENT_ANSWER = gql`
+  query getStudentAnswer($token: String!, $aid: ID!) {
+    answer(token: $token, AID: $aid) {
+      problemID
+      answer
+    }
+  }
+`;
+
+export const GET_SHORT_QA_PROBLEMS = gql`
+  query getShortQAProblems($aid: ID!) {
+    shortQAProblem(AID: $aid) {
+      problems {
+        _id
+        statement
+        point
+        keywords {
+          color
+          word
+        }
+        index
+      }
+      students
+    }
+  }
+`;
+
+export const GET_STUDENT_ANSWER_FOR_SHORT_QA = gql`
+  query getStudentAnswerForShortQA($email: String!, $pid: ID!) {
+    studentAnswer(email: $email, PID: $pid) {
       problemID
       answer
     }

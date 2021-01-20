@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { useQuery } from "@apollo/client";
 import { Container, Typography } from "@material-ui/core";
 import TrueFalse from "./TrueFalse";
 import MultipleChoice from "./MultipleChoice";
 import CheckboxProblem from "./Checkbox";
 import ShortQA from "./ShortQA";
-import { GET_STUDENT_PROBLEM } from "../../../graphql/queries";
 
 const generateInitialAnswer = (type) => {
   if (type === "TF" || type === "MULTIPLE_CHOICE") {
@@ -20,34 +18,28 @@ const generateInitialAnswer = (type) => {
 };
 
 const Problem = (props) => {
-  const { pid, initAnswer, updateAnswer } = props;
-
-  const { loading, data } = useQuery(GET_STUDENT_PROBLEM, {
-    variables: { pid: pid },
-  });
-
-  const problem = loading ? {} : data.problem;
-
-  const [answer, setAnswer] = useState([]);
-
-  useEffect(() => {
-    setAnswer(
-      initAnswer !== undefined
-        ? initAnswer
-        : generateInitialAnswer(problem.type)
-    );
-  }, [loading]);
+  const { problem, initialAnswer, updateAnswer, rerender, setRerender } = props;
+  const [answer, setAnswer] = useState(
+    problem.type === "CHECKBOX" && initialAnswer === null ? [] : initialAnswer
+  );
 
   useEffect(() => {
     updateAnswer(answer);
   }, [answer]);
 
-  if (loading) return null;
+  useEffect(() => {
+    if (rerender) {
+      setRerender(false);
+      if (initialAnswer === null) {
+        setAnswer(generateInitialAnswer(problem.type));
+      }
+    }
+  }, [rerender]);
 
   return (
-    <Container maxWidth="md">
-      <Typography variant="h5" component="h4" style={{ marginTop: "1%" }}>
-        Q: {problem.statement}
+    <Container style={{ marginTop: 24, width: "100%" }}>
+      <Typography variant="h5" component="h4">
+        {problem.statement}
       </Typography>
       {problem.type === "TF" ? (
         <TrueFalse problem={problem} answer={answer} setAnswer={setAnswer} />
