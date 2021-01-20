@@ -19,7 +19,9 @@ const generateInitialAnswer = (type) => {
 
 const Problem = (props) => {
   const { problem, initialAnswer, updateAnswer, rerender, setRerender } = props;
-  const [answer, setAnswer] = useState(initialAnswer);
+  const [answer, setAnswer] = useState(
+    problem.type === "CHECKBOX" && initialAnswer === null ? [] : initialAnswer
+  );
 
   useEffect(() => {
     updateAnswer(answer);

@@ -154,3 +154,12 @@ export const GET_SHORT_QA_PROBLEMS = gql`
     }
   }
 `;
+
+export const GET_STUDENT_ANSWER_FOR_SHORT_QA = gql`
+  query getStudentAnswerForShortQA($email: String!, $pid: ID!) {
+    studentAnswer(email: $email, PID: $pid) {
+      problemID
+      answer
+    }
+  }
+`;
