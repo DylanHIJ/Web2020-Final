@@ -19,6 +19,10 @@ const GradeSchema = new Schema({
     type: Array,
     required: [true, "Answers field is required"],
   },
+  comments: {
+    type: Array,
+    required: [true, "Comments field is required"],
+  },
   graded: {
     type: Boolean,
     required: [true, "Graded or not field is required"],

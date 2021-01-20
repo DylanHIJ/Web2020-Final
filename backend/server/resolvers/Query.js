@@ -39,12 +39,12 @@ const Query = {
 
     if (token) {
       user = await User.findOne({ token: token }).exec();
-      console.log("Query: login with token");
+      // console.log("Query: login with token");
     } else {
       user = await User.findOne({
         $and: [{ email: email }, { password: password }],
       }).exec();
-      console.log("Query: login with email");
+      // console.log("Query: login with email");
     }
 
     if (user !== null) {
@@ -62,7 +62,7 @@ const Query = {
       }
       user.teacherCourses = teacherCourses;
     }
-    console.log("Query: \n", user);
+    // console.log("Query: \n", user);
 
     return user;
   },

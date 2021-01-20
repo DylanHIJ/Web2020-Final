@@ -1,11 +1,18 @@
 const crypto = require("crypto");
 
+const tokenToEmail = async (User, token) => {
+  const user = await User.findOne({ token: token }).exec();
+
+  return user ? user.email : null;
+};
+
 const createGrade = async (Grade, email, assignmentID) => {
   const grade = {
     email: email,
     assignmentID: assignmentID,
     grades: [],
     answers: [],
+    comments: [],
     graded: false,
   };
   await Grade.create(grade);
@@ -186,7 +193,6 @@ const Mutation = {
       teacherCourses: [],
       studentCourses: [],
     };
-    user.token = crypto.randomBytes(20).toString("base64");
     let message = { type: undefined, message: undefined };
 
     const member = await User.findOne({ email: user.email }).exec();
@@ -194,6 +200,11 @@ const Mutation = {
       message.type = "Error";
       message.message = "Email Has Been Used";
     } else {
+      let token = crypto.randomBytes(20).toString("base64");
+      while (await User.exists({ token: token })) {
+        token = crypto.randomBytes(20).toString("base64");
+      }
+      user.token = token;
       await User.create(user);
       message.type = "Success";
       message.message = `Create User ${user.email}`;
@@ -474,7 +485,11 @@ const Mutation = {
           { $and: [{ email: email }, { assignmentID: AID }] },
           {
             grades: [...grade.grades, { problemID: problemID, score: null }],
-            answers: [...grade.answers, { problemID: problemID, answer: null }],
+            answers: [...grade.answers, { problemID: problemID, answer: [] }],
+            comments: [
+              ...grade.comments,
+              { problemID: problemID, comment: null },
+            ],
           }
         );
       }
@@ -551,10 +566,11 @@ const Mutation = {
   },
 
   // Grade Mutation
-  async updateAnswer(parent, args, { Grade }, Info) {
-    const email = args.email;
+  async updateAnswer(parent, args, { User, Grade }, Info) {
+    const token = args.token;
     const AID = args.AID;
     const Answers = args.data;
+    const email = await tokenToEmail(User, token);
     let message = { type: undefined, message: undefined };
     if (
       await Grade.exists({
@@ -580,6 +596,7 @@ const Mutation = {
     const email = args.email;
     const PID = args.PID;
     const Score = args.Score;
+    const Comment = args.Comment;
     let message = { type: undefined, message: undefined };
 
     if (await Problem.exists({ _id: PID })) {
@@ -599,6 +616,11 @@ const Mutation = {
           {
             grades: grade.grades.map((score) =>
               score.problemID === PID ? { ...score, score: Score } : score
+            ),
+            comments: grade.comments.map((comment) =>
+              comment.problemID === PID
+                ? { ...comment, comment: Comment }
+                : comment
             ),
           }
         );

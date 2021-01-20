@@ -29,8 +29,13 @@ type Mutation {
   deleteProblem(PID: ID!): ReturnMessage!
   updateProblemInfo(PID: ID!, data: ProblemInput!): ReturnMessage!
 
-  updateAnswer(email: String!, AID: ID!, data: [AnswerInput]!): ReturnMessage!
-  updateGrade(email: String!, PID: String!, Score: Float!): ReturnMessage!
+  updateAnswer(token: String!, AID: ID!, data: [AnswerInput]!): ReturnMessage!
+  updateGrade(
+    email: String!
+    PID: String!
+    Score: Float!
+    Comment: String!
+  ): ReturnMessage!
   showGrade(AID: ID!): ReturnMessage!
 }
 
@@ -89,7 +94,7 @@ type Course {
   info: CourseInfo!
   TAs: [ID]!
   students: [ID]!
-  assignments: [Assignment]!
+  assignments: [AssignmentSimple]!
 }
 
 type AssignmentInfo {
@@ -104,6 +109,13 @@ type Assignment {
   courseID: ID!
   info: AssignmentInfo!
   problems: [Problem]!
+}
+
+type AssignmentSimple {
+  _id: ID!
+  courseID: ID!
+  info: AssignmentInfo!
+  problems: [ID]!
 }
 
 input AssignmentInput {
@@ -149,6 +161,7 @@ type Grade {
   assignmentID: ID!
   grades: [Score]!
   answers: [Answer]!
+  comments: [Comment]!
   graded: Boolean!
 }
 
@@ -176,6 +189,16 @@ input ScoreInput {
 type Score {
   problemID: ID!
   score: Float
+}
+
+type Comment {
+  problemID: ID!
+  comment: String
+}
+
+input CommentInput {
+  problemID: ID!
+  comment: String
 }
 
 type AssignmentGrade {
