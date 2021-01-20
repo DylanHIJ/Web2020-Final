@@ -128,9 +128,9 @@ export const GET_STUDENT_PROBLEM = gql`
   }
 `;
 
-export const GET_ANSWER = gql`
-  query getAnswer($email: String!, $aid: ID!) {
-    answer(email: $email, AID: $aid) {
+export const GET_STUDENT_ANSWER = gql`
+  query getStudentAnswer($token: String!, $aid: ID!) {
+    answer(token: $token, AID: $aid) {
       problemID
       answer
     }

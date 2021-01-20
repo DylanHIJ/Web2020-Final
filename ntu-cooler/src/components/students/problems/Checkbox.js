@@ -25,14 +25,20 @@ const CheckboxProblem = (props) => {
                 <Checkbox
                   name={`option_${index}`}
                   checked={
-                    answer.find((e) => e === `option_${index}`) !== undefined
+                    // answer.find((e) => e === `option_${index}`) !== undefined
+                    answer.includes(option)
                   }
                   onChange={(event) => {
+                    // setAnswer((prev) =>
+                    //   prev
+                    //     .filter((e) => e !== event.target.name)
+                    //     .concat(event.target.checked ? [event.target.name] : [])
+                    //     .sort()
+                    // );
                     setAnswer((prev) =>
-                      prev
-                        .filter((e) => e !== event.target.name)
-                        .concat(event.target.checked ? [event.target.name] : [])
-                        .sort()
+                      prev.includes(option)
+                        ? prev.filter((op) => option !== op).sort()
+                        : [...prev, option].sort()
                     );
                   }}
                 />

@@ -189,9 +189,13 @@ export const CREATE_ASSIGNMENT = gql`
   }
 `;
 
-export const UPDATE_GRADE = gql`
-  mutation updateGrade($email: String!, $pid: String!, $score: Float!) {
-    updateGrade(email: $email, PID: $pid, Score: $score) {
+export const UPDATE_ANSWER = gql`
+  mutation updateStudentAnswer(
+    $token: String!
+    $aid: ID!
+    $data: [AnswerInput]!
+  ) {
+    updateAnswer(token: $token, AID: $aid, data: $data) {
       type
       message
     }
