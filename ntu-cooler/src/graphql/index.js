@@ -15,4 +15,5 @@ export {
   CREATE_USER,
   UPDATE_USER_INFO,
   CREATE_COURSE,
+  UPDATE_ASSIGNMENT_INFO,
 } from "./mutations.js";

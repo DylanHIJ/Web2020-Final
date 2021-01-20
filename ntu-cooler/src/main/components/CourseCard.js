@@ -8,8 +8,7 @@ import {
   IconButton,
 } from "@material-ui/core";
 import { red } from "@material-ui/core/colors";
-import { LibraryBooks, Favorite } from "@material-ui/icons";
-import MoreVertIcon from "@material-ui/icons/MoreVert";
+import { LibraryBooks } from "@material-ui/icons";
 import { NavLink } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({

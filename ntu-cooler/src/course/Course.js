@@ -136,7 +136,7 @@ export default function Course(props) {
           />
           <Route
             path={`${match.path}/assignments/:aid?/edit`}
-            component={AddProblem}
+            render={() => <AddProblem create={false} />}
           />
           <Route
             path={`${match.path}/assignments/:aid?/grading`}

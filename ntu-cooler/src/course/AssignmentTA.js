@@ -11,7 +11,13 @@ import {
   Avatar,
   Divider,
 } from "@material-ui/core";
-import { Edit, Check, AccessTime, AccessAlarm } from "@material-ui/icons";
+import {
+  Edit,
+  Check,
+  AccessTime,
+  AccessAlarm,
+  PieChart,
+} from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 import { GET_ASSIGNMENT } from "../graphql";
 import Loading from "../components/Loading";
@@ -27,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
   },
   button: {
     marginTop: "1%",
-    marginRight: "2%",
+    marginRight: theme.spacing(1),
   },
   navlink: {
     color: "inherit",
@@ -81,31 +87,45 @@ export default function AssignmentTA(props) {
             ).toString()}
           />
         </ListItem>
+        <Divider variant="inset" component="li" />
+        <ListItem>
+          <ListItemAvatar>
+            <Avatar>
+              <PieChart />
+            </Avatar>
+          </ListItemAvatar>
+          <ListItemText
+            primary="Weight"
+            secondary={data.assignment.info.weight}
+          />
+        </ListItem>
+        <ListItem>
+          <NavLink
+            to={{ pathname: `${match.url}/edit`, state: { isTA: isTA } }}
+            className={classes.navlink}
+          >
+            <Button
+              variant="outlined"
+              className={classes.button}
+              startIcon={<Edit />}
+            >
+              Edit
+            </Button>
+          </NavLink>
+          <NavLink
+            to={{ pathname: `${match.url}/grading`, state: { isTA: isTA } }}
+            className={classes.navlink}
+          >
+            <Button
+              variant="outlined"
+              className={classes.button}
+              startIcon={<Check />}
+            >
+              Grading
+            </Button>
+          </NavLink>
+        </ListItem>
       </List>
-      <NavLink
-        to={{ pathname: `${match.url}/edit`, state: { isTA: isTA } }}
-        className={classes.navlink}
-      >
-        <Button
-          variant="outlined"
-          className={classes.button}
-          startIcon={<Edit />}
-        >
-          Edit
-        </Button>
-      </NavLink>
-      <NavLink
-        to={{ pathname: `${match.url}/grading`, state: { isTA: isTA } }}
-        className={classes.navlink}
-      >
-        <Button
-          variant="outlined"
-          className={classes.button}
-          startIcon={<Check />}
-        >
-          Grading
-        </Button>
-      </NavLink>
     </>
   );
 }

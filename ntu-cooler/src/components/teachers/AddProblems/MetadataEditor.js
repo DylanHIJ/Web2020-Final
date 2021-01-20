@@ -60,11 +60,11 @@ const MetadataEditor = (props) => {
                   id="assignment-weight"
                   label="Assignment Weight"
                   placeholder="Weight (in %)"
-                  // value={metadata.weight}
+                  value={metadata.weight}
                   onChange={(event) => {
                     setMetadata((prev) => ({
                       ...prev,
-                      metadata: event.target.value,
+                      weight: event.target.value,
                     }));
                   }}
                 />

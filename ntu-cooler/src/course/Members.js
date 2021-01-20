@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import PropTypes from "prop-types";
 import MuiAlert from "@material-ui/lab/Alert";
 import { useMutation } from "@apollo/client";
 import { useParams } from "react-router-dom";

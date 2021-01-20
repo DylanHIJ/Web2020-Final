@@ -88,3 +88,26 @@ export const CREATE_COURSE = gql`
     }
   }
 `;
+
+export const UPDATE_ASSIGNMENT_INFO = gql`
+  mutation updateAssignmentInfo(
+    $aid: ID!
+    $name: String!
+    $beginTime: String!
+    $endTime: String!
+    $weight: Float!
+  ) {
+    updateAssignmentInfo(
+      AID: $aid
+      data: {
+        name: $name
+        beginTime: $beginTime
+        endTime: $endTime
+        weight: $weight
+      }
+    ) {
+      type
+      message
+    }
+  }
+`;

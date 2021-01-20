@@ -84,6 +84,7 @@ export const GET_ASSIGNMENT = gql`
         name
         beginTime
         endTime
+        weight
       }
       problems
     }

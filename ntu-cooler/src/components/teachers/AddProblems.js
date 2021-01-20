@@ -1,9 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Container, Button, Grid } from "@material-ui/core";
 import MetadataEditor from "./AddProblems/MetadataEditor";
 import ProblemEditor from "./AddProblems/ProblemEditor";
-
+import { makeStyles } from "@material-ui/styles";
+import { useParams } from "react-router-dom";
+import { useQuery, useMutation } from "@apollo/client";
 import GENERATE_ASSIGNMENT_TEMPLATE from "../../templates/assignment";
+import { GET_ASSIGNMENT, UPDATE_ASSIGNMENT_INFO } from "../../graphql";
+import Loading from "../Loading";
 
 const EmptyInfo = {
   name: "",
@@ -12,11 +16,43 @@ const EmptyInfo = {
   weight: 0,
 };
 
+const useStyles = makeStyles({
+  buttonContainer: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: "1%",
+  },
+});
+
 const AddProblem = (props) => {
   const { create } = props;
+  const { aid } = useParams();
+  const classes = useStyles();
 
   const [metadata, setMetadata] = useState(GENERATE_ASSIGNMENT_TEMPLATE());
   const [problems, setProblems] = useState([]);
+
+  const [updateAssignmentInfo] = useMutation(UPDATE_ASSIGNMENT_INFO);
+  const { loading, data } = useQuery(GET_ASSIGNMENT, {
+    variables: { aid: aid },
+    fetchPolicy: "no-cache",
+  });
+
+  useEffect(() => {
+    if (!loading && !create) {
+      const metadata = {
+        courseID: data.assignment.courseID,
+        name: data.assignment.info.name,
+        beginTime: new Date(parseInt(data.assignment.info.beginTime, 10)),
+        endTime: new Date(parseInt(data.assignment.info.endTime, 10)),
+        weight: data.assignment.info.weight,
+      };
+      setMetadata(metadata);
+    }
+  }, [loading, data, create]);
+
+  if (loading) return <Loading />;
 
   if (!create) {
     // Retrieve metadata and problems from server
@@ -37,20 +73,25 @@ const AddProblem = (props) => {
       {/* Problem Detail Editor */}
       <ProblemEditor problems={problems} setProblems={setProblems} />
 
-      <Container maxWidth="sm">
-        <Grid container justify="center">
-          <Grid item xs={12}>
-            {/* TODO */}
-            <Button
-              onClick={() => {
-                createProblem();
-              }}
-            >
-              Save (Help me), I don't know how to center the button CSS needs to
-              be improved
-            </Button>
-          </Grid>
-        </Grid>
+      <Container maxWidth="sm" className={classes.buttonContainer}>
+        {/* TODO */}
+        <Button
+          onClick={() => {
+            createProblem();
+            updateAssignmentInfo({
+              variables: {
+                aid: aid,
+                name: metadata.name,
+                beginTime: metadata.beginTime.toString(),
+                endTime: metadata.endTime.toString(),
+                weight: parseFloat(metadata.weight),
+              },
+            });
+          }}
+          variant="outlined"
+        >
+          Save
+        </Button>
       </Container>
     </Container>
   );
