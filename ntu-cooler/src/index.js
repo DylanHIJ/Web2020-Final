@@ -12,11 +12,11 @@ import { WebSocketLink } from "apollo-link-ws";
 import { getMainDefinition } from "apollo-utilities";
 
 const httpLink = new HttpLink({
-  uri: "http://localhost:4000/",
+  uri: "http://ntu-cooler.csie.org:29090/",
 });
 
 const wsLink = new WebSocketLink({
-  uri: `ws://localhost:4000/`,
+  uri: `ws://ntu-cooler.csie.org:29090/`,
   options: { reconnect: true },
 });
 
