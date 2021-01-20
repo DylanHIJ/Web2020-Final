@@ -21,4 +21,5 @@ export {
   CREATE_PROBLEM,
   CREATE_ASSIGNMENT,
   UPDATE_ANSWER,
-} from "./mutations.js";
+  UPDATE_GRADE,
+} from "./mutations";
