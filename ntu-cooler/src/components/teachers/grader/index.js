@@ -5,6 +5,8 @@ import Selector from "./Selector";
 import Highlighter from "./Highlighter";
 import ControlPanel from "./ControlPanel";
 import { getStudentResponse } from "../utils";
+import { useMutation } from "@apollo/client";
+import { UPDATE_GRADE } from "../../../graphql/mutations";
 
 const Grader = (props) => {
   const { assignmentID, problems, students } = props;
@@ -14,10 +16,6 @@ const Grader = (props) => {
 
   const [problem, setProblem] = useState(problems[0]);
 
-  useEffect(() => {
-    setProblem(problems.find((ele) => ele._id === problemID));
-  }, [problemID]);
-
   // Each instance is an object that has two properties, "score" and "comments"
   const [scores, setScores] = useState(
     students.reduce(
@@ -25,6 +23,29 @@ const Grader = (props) => {
       {}
     )
   );
+
+  const [updateGrade] = useMutation(UPDATE_GRADE);
+
+  const updateGradeOnChanges = async () => {
+    if (scores[studentID].score !== undefined) {
+      const result = await updateGrade({
+        variables: {
+          email: studentID,
+          pid: problemID,
+          score: scores[studentID].score,
+        },
+      });
+    }
+  };
+
+  useEffect(() => {
+    updateGradeOnChanges();
+    setProblem(problems.find((ele) => ele._id === problemID));
+  }, [problemID]);
+
+  useEffect(() => {
+    updateGradeOnChanges();
+  }, [studentID]);
 
   return (
     <Container maxWidth="lg">
