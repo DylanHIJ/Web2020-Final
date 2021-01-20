@@ -22,4 +22,5 @@ export {
   CREATE_ASSIGNMENT,
   UPDATE_ANSWER,
   UPDATE_GRADE,
+  SHOW_GRADE,
 } from "./mutations";

@@ -215,3 +215,12 @@ export const UPDATE_GRADE = gql`
     }
   }
 `;
+
+export const SHOW_GRADE = gql`
+  mutation showGrade($aid: ID!) {
+    showGrade(AID: $aid) {
+      type
+      message
+    }
+  }
+`;
