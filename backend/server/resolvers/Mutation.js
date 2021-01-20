@@ -650,7 +650,7 @@ const Mutation = {
           const problem = await Problem.findOne({
             _id: studentGrade.answers[idx].problemID,
           }).exec();
-          const studentAns = studentGrade.answers[idx].answers;
+          const studentAns = studentGrade.answers[idx].answer;
           const Ans = problem.answers;
 
           let points = 0;
@@ -672,6 +672,7 @@ const Mutation = {
                 );
                 break;
               case "SHORT_QA":
+                console.log(studentGrade.grades[idx].score);
                 points =
                   studentGrade.grades[idx].score === null
                     ? 0

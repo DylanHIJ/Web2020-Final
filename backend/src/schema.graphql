@@ -34,7 +34,7 @@ type Mutation {
     email: String!
     PID: ID!
     Score: Float!
-    Comment: String!
+    Comment: String
   ): ReturnMessage!
   showGrade(AID: ID!): ReturnMessage!
 }
