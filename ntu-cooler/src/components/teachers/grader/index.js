@@ -39,11 +39,19 @@ const Grader = (props) => {
     problems.forEach(async (problem) => {
       students.forEach(async (student) => {
         if (scores[problem._id][student].graded) {
+          console.log(
+            student,
+            typeof student,
+            problem._id,
+            scores[problem._id][student].score,
+            scores[problem._id][student].comment
+          );
           const result = await updateGrade({
             variables: {
               email: student,
               pid: problem._id,
               score: scores[problem._id][student].score,
+              comment: scores[problem._id][student].comment,
             },
           });
         }
