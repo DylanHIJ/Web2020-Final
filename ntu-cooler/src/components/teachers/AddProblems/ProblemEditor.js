@@ -1,11 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Container,
   Card,
   CardContent,
   CardActions,
-  Typography,
-  Divider,
   IconButton,
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
@@ -13,7 +11,7 @@ import ProblemModule from "./ProblemModule";
 import GENERATE_PROBLEM_TEMPLATE from "../../../templates/problem";
 
 const ProblemEditor = (props) => {
-  const [problems, setProblems] = useState([]);
+  const { problems, setProblems } = props;
 
   return (
     <Container maxWidth="md">

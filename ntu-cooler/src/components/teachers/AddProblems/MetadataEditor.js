@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Container,
   Card,
@@ -12,12 +12,9 @@ import {
   KeyboardDateTimePicker,
 } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
-import GENERATE_ASSIGNMENT_TEMPLATE from "../../../templates/assignment";
 
 const MetadataEditor = (props) => {
-  const { assignmentID } = props;
-
-  const [metadata, setMetadata] = useState(GENERATE_ASSIGNMENT_TEMPLATE());
+  const { metadata, setMetadata } = props;
 
   return (
     <Container maxWidth="md">
