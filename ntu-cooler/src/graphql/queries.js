@@ -116,3 +116,23 @@ export const GET_COURSE_GRADES = gql`
     }
   }
 `;
+
+export const GET_STUDENT_PROBLEM = gql`
+  query getProblem($pid: ID!) {
+    problem(PID: $pid) {
+      _id
+      type
+      statement
+      options
+    }
+  }
+`;
+
+export const GET_ANSWER = gql`
+  query getAnswer($email: String!, $aid: ID!) {
+    answer(email: $email, AID: $aid) {
+      problemID
+      answer
+    }
+  }
+`;

@@ -7,8 +7,6 @@ import CheckboxProblem from "./Checkbox";
 import ShortQA from "./ShortQA";
 import { GET_STUDENT_PROBLEM } from "../../../graphql/queries";
 
-import { getProblem } from "../utils";
-
 const generateInitialAnswer = (type) => {
   if (type === "TF" || type === "MULTIPLE_CHOICE") {
     return null;
@@ -22,38 +20,35 @@ const generateInitialAnswer = (type) => {
 };
 
 const Problem = (props) => {
-  const { pid, initialAnswer, updateAnswer } = props;
+  const { pid, initAnswer, updateAnswer } = props;
 
-  // const { loading, data } = useQuery(GET_STUDENT_PROBLEM, {
-  //   variables: { pid: pid },
-  // });
+  const { loading, data } = useQuery(GET_STUDENT_PROBLEM, {
+    variables: { pid: pid },
+  });
 
-  // const problem = loading ? {} : data.problem;
+  const problem = loading ? {} : data.problem;
 
-  // console.log(problem);
+  const [answer, setAnswer] = useState([]);
 
-  // if (loading) return <p>Loading</p>;
-
-  const problem = getProblem(pid);
-
-  const [answer, setAnswer] = useState(
-    initialAnswer !== undefined
-      ? initialAnswer
-      : generateInitialAnswer(problem.type)
-  );
-  // initialAnswer === null ? genrateInitialAnswer(problem.type) : initialAnswer
+  useEffect(() => {
+    setAnswer(
+      initAnswer !== undefined
+        ? initAnswer
+        : generateInitialAnswer(problem.type)
+    );
+  }, [loading]);
 
   useEffect(() => {
     updateAnswer(answer);
   }, [answer]);
 
-  return (
-    <Container fullWidth style={{ marginTop: 24 }}>
-      <Typography variant="h5" component="h4">
-        {problem.statement}
-      </Typography>
+  if (loading) return null;
 
-      {/* Different problem */}
+  return (
+    <Container maxWidth="md">
+      <Typography variant="h5" component="h4" style={{ marginTop: "1%" }}>
+        Q: {problem.statement}
+      </Typography>
       {problem.type === "TF" ? (
         <TrueFalse problem={problem} answer={answer} setAnswer={setAnswer} />
       ) : problem.type === "MULTIPLE_CHOICE" ? (
@@ -70,9 +65,7 @@ const Problem = (props) => {
         />
       ) : problem.type === "SHORT_QA" ? (
         <ShortQA problem={problem} answer={answer} setAnswer={setAnswer} />
-      ) : (
-        <p>ERROR</p>
-      )}
+      ) : null}
     </Container>
   );
 };
