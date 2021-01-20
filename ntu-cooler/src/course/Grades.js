@@ -42,6 +42,7 @@ const useStyles = makeStyles((theme) => ({
   title: {
     marginTop: "6%",
     marginBottom: "1%",
+    fontFamily: `'Crete Round', serif`,
   },
   tableRow: {
     fontSize: "24pt",
@@ -89,7 +90,7 @@ export default function Grades() {
                     {assignment.info.name}
                   </StyledTableCell>
                   <StyledTableCell align="center">
-                    {assignment.info.weight * 100}%
+                    {assignment.info.weight}%
                   </StyledTableCell>
                   <StyledTableCell align="center">
                     {assignment.score === null ? "-" : assignment.score}
@@ -103,14 +104,15 @@ export default function Grades() {
                 {Math.floor(
                   data.allAssignmentGrade
                     .map((assignment) => assignment.info.weight)
-                    .reduce((a, b) => a + b) * 100
+                    .reduce((a, b) => a + b)
                 )}
                 %
               </TableCell>
               <TableCell align="center">
                 {data.allAssignmentGrade
                   .map(
-                    (assignment) => assignment.info.weight * assignment.score
+                    (assignment) =>
+                      (assignment.info.weight / 100) * assignment.score
                   )
                   .reduce((a, b) => a + b)
                   .toFixed(2)}
@@ -119,7 +121,7 @@ export default function Grades() {
                 {Math.floor(
                   data.allAssignmentGrade
                     .map((assignment) => assignment.info.weight)
-                    .reduce((a, b) => a + b) * 100
+                    .reduce((a, b) => a + b)
                 )}
               </TableCell>
             </TableRow>

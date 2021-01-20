@@ -9,6 +9,7 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
+  Typography,
 } from "@material-ui/core";
 import { ChevronLeft, ChevronRight } from "@material-ui/icons";
 
@@ -33,6 +34,9 @@ const useStyles = makeStyles((theme) => ({
   navlink: {
     color: "inherit",
     textDecoration: "none",
+  },
+  drawerText: {
+    fontFamily: `'Staatliches', cursive`,
   },
 }));
 
@@ -73,7 +77,17 @@ export default function LeftDrawer(props) {
           >
             <ListItem button key={listItem.name}>
               <ListItemIcon>{listItem.icon}</ListItemIcon>
-              <ListItemText primary={listItem.name} />
+              {/* <ListItemText
+                primary={listItem.name}
+                className={classes.drawerText}
+              /> */}
+              <Typography
+                variant="h6"
+                component="h2"
+                className={classes.drawerText}
+              >
+                {listItem.name}
+              </Typography>
             </ListItem>
           </NavLink>
         ))}

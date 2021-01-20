@@ -165,3 +165,26 @@ export const CREATE_PROBLEM = gql`
     }
   }
 `;
+
+export const CREATE_ASSIGNMENT = gql`
+  mutation createAssignment(
+    $cid: ID!
+    $name: String!
+    $beginTime: String!
+    $endTime: String!
+    $weight: Float!
+  ) {
+    createAssignment(
+      CID: $cid
+      data: {
+        name: $name
+        beginTime: $beginTime
+        endTime: $endTime
+        weight: $weight
+      }
+    ) {
+      type
+      message
+    }
+  }
+`;

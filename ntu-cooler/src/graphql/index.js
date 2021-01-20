@@ -18,4 +18,5 @@ export {
   UPDATE_ASSIGNMENT_INFO,
   UPDATE_PROBLEM_INFO,
   CREATE_PROBLEM,
+  CREATE_ASSIGNMENT,
 } from "./mutations.js";

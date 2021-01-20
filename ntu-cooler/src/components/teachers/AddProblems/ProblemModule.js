@@ -45,7 +45,7 @@ const ProblemModule = (props) => {
     <Card variant="outlined" style={{ marginTop: "12px" }}>
       <CardContent>
         <Grid container spacing={4} style={{ marginBottom: "12px" }}>
-          <Grid item xs={9}>
+          <Grid item xs={7}>
             <TextField
               id="problem-statement"
               label="Problem Statement"
@@ -58,6 +58,22 @@ const ProblemModule = (props) => {
                 setProblem((prev) => ({
                   ...prev,
                   statement: event.target.value,
+                }));
+              }}
+            />
+          </Grid>
+          <Grid item xs={2}>
+            <TextField
+              id="problem-point"
+              label="Problem Point"
+              placeholder=""
+              variant="outlined"
+              value={problem.point}
+              fullWidth
+              onChange={(event) => {
+                setProblem((prev) => ({
+                  ...prev,
+                  point: event.target.value,
                 }));
               }}
             />

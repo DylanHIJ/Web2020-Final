@@ -12,18 +12,19 @@ import {
   UPDATE_ASSIGNMENT_INFO,
   UPDATE_PROBLEM_INFO,
   CREATE_PROBLEM,
+  CREATE_ASSIGNMENT,
 } from "../../graphql";
 import Loading from "../Loading";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
-const EmptyInfo = {
-  name: "",
-  beginTime: "20210101T00:00:00",
-  endTime: "20211231T00:00:00",
-  weight: 0,
-};
+// const EmptyInfo = {
+//   name: "",
+//   beginTime: "20210101T00:00:00",
+//   endTime: "20211231T00:00:00",
+//   weight: 0,
+// };
 
 const useStyles = makeStyles({
   buttonContainer: {
@@ -36,7 +37,7 @@ const useStyles = makeStyles({
 
 const AddProblem = (props) => {
   const { create } = props;
-  const { aid } = useParams();
+  const { cid, aid } = useParams();
   const classes = useStyles();
 
   const [open, setOpen] = useState(false);
@@ -46,6 +47,7 @@ const AddProblem = (props) => {
   const [updateAssignmentInfo] = useMutation(UPDATE_ASSIGNMENT_INFO);
   const [updateProblemInfo] = useMutation(UPDATE_PROBLEM_INFO);
   const [createProblem] = useMutation(CREATE_PROBLEM);
+  const [createAssignment] = useMutation(CREATE_ASSIGNMENT);
 
   const { loading, data } = useQuery(GET_ASSIGNMENT, {
     variables: { aid: aid },
@@ -68,10 +70,6 @@ const AddProblem = (props) => {
 
   if (loading) return <Loading />;
 
-  if (!create) {
-    // Retrieve metadata and problems from server
-  }
-
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
@@ -79,12 +77,88 @@ const AddProblem = (props) => {
     setOpen(false);
   };
 
-  // const createProblem = () => {
-  //   console.log("Submitting problems to server......");
-  //   // Question: How do we wait for all setStates done and them finally we can submit to server?
-  //   // TODO - 1. Create assignment with metadata
-  //   // TODO - 2. Upload problems one by one
-  // };
+  const newAssignment = async () => {
+    if (
+      metadata.name &&
+      metadata.beginTime &&
+      metadata.endTime &&
+      metadata.weight
+    ) {
+      const result = await createAssignment({
+        variables: {
+          cid: cid,
+          name: metadata.name,
+          beginTime: metadata.beginTime.toString(),
+          endTime: metadata.endTime.toString(),
+          weight: parseFloat(metadata.weight),
+        },
+      });
+      const newAid = result.data.createAssignment.message.split(" ")[2];
+      for (let i = 0; i < problems.length; i++) {
+        await createProblem({
+          variables: {
+            aid: newAid,
+            type: problems[i].type,
+            point: parseInt(problems[i].point, 10),
+            statement: problems[i].statement,
+            options: problems[i].options,
+            answers: problems[i].answers,
+            keywords: problems[i].keywords.map((keyword) => ({
+              color: keyword.color,
+              word: keyword.word,
+            })),
+          },
+        });
+      }
+      setOpen(true);
+    }
+  };
+
+  const saveChanges = async () => {
+    await updateAssignmentInfo({
+      variables: {
+        aid: aid,
+        name: metadata.name,
+        beginTime: metadata.beginTime.toString(),
+        endTime: metadata.endTime.toString(),
+        weight: parseFloat(metadata.weight),
+      },
+    });
+    for (let i = 0; i < problems.length; i++) {
+      if (problems[i]._id === undefined)
+        await createProblem({
+          variables: {
+            aid: aid,
+            type: problems[i].type,
+            point: parseInt(problems[i].point, 10),
+            statement: problems[i].statement,
+            options: problems[i].options,
+            answers: problems[i].answers,
+            keywords: problems[i].keywords.map((keyword) => ({
+              color: keyword.color,
+              word: keyword.word,
+            })),
+          },
+        });
+      else {
+        await updateProblemInfo({
+          variables: {
+            pid: problems[i]._id,
+            type: problems[i].type,
+            point: parseInt(problems[i].point, 10),
+            statement: problems[i].statement,
+            options: problems[i].options,
+            answers: problems[i].answers,
+            keywords: problems[i].keywords.map((keyword) => ({
+              color: keyword.color,
+              word: keyword.word,
+            })),
+          },
+        });
+      }
+    }
+    setOpen(true);
+  };
 
   return (
     <Container maxWidth="lg" style={{ marginTop: "6%" }}>
@@ -98,52 +172,8 @@ const AddProblem = (props) => {
         {/* TODO */}
         <Button
           onClick={async () => {
-            if (create) createProblem();
-            else {
-              await updateAssignmentInfo({
-                variables: {
-                  aid: aid,
-                  name: metadata.name,
-                  beginTime: metadata.beginTime.toString(),
-                  endTime: metadata.endTime.toString(),
-                  weight: parseFloat(metadata.weight),
-                },
-              });
-              for (let i = 0; i < problems.length; i++) {
-                if (problems[i]._id === undefined)
-                  await createProblem({
-                    variables: {
-                      aid: aid,
-                      type: problems[i].type,
-                      point: 10,
-                      statement: problems[i].statement,
-                      options: problems[i].options,
-                      answers: problems[i].answers,
-                      keywords: problems[i].keywords.map((keyword) => ({
-                        color: keyword.color,
-                        word: keyword.word,
-                      })),
-                    },
-                  });
-                else {
-                  await updateProblemInfo({
-                    variables: {
-                      pid: problems[i]._id,
-                      type: problems[i].type,
-                      point: 10,
-                      statement: problems[i].statement,
-                      options: problems[i].options,
-                      answers: problems[i].answers,
-                      keywords: problems[i].keywords.map((keyword) => ({
-                        color: keyword.color,
-                        word: keyword.word,
-                      })),
-                    },
-                  });
-                }
-              }
-              setOpen(true);
-            }
+            if (create) newAssignment();
+            else saveChanges();
           }}
           variant="outlined"
         >
@@ -152,7 +182,9 @@ const AddProblem = (props) => {
       </Container>
       <Snackbar open={open} autoHideDuration={5000} onClose={handleClose}>
         <Alert onClose={handleClose} severity="success">
-          Changes have been saved!
+          {create
+            ? "Assignment has been created succesfully "
+            : "Changes have been saved!"}
         </Alert>
       </Snackbar>
     </Container>

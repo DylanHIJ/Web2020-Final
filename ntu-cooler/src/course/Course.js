@@ -3,7 +3,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 import CourseInfo from "./CourseInfo";
 import Assignments from "./Assignments";
-import Exams from "./Exams";
 import Grades from "./Grades";
 import Members from "./Members";
 import Settings from "./Settings";
@@ -16,7 +15,6 @@ import { CssBaseline } from "@material-ui/core";
 import {
   AccountCircle,
   AssignmentRounded,
-  EmojiObjectsRounded,
   Info,
   InsertChartRounded,
 } from "@material-ui/icons";
@@ -54,7 +52,7 @@ export default function Course(props) {
   const classes = useStyles();
   const match = useRouteMatch();
   const [open, setOpen] = useState(true);
-  const drawerList = [
+  const studentDrawer = [
     {
       name: "Information",
       icon: <Info />,
@@ -68,43 +66,44 @@ export default function Course(props) {
       state: { isTA: isTA },
     },
     {
-      name: "Exams",
-      icon: <EmojiObjectsRounded />,
-      link: "/exams",
-      state: { isTA: isTA },
-    },
-    {
       name: "Grades",
       icon: <InsertChartRounded />,
       link: "/grades",
       state: { isTA: isTA },
     },
   ];
-
+  const taDrawer = [
+    {
+      name: "Information",
+      icon: <Info />,
+      link: "",
+      state: { isTA: isTA },
+    },
+    {
+      name: "Assignments",
+      icon: <AssignmentRounded />,
+      link: "/assignments",
+      state: { isTA: isTA },
+    },
+    {
+      name: "Members",
+      icon: <AccountCircle />,
+      link: "/members",
+      state: { isTA: isTA },
+    },
+    {
+      name: "Settings",
+      icon: <SettingsIcon />,
+      link: "/settings",
+      state: { isTA: isTA },
+    },
+  ];
   return (
     <div className={classes.root}>
       <CssBaseline />
       <NavBar open={open} setOpen={setOpen} />
       <LeftDrawer
-        drawerList={
-          isTA
-            ? [
-                ...drawerList,
-                {
-                  name: "Members",
-                  icon: <AccountCircle />,
-                  link: "/members",
-                  state: { isTA: isTA },
-                },
-                {
-                  name: "Settings",
-                  icon: <SettingsIcon />,
-                  link: "/settings",
-                  state: { isTA: isTA },
-                },
-              ]
-            : drawerList
-        }
+        drawerList={isTA ? taDrawer : studentDrawer}
         open={open}
         setOpen={setOpen}
         match={match}

@@ -26,6 +26,7 @@ const useStyles = makeStyles((theme) => ({
   title: {
     marginTop: "6%",
     marginBottom: "1%",
+    fontFamily: `'Crete Round', serif`,
   },
   root: {
     display: "flex",

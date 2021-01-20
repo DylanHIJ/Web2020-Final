@@ -43,6 +43,9 @@ const useStyles = makeStyles((theme) => ({
     color: "inherit",
     textDecoration: "none",
   },
+  logo: {
+    fontFamily: `'Potta One', cursive`,
+  },
 }));
 
 export default function NavBar(props) {
@@ -79,7 +82,7 @@ export default function NavBar(props) {
             <MenuIcon />
           </IconButton>
           <NavLink to="/home" className={classes.navlink}>
-            <Typography variant="h6" noWrap>
+            <Typography variant="h6" noWrap className={classes.logo}>
               NTU COOLER
             </Typography>
           </NavLink>
