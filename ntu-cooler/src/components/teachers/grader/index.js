@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container, Grid, Typography } from "@material-ui/core";
+import { Container, Grid, Typography, Button } from "@material-ui/core";
 
 import Selector from "./Selector";
 import Highlighter from "./Highlighter";
@@ -18,8 +18,17 @@ const Grader = (props) => {
 
   // Each instance is an object that has two properties, "score" and "comments"
   const [scores, setScores] = useState(
-    students.reduce(
-      (o, s) => ({ ...o, [s]: { score: undefined, comment: "" } }),
+    problems.reduce(
+      (o, p) => ({
+        ...o,
+        [p._id]: students.reduce(
+          (oo, s) => ({
+            ...oo,
+            [s]: { score: undefined, comment: "", graded: false },
+          }),
+          {}
+        ),
+      }),
       {}
     )
   );
@@ -27,25 +36,28 @@ const Grader = (props) => {
   const [updateGrade] = useMutation(UPDATE_GRADE);
 
   const updateGradeOnChanges = async () => {
-    if (scores[studentID].score !== undefined) {
-      const result = await updateGrade({
-        variables: {
-          email: studentID,
-          pid: problemID,
-          score: scores[studentID].score,
-        },
+    problems.forEach(async (problem) => {
+      students.forEach(async (student) => {
+        if (scores[problem._id][student].graded) {
+          const result = await updateGrade({
+            variables: {
+              email: student,
+              pid: problem._id,
+              score: scores[problem._id][student].score,
+            },
+          });
+        }
       });
-    }
+    });
   };
 
   useEffect(() => {
-    updateGradeOnChanges();
-    setProblem(problems.find((ele) => ele._id === problemID));
-  }, [problemID]);
+    console.log("Scores updated to -> ", scores);
+  }, [scores]);
 
   useEffect(() => {
-    updateGradeOnChanges();
-  }, [studentID]);
+    setProblem(problems.find((ele) => ele._id === problemID));
+  }, [problemID]);
 
   return (
     <Container maxWidth="lg">
@@ -93,6 +105,26 @@ const Grader = (props) => {
           />
         </Grid>
       </Grid>
+
+      {/* Button */}
+      <Container
+        maxWidth="sm"
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          padding: "1%",
+        }}
+      >
+        <Button
+          onClick={async () => {
+            updateGradeOnChanges();
+          }}
+          variant="outlined"
+        >
+          Save
+        </Button>
+      </Container>
     </Container>
   );
 };

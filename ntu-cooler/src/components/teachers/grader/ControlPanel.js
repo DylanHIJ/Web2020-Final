@@ -49,9 +49,13 @@ const ControlPanel = (props) => {
       setInputScoreValid(true);
       setScores((prev) => ({
         ...prev,
-        [studentID]: {
-          score: number,
-          comment: prev[studentID].comment,
+        [problemID]: {
+          ...prev[problemID],
+          [studentID]: {
+            score: number,
+            comment: prev[problemID][studentID].comment,
+            graded: true,
+          },
         },
       }));
     }
@@ -60,9 +64,13 @@ const ControlPanel = (props) => {
   useEffect(() => {
     setScores((prev) => ({
       ...prev,
-      [studentID]: {
-        score: prev[studentID].score,
-        comment: inputCommentString,
+      [problemID]: {
+        ...prev[problemID],
+        [studentID]: {
+          score: prev[problemID][studentID].score,
+          comment: inputCommentString,
+          graded: prev[problemID][studentID],
+        },
       },
     }));
   }, [inputCommentString]);
@@ -151,7 +159,7 @@ const ControlPanel = (props) => {
                 id="score"
                 key={`${problemID}-${studentID}-score`}
                 placeholder="0"
-                defaultValue={scores[studentID].score}
+                defaultValue={scores[problemID][studentID].score}
                 onChange={(event) => {
                   setInputScoreString(event.target.value);
                 }}
