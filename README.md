@@ -5,7 +5,7 @@
 - 組長：B06902059 謝宜儒 ([DylanHIJ](github.com/DylanHIJ))
 - 組員：B06902029 裴梧鈞 ([jimpei8989](github.com/jimpei8989))、B06902074 柯宏穎 ([KeHongYing](github.com/KeHongYing))
 - GitHub 連結：<https://github.com/DylanHIJ/Web2020-Final>
-- Deploy 連結：<ntu-cooler.csie.org:29080>
+- Deploy 連結：<http://ntu-cooler.csie.org:29080>
 - Demo 影片連結: <https://youtu.be/Ijtwco45hmQ>
 
 ### § 這個服務在做什麼
