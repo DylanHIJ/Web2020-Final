@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 import { useParams, useRouteMatch, NavLink } from "react-router-dom";
 import {
@@ -10,6 +10,7 @@ import {
   ListItemAvatar,
   Avatar,
   Divider,
+  Snackbar,
 } from "@material-ui/core";
 import {
   Edit,
@@ -19,10 +20,14 @@ import {
   PieChart,
   DoneAll,
 } from "@material-ui/icons";
+import MuiAlert from "@material-ui/lab/Alert";
 import { makeStyles } from "@material-ui/core/styles";
 import { GET_ASSIGNMENT, SHOW_GRADE } from "../graphql";
 import Loading from "../components/Loading";
 
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
@@ -48,11 +53,19 @@ export default function AssignmentTA(props) {
   const classes = useStyles();
   const { aid } = useParams();
   const match = useRouteMatch();
+  const [open, setOpen] = useState(false);
   const { loading, data } = useQuery(GET_ASSIGNMENT, {
     variables: { aid: aid },
     fetchPolicy: "no-cache",
   });
   const [showGrade] = useMutation(SHOW_GRADE);
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
 
   if (loading) return <Loading />;
 
@@ -132,18 +145,23 @@ export default function AssignmentTA(props) {
             className={classes.button}
             startIcon={<DoneAll />}
             onClick={async () => {
-              const result = await showGrade({
+              await showGrade({
                 variables: {
                   aid: aid,
                 },
               });
-              console.log(result);
+              setOpen(true);
             }}
           >
             Show Grade
           </Button>
         </ListItem>
       </List>
+      <Snackbar open={open} autoHideDuration={5000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="success">
+          Assignments have been graded.
+        </Alert>
+      </Snackbar>
     </>
   );
 }

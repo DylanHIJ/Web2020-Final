@@ -86,9 +86,7 @@ export default function Assignments(props) {
                       pathname: `${match.url}/${assignment._id}`,
                       state: {
                         isTA: isTA,
-                        isDue:
-                          new Date(parseInt(assignment.info.endTime, 10)) <
-                          new Date(),
+                        isDue: false,
                       },
                     }}
                     className={classes.navlink}
@@ -142,7 +140,10 @@ export default function Assignments(props) {
                 <NavLink
                   to={{
                     pathname: `${match.url}/${assignment._id}`,
-                    state: { isTA: isTA },
+                    state: {
+                      isTA: isTA,
+                      isDue: false,
+                    },
                   }}
                   className={classes.navlink}
                   key={assignment._id}
@@ -189,7 +190,10 @@ export default function Assignments(props) {
                 <NavLink
                   to={{
                     pathname: `${match.url}/${assignment._id}`,
-                    state: { isTA: isTA },
+                    state: {
+                      isTA: isTA,
+                      isDue: true,
+                    },
                   }}
                   className={classes.navlink}
                   key={assignment._id}

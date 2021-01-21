@@ -36,6 +36,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Assignment = (props) => {
+  const { isDue } = props;
   const history = useHistory();
   const classes = useStyles();
   const { aid } = useParams();
@@ -107,6 +108,16 @@ const Assignment = (props) => {
     }
   }, [answers]);
 
+  if (isDue)
+    return (
+      <Typography
+        variant="h4"
+        component="h2"
+        style={{ marginTop: "6%", marginBottom: "2%" }}
+      >
+        Ooooops! This assignment is already due.
+      </Typography>
+    );
   if (getAssignmentLoading || getAnswerLoading || loading) return <Loading />;
   const assignment = getAssignmentLoading ? {} : getAssignmentData.assignment;
 

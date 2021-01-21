@@ -51,7 +51,7 @@ export default function Course(props) {
   let isDue = false;
   if (props.location.state) {
     isTA = props.location.state.isTA;
-    isDue = props.location.state.idDue;
+    isDue = props.location.state.isDue;
   }
 
   const classes = useStyles();
