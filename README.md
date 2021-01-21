@@ -57,3 +57,9 @@ yarn && yarn build && serve -l tcp://0.0.0.0:29080 -s build/
 cd backend
 yarn && yarn serve
 ```
+
+### § 注意事項
+
+- 強烈建議使用 Google Chrome 作為瀏覽器開啟我們的網頁！
+- 伺服器使用家中的主機，家中為浮動 IP，並使用 Dynamic DNS 更新 IP。若有連線不上的情形可能要請使用者稍等數分鐘等 IP、DNS Cache 更新。
+
